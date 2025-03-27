@@ -1,0 +1,1524 @@
+{
+	"info": {
+		"_postman_id": "320f47dc-bcdb-45b0-8a15-e4fd48b57747",
+		"name": "Online Shop Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41346529"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/{{id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/{{id}} ?_method=DELETE",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "DELETE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "PANOT",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/users/{{user_id}} ?_method=PATCH",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "PATCH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "first_name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "contact_number",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "region",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "district",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "city_or_municipality",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "barangay",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "subdivision_or_village",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "street_number",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "street_name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "unit_number",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "zip_code",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Admin Creation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "text"
+										},
+										{
+											"key": "first_name",
+											"value": "admin",
+											"type": "text"
+										},
+										{
+											"key": "last_name",
+											"value": "admin",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "admin@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "contact_number",
+											"value": "+639543549694",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "Password123",
+											"type": "text"
+										},
+										{
+											"key": "region",
+											"value": "region",
+											"type": "text"
+										},
+										{
+											"key": "province",
+											"value": "province",
+											"type": "text"
+										},
+										{
+											"key": "district",
+											"value": "destrict",
+											"type": "text"
+										},
+										{
+											"key": "city_or_municipality",
+											"value": "city municipality",
+											"type": "text"
+										},
+										{
+											"key": "barangay",
+											"value": "barangay",
+											"type": "text"
+										},
+										{
+											"key": "subdivision_or_village",
+											"value": "subD",
+											"type": "text"
+										},
+										{
+											"key": "street_number",
+											"value": "69",
+											"type": "text"
+										},
+										{
+											"key": "street_name",
+											"value": "street name",
+											"type": "text"
+										},
+										{
+											"key": "unit_number",
+											"value": "96",
+											"type": "text"
+										},
+										{
+											"key": "zip_code",
+											"value": "6996",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/users",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Admin Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "Password123",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Token",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/categories",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/categories/{{category_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"categories",
+								"{{category_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/categories/{{category_id}} ?_method=DELETE",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"categories",
+								"{{category_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "DELETE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Cosmetics",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/categories/{{category_id}} ?_method=PATCH",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"categories",
+								"{{category_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "PATCH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/categories",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Manga Creation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Manga",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/categories",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products/{{product_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products/{{id}} ?_method=DELETE",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"{{id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "DELETE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Inidoro",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products/{{product_id}} ?_method=PATCH",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"{{product_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "PATCH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "category_id",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "stock",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Apothecary Diaries Creation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "APTHCRYDRS",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "The Apothecary Diaries",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "689",
+											"type": "text"
+										},
+										{
+											"key": "category_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "stock",
+											"value": "100",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/products",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Store",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "FRRNJRNYSND",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Frieren Journey's End",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "899",
+											"type": "text"
+										},
+										{
+											"key": "category_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "stock",
+											"value": "24",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/products",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "index",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/transactions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products/{{id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products/{{product_id}} ?_method=DELETE",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"{{product_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "DELETE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Inidoro",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products/{{product_id}} ?_method=PATCH",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"{{product_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "PATCH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"product_id\": 1,\r\n            \"quantity\": 150\r\n        },\r\n        \r\n        {\r\n            \"product_id\": 2,\r\n            \"quantity\": 253\r\n        }\r\n    ],\r\n    \"user_id\": 1,\r\n    \"type_id\": 1,\r\n    \"status_id\": 1,\r\n    \"payment_method_id\": 1\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{url}}/transactions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transactions Type",
+			"item": [
+				{
+					"name": "index",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/transactions/type",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"type"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/type/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"type",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/type/{{user_id}} ?_method=DELETE",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"type",
+								"{{user_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "DELETE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Inidoro",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/transactions/type/{{product_id}} ?_method=PATCH",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"type",
+								"{{product_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "PATCH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/transactions/type",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"type"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "In Going Creation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "In Going",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/transactions/type",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"transactions",
+										"type"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Transactions Statuses",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/status/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"status",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/status/{{user_id}} ?_method=DELETE",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"status",
+								"{{user_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "DELETE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Inidoro",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products/{{product_id}} ?_method=PATCH",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"{{product_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "PATCH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/transactions/status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"status"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "On Going Creation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "On Going",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/transactions/status",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"transactions",
+										"status"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Transactions Payment Method",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/payment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/payment/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"payment",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/transactions/payment/{{user_id}} ?_method=DELETE",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"payment",
+								"{{user_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "DELETE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Inidoro",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/transactions/payment/{{product_id}} ?_method=PATCH",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"payment",
+								"{{product_id}} "
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "PATCH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/transactions/payment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"payment"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Cash On Delivery Creation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Cash On Delivery",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/transactions/payment",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"transactions",
+										"payment"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.request.addHeader({\r",
+					"    key:\"Accept\",\r",
+					"    value: \"application/json\"\r",
+					"})"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.request.addHeader({\r",
+					"    key:\"Accept\",\r",
+					"    value: \"application/json\"\r",
+					"})"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://127.0.0.1:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "3|LfjX3VMGEpa5oXK5GozzwGX2EpEwxWu2TjliD9N0f98bb79f",
+			"type": "string"
+		},
+		{
+			"key": "id",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}
