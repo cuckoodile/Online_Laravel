@@ -69,3 +69,6 @@ Route::group(["prefix" => "transactions"], function () {
 Route::post("login", [AuthController::class, "login"]);
 Route::post("logout", [AuthController::class, "logout"])->middleware("auth:sanctum");
 Route::get("user", [AuthController::class, "checkToken"])->middleware("auth:sanctum");
+
+
+// HALOOO
