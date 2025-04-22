@@ -1,19 +1,19 @@
 <?php
-// Test -Alex
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductTransactionController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\TransactionPaymentMethodCrontroller;
+use App\Http\Controllers\TransactionPaymentMethodController;
 use App\Http\Controllers\TransactionStatusController;
 use App\Http\Controllers\TransactionTypeController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\CartController;
+// use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get("users", [UserController::class, "index"]);
-Route::post("users", [UserController::class, "store"]);
 Route::get("users/{id}", [UserController::class, "show"]);
 Route::delete("users/{id}", [UserController::class, "destroy"]);
 Route::patch("users/{id}", [UserController::class, "update"]);
@@ -51,11 +51,11 @@ Route::group(["prefix" => "transactions/status"], function () {
 });
 
 Route::group(["prefix" => "transactions/payment"], function () {
-    Route::get("/", [TransactionPaymentMethodCrontroller::class, "index"]);
-    Route::post("/", [TransactionPaymentMethodCrontroller::class, "store"]);
-    Route::get("/{id}", [TransactionPaymentMethodCrontroller::class, "show"]);
-    Route::delete("/{id}", [TransactionPaymentMethodCrontroller::class, "destroy"]);
-    Route::patch("/{id}", [TransactionPaymentMethodCrontroller::class, "update"]);
+    Route::get("/", [TransactionPaymentMethodController::class, "index"]);
+    Route::post("/", [TransactionPaymentMethodController::class, "store"]);
+    Route::get("/{id}", [TransactionPaymentMethodController::class, "show"]);
+    Route::delete("/{id}", [TransactionPaymentMethodController::class, "destroy"]);
+    Route::patch("/{id}", [TransactionPaymentMethodController::class, "update"]);
 });
 
 Route::group(["prefix" => "transactions"], function () {
@@ -67,5 +67,15 @@ Route::group(["prefix" => "transactions"], function () {
 });
 
 Route::post("login", [AuthController::class, "login"]);
+Route::post("register", [UserController::class, "store"]);
 Route::post("logout", [AuthController::class, "logout"])->middleware("auth:sanctum");
 Route::get("user", [AuthController::class, "checkToken"])->middleware("auth:sanctum");
+
+
+Route::group(["prefix" => "carts", "middleware" => "auth:sanctum"], function () {
+    Route::get("/", [CartController::class, "index"]);      
+    Route::post("/", [CartController::class, "store"]);      
+    Route::get("/{id}", [CartController::class, "show"]);    
+    Route::patch("/{id}", [CartController::class, "update"]); 
+    Route::delete("/{id}", [CartController::class, "destroy"]); 
+});

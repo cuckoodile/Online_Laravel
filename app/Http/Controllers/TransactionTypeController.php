@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\transaction_type;
 use App\Models\TransactionType;
 use Illuminate\Http\Request;
 
 class TransactionTypeController extends Controller
 {
+    /**
+     * Display a listing of all transaction types.
+    */
     public function index() 
     {
         $types = TransactionType::all();
@@ -15,6 +17,9 @@ class TransactionTypeController extends Controller
         return $this->Ok($types);
     } 
 
+     /**
+     * Display the specified transaction types.
+    */
     public function show(string $id)
     {
         $types = TransactionType::find($id);
@@ -28,61 +33,99 @@ class TransactionTypeController extends Controller
         return $this->Ok($types);
     }
 
-    public function store (Request $request)
+
+    /**
+     * Store a newly created transaction types.
+     */
+    public function store(Request $request)
     {
+        // Define default transaction types first
+        $defaultTypes = ['Inbound', 'Outbound', 'Void', 'Returned', 'Refunded'];
+    
         $inputs = $request->all();
-
         $inputs["name"] = $this->SanitizedName($inputs["name"]);
-
-        $validator = validator()->make($request->all(), [
-            "name" => "required|string|unique:transaction_types,name"
+    
+        // Apply validation with a custom message
+        $validator = validator()->make($inputs, [
+            "name" => [
+                "required",
+                "string",
+                function ($attribute, $value, $fail) use ($defaultTypes) {
+                    if (!in_array($value, $defaultTypes)) {
+                        $fail("Invalid Type! Please choose only the available types: " . implode(", ", $defaultTypes));
+                    }
+                }
+            ]
         ]);
-
-        if ($validator->fails()) {
-            return $this->BadRequest($validator);
-        }
-
-        $types = TransactionType::create($validator->validated());
-
-        return $this->Created($types, "Transaction Type has been created");
-    }
-
-
-    public function update (Request $request, string $id) {
-        $inputs = $request->all();
-
-        $inputs["name"] = $this->SanitizedName($inputs["name"] ?? "");
-
-        $validator = validator()->make($request->all(), [
-            "name" => "required|string|unique:transaction_types,name,$id|"
-        ]);
-
+    
         if ($validator->fails()) {
             return $this->BadRequest($validator->errors());
         }
-
-        $types = TransactionType::find($id);
-
-        if (empty($types)) {
-            return $this->NotFound("Transaction_type not found");
+    
+        // Ensure default transaction types exist in the database
+        foreach ($defaultTypes as $type) {
+            if (!TransactionType::where('name', $type)->exists()) {
+                TransactionType::create(['name' => $type]);
+            }
         }
+    
+        $type = TransactionType::create($validator->validated());
+    
+        return $this->Created($type, "Transaction Type has been created");
+    }    
 
+    /**
+     * Store the specified transaction types.
+     */
+    public function update(Request $request, string $id) 
+    {
+        // Define default transaction types first
+        $defaultTypes = ['Inbound', 'Outbound', 'Void', 'Returned', 'Refunded'];
+    
+        $inputs = $request->all();
+        $inputs["name"] = $this->SanitizedName($inputs["name"] ?? "");
+    
+        // Find the transaction type before validation
+        $types = TransactionType::find($id);
+    
+        if (empty($types)) {
+            return $this->NotFound("Transaction Type not found");
+        }
+    
+        // Apply validation with a custom message
+        $validator = validator()->make($inputs, [
+            "name" => [
+                "required",
+                "string",
+                function ($attribute, $value, $fail) use ($defaultTypes) {
+                    if (!in_array($value, $defaultTypes)) {
+                        $fail("Invalid Type! Please choose only the available types: " . implode(", ", $defaultTypes));
+                    }
+                }
+            ]
+        ]);
+    
+        if ($validator->fails()) {
+            return $this->BadRequest($validator->errors());
+        }
+    
+        // Update the transaction type
         $types->update($validator->validated());
-
-        return $this->Ok($types, "Transaction_type has been updated");
-        
+    
+        return $this->Ok($types, "Transaction Type has been updated");
     }
+    
 
     public function destroy(string $id)
     {
         $types = TransactionType::find($id);
 
         if (empty($types)) {
-            return $this->NotFound("Transaction_type not found");
+            return $this->NotFound("Transaction Type not found");
         }
 
         $types->delete();
 
-        return $this->Ok(null, "Transaction_type has been deleted");
+        return $this->Ok(null, "Transaction Type has been deleted");
     }
 }

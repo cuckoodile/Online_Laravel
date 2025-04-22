@@ -11,7 +11,7 @@ abstract class Controller
     {
         return response()->json([
             "ok" => false,
-            "error" => $validator->errors(),
+            "error" => $validator,
             "message" => $message,
         ], 400);
     }

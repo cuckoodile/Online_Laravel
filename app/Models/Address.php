@@ -11,17 +11,25 @@ class Address extends Model
         'region',
         'province',
         'district',
-        'city_or_municipality',
+        'city_municipality',
         'barangay',
-        'subdivision_or_village', // (if applicable) // add |sometimes|'
-        'street_number',
-        'street_name',
-        'unit_number',  // (if applicable) // add |sometimes|'
+        'subdivision_village',
+        'street',
+        'block_number',
+        'lot_number',  
         'zip_code',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+    public function transactions() 
+    {
+        return $this->hasMany(Transaction::class);
     }
 }
