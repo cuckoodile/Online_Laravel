@@ -76,7 +76,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
 
-        if (empty($category)) {
+        if (empty($category)) { 
             return $this->NotFound("Category not found");
         }
 

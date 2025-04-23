@@ -47,21 +47,9 @@ class UserController extends Controller
             "last_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
             "username" => "required|unique:users|min:4|regex:/^[^\p{C}]+$/u|max:32",
             "email" => "required|unique:users|email|max:255",
-            "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
             "password" => "required|min:8|max:255",
-            "region" => "required|string",
-            "province" => "required|string",
-            "district" => "required|string",
-            "city_or_municipality" => "required|string",
-            "barangay" => "required|string",
-            "subdivision_or_village" => "required|string",
-            "street_number" => "required|string",
-            "street_name" => "required|string",
-            "unit_number" => "required|string|regex:/^[0-9,.'\-\s]+$/",
-            "zip_code" => "required|string|min:4|regex:/^[0-9]+$/",
+            "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
             
-        ], [
-            "phone" => "The :attribute must be a valid phone number",
         ]);
 
         if($validator->fails()) {
@@ -73,8 +61,7 @@ class UserController extends Controller
         $user->profile()->create($validator->validated());
         $user->profile;
 
-        $user->address()->create($validator->validated());
-        $user->address;
+        
 
         return $this->Created($user, "User created successfully!");
 
@@ -128,16 +115,6 @@ class UserController extends Controller
             "email" => "sometimes|unique:users,email,$id|email|max:255",
             "contact_number" => "phone:PH|sometimes|unique:profiles|min:10|max:15",
             "password" => "sometimes|min:8|max:255",
-            "region" => "sometimes|string",
-            "province" => "sometimes|string",
-            "district" => "sometimes|string",
-            "city_or_municipality"=> "sometimes|string",
-            "barangay" => "sometimes|string",
-            "sudivision_or_village" => "sometimes|string",
-            "street_number" => "sometimes|string",
-            "street_name" => "sometimes|string",
-            "unit_number" => "sometimes|string",
-            "zip_code" => "sometimes|string",
 
         ]);
         
@@ -145,13 +122,15 @@ class UserController extends Controller
             return $this->BadRequest($validator);
         }
 
-        $user->update($validator->validated());
-        $user->profile->update($validator->validated());
-        $user->address->update($validator->validated());
-
-        if(empty($user)){
-            return $this->NotFound("User Not Found!");
+        if (!$user->profile) {
+            $user->profile()->create(); 
         }
+        $user->profile->update($validator->validated());
+        
+        // Update the user with the validated data
+        $user->update($validator->validated());
+        $user->profile;
+
         return $this->Ok($user, "User $user->name information has been updated successfully!"); 
     }
 
@@ -179,3 +158,5 @@ class UserController extends Controller
         return $this->Ok($user, "This user has been deleted");
     }
 }
+
+
