@@ -9,73 +9,72 @@ use App\Http\Controllers\TransactionStatusController;
 use App\Http\Controllers\TransactionTypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
-// use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-
-Route::get("users", [UserController::class, "index"]);
-Route::get("users/{id}", [UserController::class, "show"]);
-Route::delete("users/{id}", [UserController::class, "destroy"]);
-Route::patch("users/{id}", [UserController::class, "update"]);
-
-Route::group(["prefix" => "categories"], function () {
-    Route::get("/", [CategoryController::class, "index"]);
-    Route::post("/", [CategoryController::class, "store"]);
-    Route::get("/{id}", [CategoryController::class, "show"]);
-    Route::delete("/{id}", [CategoryController::class, "destroy"]);
-    Route::patch("/{id}", [CategoryController::class, "update"]);
-});
-
-Route::group(["prefix" => "products"], function () {
-    Route::get("/", [ProductController::class, "index"]);
-    Route::post("/", [ProductController::class, "store"]);
-    Route::get("/{id}", [ProductController::class, "show"]);
-    Route::delete("/{id}", [ProductController::class, "destroy"]);
-    Route::patch("/{id}", [ProductController::class, "update"]);
-});
-
-Route::group(["prefix" => "transactions/type"], function () {
-    Route::get("/", [TransactionTypeController::class, "index"]);
-    Route::post("/", [TransactionTypeController::class, "store"]);
-    Route::get("/{id}", [TransactionTypeController::class, "show"]);
-    Route::delete("/{id}", [TransactionTypeController::class, "destroy"]);
-    Route::patch("/{id}", [TransactionTypeController::class, "update"]);
-});
-
-Route::group(["prefix" => "transactions/status"], function () {
-    Route::get("/", [TransactionStatusController::class, "index"]);
-    Route::post("/", [TransactionStatusController::class, "store"]);
-    Route::get("/{id}", [TransactionStatusController::class, "show"]);
-    Route::delete("/{id}", [TransactionStatusController::class, "destroy"]);
-    Route::patch("/{id}", [TransactionStatusController::class, "update"]);
-});
-
-Route::group(["prefix" => "transactions/payment"], function () {
-    Route::get("/", [TransactionPaymentMethodController::class, "index"]);
-    Route::post("/", [TransactionPaymentMethodController::class, "store"]);
-    Route::get("/{id}", [TransactionPaymentMethodController::class, "show"]);
-    Route::delete("/{id}", [TransactionPaymentMethodController::class, "destroy"]);
-    Route::patch("/{id}", [TransactionPaymentMethodController::class, "update"]);
-});
-
-Route::group(["prefix" => "transactions"], function () {
-    Route::get("/", [TransactionController::class, "index"]);
-    Route::post("/", [TransactionController::class, "store"])->middleware("auth:sanctum");
-    Route::get("/{id}", [TransactionController::class, "show"]);
-    Route::delete("/{id}", [TransactionController::class, "destroy"]);
-    Route::patch("/{id}", [TransactionController::class, "update"]);
-});
 
 Route::post("login", [AuthController::class, "login"]);
 Route::post("register", [UserController::class, "store"]);
 Route::post("logout", [AuthController::class, "logout"])->middleware("auth:sanctum");
 Route::get("user", [AuthController::class, "checkToken"])->middleware("auth:sanctum");
 
+Route::group(["prefix" => "users", "middleware" => "auth:sanctum"], function () {
+    Route::get("/", [UserController::class, "index"]);
+    Route::get("/{id}", [UserController::class, "show"]);
+    Route::delete("/{id}", [UserController::class, "destroy"]);
+    Route::patch("/{id}", [UserController::class, "update"]);
+});
+
+Route::group(["prefix" => "categories"], function () {
+    Route::get("/", [CategoryController::class, "index"]);
+    Route::get("/{id}", [CategoryController::class, "show"]);
+    Route::post("/", [CategoryController::class, "store"])->middleware("auth:sanctum");
+    Route::delete("/{id}", [CategoryController::class, "destroy"])->middleware("auth:sanctum");
+    Route::patch("/{id}", [CategoryController::class, "update"])->middleware("auth:sanctum");
+});
+
+Route::group(["prefix" => "products"], function () {
+    Route::get("/", [ProductController::class, "index"]);
+    Route::get("/{id}", [ProductController::class, "show"]);
+    Route::post("/", [ProductController::class, "store"])->middleware("auth:sanctum");
+    Route::delete("/{id}", [ProductController::class, "destroy"])->middleware("auth:sanctum");
+    Route::patch("/{id}", [ProductController::class, "update"])->middleware("auth:sanctum");
+});
+
+Route::group(["prefix" => "transactions/type"], function () {
+    Route::get("/", [TransactionTypeController::class, "index"]);
+    Route::get("/{id}", [TransactionTypeController::class, "show"]);
+    Route::post("/", [TransactionTypeController::class, "store"])->middleware("auth:sanctum");
+    Route::delete("/{id}", [TransactionTypeController::class, "destroy"])->middleware("auth:sanctum");
+    Route::patch("/{id}", [TransactionTypeController::class, "update"])->middleware("auth:sanctum");
+});
+
+Route::group(["prefix" => "transactions/status"], function () {
+    Route::get("/", [TransactionStatusController::class, "index"]);
+    Route::get("/{id}", [TransactionStatusController::class, "show"]);
+    Route::post("/", [TransactionStatusController::class, "store"])->middleware("auth:sanctum");
+    Route::delete("/{id}", [TransactionStatusController::class, "destroy"])->middleware("auth:sanctum");
+    Route::patch("/{id}", [TransactionStatusController::class, "update"])->middleware("auth:sanctum");
+});
+
+Route::group(["prefix" => "transactions/payment"], function () {
+    Route::get("/", [TransactionPaymentMethodController::class, "index"]);
+    Route::get("/{id}", [TransactionPaymentMethodController::class, "show"]);
+    Route::post("/", [TransactionPaymentMethodController::class, "store"])->middleware("auth:sanctum");
+    Route::delete("/{id}", [TransactionPaymentMethodController::class, "destroy"])->middleware("auth:sanctum");
+    Route::patch("/{id}", [TransactionPaymentMethodController::class, "update"])->middleware("auth:sanctum");
+});
+
+Route::group(["prefix" => "transactions", "middleware" => "auth:sanctum"], function () {
+    Route::get("/", [TransactionController::class, "index"]);
+    Route::get("/{id}", [TransactionController::class, "show"]);
+    Route::post("/", [TransactionController::class, "store"]);
+    Route::delete("/{id}", [TransactionController::class, "destroy"]);
+    Route::patch("/{id}", [TransactionController::class, "update"]);
+});
 
 Route::group(["prefix" => "carts", "middleware" => "auth:sanctum"], function () {
     Route::get("/", [CartController::class, "index"]);      
-    Route::post("/", [CartController::class, "store"]);      
     Route::get("/{id}", [CartController::class, "show"]);    
+    Route::post("/", [CartController::class, "store"]);      
     Route::patch("/{id}", [CartController::class, "update"]); 
     Route::delete("/{id}", [CartController::class, "destroy"]); 
 });
