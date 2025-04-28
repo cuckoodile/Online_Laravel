@@ -10,6 +10,12 @@ class Profile extends Model
         "first_name",
         "last_name",
         "contact_number",
+<<<<<<< HEAD
+=======
+        "isAdmin",
+        "user_id",
+        
+>>>>>>> 69bff22 (Product Comments)
     ];
 
     public function user()

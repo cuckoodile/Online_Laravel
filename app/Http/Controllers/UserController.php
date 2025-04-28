@@ -48,6 +48,7 @@ class UserController extends Controller
             "username" => "required|unique:users|min:4|regex:/^[^\p{C}]+$/u|max:32",
             "email" => "required|unique:users|email|max:255",
             "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
+<<<<<<< HEAD
             "password" => "required|min:8|max:255",
             "region" => "required|string",
             "province" => "required|string",
@@ -59,6 +60,9 @@ class UserController extends Controller
             "street_name" => "required|string",
             "unit_number" => "required|string|regex:/^[0-9,.'\-\s]+$/",
             "zip_code" => "required|string|min:4|regex:/^[0-9]+$/",
+=======
+            "isAdmin" => "sometimes|boolean",
+>>>>>>> 69bff22 (Product Comments)
             
         ], [
             "phone" => "The :attribute must be a valid phone number",
@@ -128,6 +132,7 @@ class UserController extends Controller
             "email" => "sometimes|unique:users,email,$id|email|max:255",
             "contact_number" => "phone:PH|sometimes|unique:profiles|min:10|max:15",
             "password" => "sometimes|min:8|max:255",
+<<<<<<< HEAD
             "region" => "sometimes|string",
             "province" => "sometimes|string",
             "district" => "sometimes|string",
@@ -138,6 +143,9 @@ class UserController extends Controller
             "street_name" => "sometimes|string",
             "unit_number" => "sometimes|string",
             "zip_code" => "sometimes|string",
+=======
+            "isAdmin" => "sometimes|boolean",
+>>>>>>> 69bff22 (Product Comments)
 
         ]);
         

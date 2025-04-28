@@ -10,7 +10,6 @@ class Product extends Model
         "name",
         "price",
         "description",
-        "stock",
         "category_id"
     ];
 

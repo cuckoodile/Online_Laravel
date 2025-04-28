@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("user_id")->unique();
+<<<<<<< HEAD
             $table->string("region");
             $table->string("province");
             $table->string("district");
@@ -23,9 +24,15 @@ return new class extends Migration
             $table->string("street_number");
             $table->string("street_name");
             $table->string("unit_number");
+=======
+            $table->string("house_address");
+            $table->string("region");
+            $table->string("province");
+            $table->string("city");
+            $table->string("baranggay");
+>>>>>>> 69bff22 (Product Comments)
             $table->string("zip_code");
             $table->timestamps();
-
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
         });
     }

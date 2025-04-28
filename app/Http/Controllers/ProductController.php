@@ -39,7 +39,6 @@ class ProductController extends Controller
             "name" => "required|string|unique:products",
             "price" => "required|numeric",
             "description" => "required|string",
-            "stock" => "required|integer",
             "category_id" => "required|exists:categories,id|integer"
         ]);
 
@@ -65,7 +64,6 @@ class ProductController extends Controller
             "name" => "sometimes|string|unique:products",
             "price" => "sometimes|numeric",
             "description" => "sometimes|string",
-            "stock" => "sometimes|integer",
             "category_id" => "sometimes|exists:categories,id|integer"
         ]);
 
