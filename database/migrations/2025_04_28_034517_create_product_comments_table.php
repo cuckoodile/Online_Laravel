@@ -18,13 +18,12 @@ return new class extends Migration
             $table->text('comment');
             $table->integer('rating')->default(0);
             $table->unsignedBigInteger('comment_id')->nullable();
+            $table->timestamps();
 
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-
-            // I'm using recursive relationships 
-            $table->foreignId('comment_id')->references('id')->on('product_comments')->onDelete('cascade');
-            $table->timestamps(); // alex.
+            // Foreign keys (correct manual way)
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('comment_id')->references('id')->on('product_comments')->onDelete('cascade');
         });
     }
 
