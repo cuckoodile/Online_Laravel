@@ -47,6 +47,7 @@ class UserController extends Controller
             "last_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
             "username" => "required|unique:users|min:4|regex:/^[^\p{C}]+$/u|max:32",
             "email" => "required|unique:users|email|max:255",
+<<<<<<< HEAD
             "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
 <<<<<<< HEAD
             "password" => "required|min:8|max:255",
@@ -63,9 +64,11 @@ class UserController extends Controller
 =======
             "isAdmin" => "sometimes|boolean",
 >>>>>>> 69bff22 (Product Comments)
+=======
+            "password" => "required|min:8|max:255",
+            "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
+>>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
             
-        ], [
-            "phone" => "The :attribute must be a valid phone number",
         ]);
 
         if($validator->fails()) {
@@ -77,8 +80,7 @@ class UserController extends Controller
         $user->profile()->create($validator->validated());
         $user->profile;
 
-        $user->address()->create($validator->validated());
-        $user->address;
+        
 
         return $this->Created($user, "User created successfully!");
 
@@ -133,6 +135,7 @@ class UserController extends Controller
             "contact_number" => "phone:PH|sometimes|unique:profiles|min:10|max:15",
             "password" => "sometimes|min:8|max:255",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "region" => "sometimes|string",
             "province" => "sometimes|string",
             "district" => "sometimes|string",
@@ -146,6 +149,8 @@ class UserController extends Controller
 =======
             "isAdmin" => "sometimes|boolean",
 >>>>>>> 69bff22 (Product Comments)
+=======
+>>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
 
         ]);
         
@@ -153,13 +158,15 @@ class UserController extends Controller
             return $this->BadRequest($validator);
         }
 
-        $user->update($validator->validated());
-        $user->profile->update($validator->validated());
-        $user->address->update($validator->validated());
-
-        if(empty($user)){
-            return $this->NotFound("User Not Found!");
+        if (!$user->profile) {
+            $user->profile()->create(); 
         }
+        $user->profile->update($validator->validated());
+        
+        // Update the user with the validated data
+        $user->update($validator->validated());
+        $user->profile;
+
         return $this->Ok($user, "User $user->name information has been updated successfully!"); 
     }
 
@@ -187,3 +194,5 @@ class UserController extends Controller
         return $this->Ok($user, "This user has been deleted");
     }
 }
+
+

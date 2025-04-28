@@ -15,12 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
         $categories = [
-            "Home & Kitchen",
-            "Cosmetics",
-            "Pet Essentials",
+            "Jacket",
+            "Hat % Cap",
+            "Shirt",
+            "T-Shirt",
+            "Sunglasses",
+            
         ];
 
         foreach ($categories as $category) {
@@ -30,15 +32,15 @@ class DatabaseSeeder extends Seeder
         }
 
         $user = User::create([
-            "username" => "John Doe",
-            "email" => "John@gmail.com",
-            "password" => 123123123,
+            "username" => "admin",
+            "email" => "admin@gmail.com",
+            "password" => "admin",
         ]);
 
         $user->profile()->create([
             "first_name" => "John",
             "last_name" => "Doe",
-            "phone" => "0909090909",
+            "contact_number" => "0909090909",
         ]);
 
         Product::create([

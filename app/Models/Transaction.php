@@ -7,19 +7,25 @@ use App\Models\TransactionType;
 use App\Models\TransactionStatus;
 use App\Models\TransactionPaymentMethod;
 use App\Models\User;
-use App\Models\ProductTransaction;
+use App\Models\Cart;
+use App\Models\Product;
+use App\Models\Address;
 
 
 class Transaction extends Model
 {
     public $fillable = [
         "user_id",
+        "cart_id",
         "payment_method_id",
         "type_id",
         "status_id",
+        "address_id",
+        "is_void"
+
     ];
 
-    public function users() {
+    public function user() {
         return $this->belongsTo(User::class);
     }
     public function transaction_types() {
@@ -34,6 +40,12 @@ class Transaction extends Model
         return $this->belongsTo(TransactionPaymentMethod::class,"payment_method_id","id");
     }
     public function products() {
-        return $this->belongsToMany(Product::class)->withPivot('quantity','price');
+        return $this->belongsToMany(Product::class)->withPivot('quantity','total_price');
+    }
+    public function address() {
+        return $this->belongsTo(Address::class);
+    }
+    public function cart() {
+        return $this->belongsTo(Cart::class, "cart_id", "id");
     }
 }

@@ -19,6 +19,6 @@ class Product extends Model
     }
     public function transactions()
     {
-        return $this->hasMany(Transaction::class)->withPivot('quantity','price');
+        return $this->hasMany(Transaction::class)->withPivot('quantity','total_price');
     }
 }

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Sanctum\HasApiTokens; // Add this import
+
 
 class AuthController extends Controller
 {
@@ -16,10 +15,10 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->BadRequest($validator->errors());
+            return $this->NotFound($validator->errors());
         }
 
-        if (!auth()->attempt($validator->validated())) {
+        if (!auth()->attempt($request->only("username", "password"))) {
             return $this->Unauthorized("Invalid credentials");
         }
 
