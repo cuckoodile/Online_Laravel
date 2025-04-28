@@ -29,18 +29,12 @@ class TransactionController extends Controller
      */
     public function store(Request $request) {
         $inputs = $request->all();
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
     
-      
         $validator = validator()->make($inputs, [
             "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
             "type_id" => "required|exists:transaction_types,id|integer",
             "status_id" => "required|exists:transaction_statuses,id|integer",
-<<<<<<< HEAD
+
             "house_address"=>"required|string",
             "region"=>"required|string",
             "province" => "required|string",
@@ -83,7 +77,7 @@ class TransactionController extends Controller
     // 'subdivision_village' => $inputs['subdivision_village'] ?? null,
     // 'street' => $inputs['street'] ?? null,
        
->>>>>>> 69bff22 (Product Comments)
+
 
         $validator = validator()->make($inputs,[
         //    "user_id" => "required|exists:users,id|integer" ,
@@ -94,19 +88,15 @@ class TransactionController extends Controller
            "products" => "required|array",
            "products.*" => "array",
            "products.*.product_id" => "required|exists:products,id|integer",
-           "products.*.quantity" => "required|integer|min:1"
-=======
+           "products.*.quantity" => "required|integer|min:1",
+    
+            "house_address" => "required|string",
             "region" => "required|string",
             "province" => "required|string",
-            "district" => "required|string",
-            "city_municipality" => "required|string",
-            "barangay" => "required|string",
-            "subdivision_village" => "nullable|string",
-            "street" => "nullable|string",
-            "lot_number" => "nullable|string|regex:/^[0-9,.'\-\s]+$/",
-            "block_number" => "nullable|string|regex:/^[0-9,.'\-\s]+$/",
+            "city" => "required|string",
+            "baranggay" => "required|string",
             "zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
->>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
+
         ]);
     
         if ($validator->fails()) {
@@ -128,15 +118,11 @@ class TransactionController extends Controller
         if (!$address) {
             $address = Address::create([
                 'user_id' => $user->id,
+                'house_address' => $inputs['house_address'],
                 'region' => $inputs['region'],
                 'province' => $inputs['province'],
-                'district' => $inputs['district'],
-                'city_municipality' => $inputs['city_municipality'],
-                'barangay' => $inputs['barangay'],
-                'subdivision_village' => $inputs['subdivision_village'] ?? null,
-                'street' => $inputs['street'] ?? null,
-                'lot_number' => $inputs['lot_number'] ?? null,
-                'block_number' => $inputs['block_number'] ?? null,
+                'city' => $inputs['city'],
+                'baranggay' => $inputs['baranggay'],
                 'zip_code' => $inputs['zip_code']
             ]);
         }
@@ -193,17 +179,12 @@ class TransactionController extends Controller
         return $this->Ok($transactions);
     }
 
-        /**
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        //
-=======
-=======
->>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
+
         $transaction = Transaction::find($id);
 
         if (empty($transaction)) {
@@ -216,7 +197,7 @@ class TransactionController extends Controller
            "payment_method_id" => "exists:transaction_payment_methods,id|integer",
            "type_id" => "exists:transaction_types,id|integer",
            "status_id" => "exists:transaction_statuses,id|integer",
-<<<<<<< HEAD
+
            "contact_number" => "phone:PH|sometimes|unique:profiles|min:11|max:11",
            "house_address"=>"sometimes|string",
            "region"=>"sometimes|string",
@@ -224,20 +205,7 @@ class TransactionController extends Controller
            "city" => "sometimes|string",
            "baranggay" => "sometimes|string",
            "zip_code" => "sometimes|string|min:4|regex:/^[0-9]+$/",
-=======
-           "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
-           "region" => "string",
-           "province" => "string",
-           "district" => "string",
-           "city_municipality" => "string",
-           "barangay" => "string",
-           "subdivision_village" => "string",
-           "street" => "string",
-           "lot_number" => "string|regex:/^[0-9,.'\-\s]+$/",
-           "block_number" => "string|regex:/^[0-9,.'\-\s]+$/",
-           "zip_code" => "string|min:4|regex:/^[0-9]+$/",
->>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
-
+          
             // PIVOT TABLE: This part is only for product validation kaya di ko na nilagay sa store function
            "products" => "array",
            "products.*" => "array",
@@ -271,10 +239,7 @@ class TransactionController extends Controller
         $transaction->products;
 
         return $this->Ok($transaction, "Transaction has been updated!");
-<<<<<<< HEAD
->>>>>>> 69bff22 (Product Comments)
-=======
->>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
+
     }
 
     /**
@@ -293,4 +258,3 @@ class TransactionController extends Controller
         return $this->Ok("Transaction has been deleted!");
     }
 }
-

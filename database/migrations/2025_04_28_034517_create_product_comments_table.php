@@ -21,6 +21,7 @@ return new class extends Migration
 
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+
             // I'm using recursive relationships 
             $table->foreignId('comment_id')->references('id')->on('product_comments')->onDelete('cascade');
             $table->timestamps(); // alex.
