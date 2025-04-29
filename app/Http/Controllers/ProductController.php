@@ -23,6 +23,7 @@ class ProductController extends Controller
         }
 
         $Product->category;
+        $Product->product_comments;
 
         return $this->Ok($Product);
     }

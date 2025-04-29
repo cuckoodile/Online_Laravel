@@ -43,13 +43,14 @@ Route::group(["prefix" => "products"], function () {
 });
 
 
-Route::group(["prefix" => "products/comments"], function () {
+Route::group(["prefix" => "comments"], function () {
     Route::get("/", [ProductCommentController::class, "index"]);
     Route::get("/{id}", [ProductCommentController::class, "show"]);
     Route::post("/", [ProductCommentController::class, "store"])->middleware("auth:sanctum");
     Route::delete("/{id}", [ProductCommentController::class, "destroy"])->middleware("auth:sanctum");
     Route::patch("/{id}", [ProductCommentController::class, "update"])->middleware("auth:sanctum");
 });
+Route::get("/reviewsCount", [ProductCommentController::class, "reviewsCount"]);
 
 
 Route::group(["prefix" => "transactions/type"], function () {

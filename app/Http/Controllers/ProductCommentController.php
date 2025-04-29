@@ -7,42 +7,50 @@ use Illuminate\Http\Request;
 
 class ProductCommentController extends Controller
 {
-    public function index($productId) {
+    public function index() {
+        $productId = request('product_id');
+    
+        if (!$productId) {
+            return $this->BadRequest("Missing product_id");
+        }
+    
         $comments = ProductComment::with('user:id,username')
-        ->where('product_id', $productId)
-        ->get();
-
-        return $this->Ok($comments);
-    }
-
-    public function show($productId, $commentId) {
-        $Comment = ProductComment::find($commentId);
-
-
-        if(empty($Comment)) {
-            return $this->NotFound("Comment not found or has been deleted!");
+            ->where('product_id', $productId)
+            ->get();
+    
+        if ($comments->isEmpty()) {
+            return $this->NotFound("No comments found for the product: {$productId}");
         }
         
-        $Comment = ProductComment::with('user:id,username');
-        // ->where('product_id', $productId)
-        // ->where('id', $commentId)
-        // ->first();
-
-
-        return $this->Ok($Comment, "Successfully retrieved comment");
-
+        return $this->Ok($comments);
     }
+    
+
+    public function show($productId, $commentId) {
+        // Retrieve the specific comment with productId and commentId
+        $Comment = ProductComment::with('user:id,username')
+            ->where('product_id', $productId)
+            ->where('id', $commentId)
+            ->first();
+    
+        // Check if the comment exists
+        if (empty($Comment)) {
+            return $this->NotFound("Comment not found or has been deleted!");
+        }
+    
+        return $this->Ok($Comment, "Successfully retrieved comment");
+    }
+    
 
     public function reviewsCount(){
         $totalReviews = ProductComment::count();
-        $totalSumReviews = ProductComment::sum('id');
 
         return $this->Ok([
             'totalReviews' => $totalReviews,
-            'totalSumReviews' => $totalSumReviews
         ], "Successfully retrieved reviews count");
     }
 
+    
     public function store(Request $request) {
         $inputs = $request->all();
 

@@ -21,4 +21,8 @@ class Product extends Model
     {
         return $this->hasMany(Transaction::class)->withPivot('quantity','total_price');
     }
+    public function product_comments()
+    {
+        return $this->hasMany(ProductComment::class);
+    }
 }
