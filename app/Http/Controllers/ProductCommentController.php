@@ -7,25 +7,40 @@ use Illuminate\Http\Request;
 
 class ProductCommentController extends Controller
 {
-    public function index() {
-        $comments = ProductComment::with('user')->get();
+    public function index($productId) {
+        $comments = ProductComment::with('user:id,username')
+        ->where('product_id', $productId)
+        ->get();
 
         return $this->Ok($comments);
     }
 
-    public function show(string $id) {
-        $Comment = ProductComment::find($id);
+    public function show($productId, $commentId) {
+        $Comment = ProductComment::find($commentId);
+
 
         if(empty($Comment)) {
-            return $this->NotFound("Comment not found");
+            return $this->NotFound("Comment not found or has been deleted!");
         }
+        
+        $Comment = ProductComment::with('user:id,username');
+        // ->where('product_id', $productId)
+        // ->where('id', $commentId)
+        // ->first();
 
-        $Comment->user;
-        $Comment->product;
-        $Comment->comment_id;
 
-        return $this->Ok($Comment);
+        return $this->Ok($Comment, "Successfully retrieved comment");
 
+    }
+
+    public function reviewsCount(){
+        $totalReviews = ProductComment::count();
+        $totalSumReviews = ProductComment::sum('id');
+
+        return $this->Ok([
+            'totalReviews' => $totalReviews,
+            'totalSumReviews' => $totalSumReviews
+        ], "Successfully retrieved reviews count");
     }
 
     public function store(Request $request) {
@@ -40,7 +55,7 @@ class ProductCommentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->BadRequest($validator);
+            return $this->BadRequest($validator->errors());
         }
 
         $Comment = ProductComment::create($validator->validated());
@@ -66,7 +81,7 @@ class ProductCommentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->BadRequest($validator);
+            return $this->BadRequest($validator->errors());
         }
 
         $Comment->update($validator->validated());

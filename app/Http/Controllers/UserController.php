@@ -47,28 +47,10 @@ class UserController extends Controller
             "last_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
             "username" => "required|unique:users|min:4|regex:/^[^\p{C}]+$/u|max:32",
             "email" => "required|unique:users|email|max:255",
-<<<<<<< HEAD
             "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
-<<<<<<< HEAD
-            "password" => "required|min:8|max:255",
-            "region" => "required|string",
-            "province" => "required|string",
-            "district" => "required|string",
-            "city_or_municipality" => "required|string",
-            "barangay" => "required|string",
-            "subdivision_or_village" => "required|string",
-            "street_number" => "required|string",
-            "street_name" => "required|string",
-            "unit_number" => "required|string|regex:/^[0-9,.'\-\s]+$/",
-            "zip_code" => "required|string|min:4|regex:/^[0-9]+$/",
-=======
             "isAdmin" => "sometimes|boolean",
->>>>>>> 69bff22 (Product Comments)
-=======
             "password" => "required|min:8|max:255",
             "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
->>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
-            
         ]);
 
         if($validator->fails()) {
@@ -134,23 +116,7 @@ class UserController extends Controller
             "email" => "sometimes|unique:users,email,$id|email|max:255",
             "contact_number" => "phone:PH|sometimes|unique:profiles|min:10|max:15",
             "password" => "sometimes|min:8|max:255",
-<<<<<<< HEAD
-<<<<<<< HEAD
-            "region" => "sometimes|string",
-            "province" => "sometimes|string",
-            "district" => "sometimes|string",
-            "city_or_municipality"=> "sometimes|string",
-            "barangay" => "sometimes|string",
-            "sudivision_or_village" => "sometimes|string",
-            "street_number" => "sometimes|string",
-            "street_name" => "sometimes|string",
-            "unit_number" => "sometimes|string",
-            "zip_code" => "sometimes|string",
-=======
             "isAdmin" => "sometimes|boolean",
->>>>>>> 69bff22 (Product Comments)
-=======
->>>>>>> c88078fc465a0c6707a08714657eabbb89d86fbf
 
         ]);
         
