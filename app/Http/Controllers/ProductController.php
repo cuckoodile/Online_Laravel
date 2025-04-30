@@ -22,6 +22,7 @@ class ProductController extends Controller
             return $this->NotFound("Product not found");
         }
 
+        $Product->product_specifications;
         $Product->category;
         $Product->product_comments;
 

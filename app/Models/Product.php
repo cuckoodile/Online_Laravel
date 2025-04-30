@@ -25,4 +25,8 @@ class Product extends Model
     {
         return $this->hasMany(ProductComment::class);
     }
+    public function product_specifications()
+    {
+        return $this->hasMany(ProductSpecification::class);
+    }
 }
