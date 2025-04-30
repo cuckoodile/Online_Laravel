@@ -47,7 +47,6 @@ class DatabaseSeeder extends Seeder
             "name" => "Lipstick",
             "price" => 10,
             "description" => "Sa unang pahid, putok ang bibig",
-            "stock" => 10,
             "category_id" => 2,
         ]);
 
@@ -55,7 +54,6 @@ class DatabaseSeeder extends Seeder
             "name" => "Dog Food",
             "price" => 100,
             "description" => "Para sa aso mong patay gutom",
-            "stock" => 100,
             "category_id" => 3,
         ]);
 
@@ -63,7 +61,6 @@ class DatabaseSeeder extends Seeder
             "name" => "Rice Cooker",
             "price" => 1000,
             "description" => "Para sa mga tamad magluto",
-            "stock" => 100,
             "category_id" => 1,
         ]);
 
@@ -71,7 +68,6 @@ class DatabaseSeeder extends Seeder
             "name" => "Shampoo",
             "price" => 50,
             "description" => "Para sa mga walang ligo",
-            "stock" => 100,
             "category_id" => 2,
         ]);
 
@@ -79,7 +75,6 @@ class DatabaseSeeder extends Seeder
             "name" => "Rexona",
             "price" => 50,
             "description" => "Para sa kili-kili mong nakakamatay",
-            "stock" => 100,
             "category_id" => 2,
         ]);
     }
