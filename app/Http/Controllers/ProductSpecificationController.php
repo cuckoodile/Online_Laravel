@@ -30,7 +30,8 @@ class ProductSpecificationController extends Controller
 
         $validator = validator()->make($inputs, [
             "product_id" => "required|exists:products,id|integer",
-            "name" => "required|string",
+            "details" => "required|array",
+            // "details.*" => "string",
         ]);
 
         if ($validator->fails()) {
@@ -52,8 +53,9 @@ class ProductSpecificationController extends Controller
         }
 
         $validator = validator()->make($inputs, [
-            "product_id" => "required|exists:products,id|integer",
-            "name" => "required|string",
+            "product_id" => "sometimes|exists:products,id|integer",
+            "details" => "sometimes|array",
+            "details.*" => "string",
         ]);
 
         if ($validator->fails()) {

@@ -70,12 +70,12 @@ class ProductCommentController extends Controller
     $counts = [];
 
     for ($rating = 1; $rating <= 5; $rating++) {
-        $count = ProductComment::where('product_id', $productId)
+        $counts[$rating] = ProductComment::where('product_id', $productId)
             ->where('rating', $rating)
             ->count();
 
        
-        $counts[$rating] = $count;
+        // $counts[$rating] = $count;
     }
 
     
@@ -93,9 +93,7 @@ class ProductCommentController extends Controller
         // 'Specific Percentage' => $specificPercentage,
         'rateCount' => $counts
     ], 200);
-}
-    
-    
+}   
 
 //====================================================================
     public function store(Request $request) {

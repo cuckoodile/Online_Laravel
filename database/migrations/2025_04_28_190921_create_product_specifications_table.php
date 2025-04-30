@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('product_specifications', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->string('name');
+            $table->json('details');
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();

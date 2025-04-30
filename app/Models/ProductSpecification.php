@@ -8,7 +8,12 @@ class ProductSpecification extends Model
 {
     protected $fillable = [
         'product_id',
-        'name',
+        'details',
+    ];
+    // Use casts helper that converts a data type to another
+    // In this case, we are converting the details column to an array 
+    protected $casts = [
+        'details' => 'array',
     ];
 
     public function product()
