@@ -41,7 +41,8 @@ class ProductCommentController extends Controller
         return $this->Ok($Comment, "Successfully retrieved comment");
     }
     
-
+//===================================================================
+    // Additional feature by specific function:
     public function reviewsCount(){
         $totalReviews = ProductComment::count();
 
@@ -50,7 +51,53 @@ class ProductCommentController extends Controller
         ], "Successfully retrieved reviews count");
     }
 
+    public function aveRate()
+    {
+        $averageRate = round(ProductComment::avg('rating'), 1);
     
+        return $this->Ok([
+            'avarageRate' => $averageRate,
+        ], "Retrieved Rate");
+    }
+
+    public function rateCount(Request $request)
+    {
+      
+    $productId = $request->input('product_id');
+    // $specificRating = $request->input('rating');
+    // $totalRaters = ProductComment::where('product_id', $productId)->count();
+    
+    $counts = [];
+
+    for ($rating = 1; $rating <= 5; $rating++) {
+        $count = ProductComment::where('product_id', $productId)
+            ->where('rating', $rating)
+            ->count();
+
+       
+        $counts[$rating] = $count;
+    }
+
+    
+    // $specificCount = ProductComment::where('product_id', $productId)
+    //     ->where('rating', $specificRating)
+    //     ->count();
+
+    // $specificPercentage = $totalRaters > 0 ? ($specificCount / $totalRaters) * 100 : 0;
+
+    // Return the results as JSON
+    return response()->json([
+        // 'Product ID' => $productId,
+        // 'Specific Rating' => $specificRating,
+        // 'Specific Count' => $specificCount,
+        // 'Specific Percentage' => $specificPercentage,
+        'rateCount' => $counts
+    ], 200);
+}
+    
+    
+
+//====================================================================
     public function store(Request $request) {
         $inputs = $request->all();
 

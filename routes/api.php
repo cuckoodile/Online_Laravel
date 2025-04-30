@@ -51,6 +51,8 @@ Route::group(["prefix" => "comments"], function () {
     Route::patch("/{id}", [ProductCommentController::class, "update"])->middleware("auth:sanctum");
 });
 Route::get("/reviewsCount", [ProductCommentController::class, "reviewsCount"]);
+Route::get("/aveRate", [ProductCommentController::class, "aveRate"]);
+Route::get("/rateCount", [ProductCommentController::class, "rateCount"]);
 
 
 Route::group(["prefix" => "transactions/type"], function () {
