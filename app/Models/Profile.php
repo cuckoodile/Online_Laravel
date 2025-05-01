@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     protected $fillable = [
+        "profile_image",
         "first_name",
         "last_name",
         "contact_number",
-        "isAdmin",
+        "is_admin",
         "user_id",
         
     ];
