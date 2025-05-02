@@ -39,81 +39,40 @@ class TransactionStatusController extends Controller
      */
     public function store(Request $request)
     {
-        // Define default transaction statuses first
-        $defaultStatuses = ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Refunded'];
-    
-        $inputs = $request->all();
-        $inputs["name"] = $this->SanitizedName($inputs["name"]);
-    
-        // Apply validation with a custom message
-        $validator = validator()->make($inputs, [
-            "name" => [
-                "required",
-                "string",
-                function ($attribute, $value, $fail) use ($defaultStatuses) {
-                    if (!in_array($value, $defaultStatuses)) {
-                        $fail("Invalid Status! Please choose only the available statuses: " . implode(", ", $defaultStatuses));
-                    }
-                }
-            ]
+        $request->validate([
+            "name" => "required|string|exists:transaction_statuses,name"
         ]);
     
-        if ($validator->fails()) {
-            return $this->BadRequest($validator->errors());
-        }
+        // Retrieve the existing status instead of creating a new one
+        $status = TransactionStatus::where('name', $request->name)->first();
     
-        // Ensure default transaction statuses exist in the database
-        foreach ($defaultStatuses as $status) {
-            if (!TransactionStatus::where('name', $status)->exists()) {
-                TransactionStatus::create(['name' => $status]);
-            }
-        }
-    
-        $status = TransactionStatus::create($validator->validated());
-    
-        return $this->Created($status, "Transaction Status has been created");
-    }
-    
+        return $this->Created($status, "Transaction Status has been referenced successfully");
+    }     
 
     /**
      * Update the specified transaction status.
      */
     public function update(Request $request, string $id)
     {
-        // Define default transaction statuses first
-        $defaultStatuses = ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Refunded'];
-    
         $inputs = $request->all();
         $inputs["name"] = $this->SanitizedName($inputs["name"] ?? "");
-    
-        // Find the existing transaction status first
+
+        // Find the existing transaction status
         $status = TransactionStatus::find($id);
-    
-        if (empty($status)) {
-            return $this->NotFound("Transaction Status not found");
-        }
-    
-        // Apply validation with a custom message
+
+        // Validate the name exists in transaction_statuses
         $validator = validator()->make($inputs, [
-            "name" => [
-                "required",
-                "string",
-                function ($attribute, $value, $fail) use ($defaultStatuses) {
-                    if (!in_array($value, $defaultStatuses)) {
-                        $fail("Invalid Status! Please choose only the available statuses: " . implode(", ", $defaultStatuses));
-                    }
-                }
-            ]
+            "name" => "required|string|exists:transaction_statuses,name"
         ]);
-    
+
         if ($validator->fails()) {
             return $this->BadRequest($validator->errors());
         }
-    
+
         // Update the transaction status
         $status->update($validator->validated());
-    
-        return $this->Ok($status, "Transaction Status has been updated");
+
+        return $this->Ok($status, "Transaction Status has been updated successfully.");
     }
     
     /**
@@ -135,36 +94,36 @@ class TransactionStatusController extends Controller
     /**
      * Store or update the transaction with a valid status.
      */
-    public function storeTransaction(Request $request)
-    {
-        // Validate the transaction_status_name field
-        $validator = validator()->make($request->all(), [
-            'transaction_status_name' => 'required|string|in:pending,confirmed,shipped,delivered,cancelled,returned,refunded',
-        ]);
+    // public function storeTransaction(Request $request)
+    // {
+    //     // Validate the transaction_status_name field
+    //     $validator = validator()->make($request->all(), [
+    //         'transaction_status_name' => 'required|string|in:pending,confirmed,shipped,delivered,cancelled,returned,refunded',
+    //     ]);
 
-        if ($validator->fails()) {
-            return $this->BadRequest($validator->errors());
-        }
+    //     if ($validator->fails()) {
+    //         return $this->BadRequest($validator->errors());
+    //     }
 
-        // Get the status name from the validated input
-        $statusName = $request->input('transaction_status_name');
+    //     // Get the status name from the validated input
+    //     $statusName = $request->input('transaction_status_name');
 
-        // Find or create the transaction status
-        $status = TransactionStatus::firstOrCreate([
-            'name' => $statusName
-        ]);
+    //     // Find or create the transaction status
+    //     $status = TransactionStatus::firstOrCreate([
+    //         'name' => $statusName
+    //     ]);
 
-        // Create the transaction
-        $transaction = new Transaction();
-        $transaction->transaction_status_id = $status->id;
+    //     // Create the transaction
+    //     $transaction = new Transaction();
+    //     $transaction->transaction_status_id = $status->id;
 
-        // Additional transaction details (like user_id, payment_method_id, etc.) can be added here
-        // Assuming you have more fields like user_id, products, etc.
-        $transaction->user_id = $request->user()->id;  // Example, assuming you are using user authentication
+    //     // Additional transaction details (like user_id, payment_method_id, etc.) can be added here
+    //     // Assuming you have more fields like user_id, products, etc.
+    //     $transaction->user_id = $request->user()->id;  // Example, assuming you are using user authentication
 
-        $transaction->save();
+    //     $transaction->save();
 
-        // Return success response with the created transaction
-        return $this->Created($transaction, "Transaction has been created with status: {$statusName}");
-    }
+    //     // Return success response with the created transaction
+    //     return $this->Created($transaction, "Transaction has been created with status: {$statusName}");
+    // }
 }

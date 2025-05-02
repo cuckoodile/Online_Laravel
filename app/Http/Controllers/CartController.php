@@ -57,7 +57,7 @@ class CartController extends Controller
         if (!$product) {
             return $this->NotFound("Product not found");
         }
-    
+
         $cart = Cart::where('user_id', $validated['user_id'])
                     ->where('product_id', $validated['product_id'])
                     ->first();

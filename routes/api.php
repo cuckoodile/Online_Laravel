@@ -2,6 +2,7 @@
 // TESTTT -Alex
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductCommentController;
+use App\Http\Controllers\ProductSpecificationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\TransactionStatusController;
 use App\Http\Controllers\TransactionTypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
-use App\Models\ProductComment;
 use Illuminate\Support\Facades\Route;
 
 Route::post("login", [AuthController::class, "login"]);
@@ -51,7 +51,16 @@ Route::group(["prefix" => "comments"], function () {
     Route::patch("/{id}", [ProductCommentController::class, "update"])->middleware("auth:sanctum");
 });
 Route::get("/reviewsCount", [ProductCommentController::class, "reviewsCount"]);
+Route::get("/aveRate", [ProductCommentController::class, "aveRate"]);
+Route::get("/rateCount", [ProductCommentController::class, "rateCount"]);
 
+Route::group(["prefix" => "specifications"], function () {
+    Route::get("/", [ProductSpecificationController::class, "index"]);
+    Route::get("/{id}", [ProductSpecificationController::class, "show"]);
+    Route::post("/", [ProductSpecificationController::class, "store"])->middleware("auth:sanctum");
+    Route::delete("/{id}", [ProductSpecificationController::class, "destroy"])->middleware("auth:sanctum");
+    Route::patch("/{id}", [ProductSpecificationController::class, "update"])->middleware("auth:sanctum");
+});
 
 Route::group(["prefix" => "transactions/type"], function () {
     Route::get("/", [TransactionTypeController::class, "index"]);
