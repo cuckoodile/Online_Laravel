@@ -15,6 +15,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $users = [
+            [
+                "username" => "admin",
+                "email" => "admin@gmail.com",
+                "password" => bcrypt("admin"),
+                "profile" => [
+                    "first_name" => "John",
+                    "last_name" => "Doe",
+                    "contact_number" => "0909090909",
+                ],
+            ],
+            [
+                "username" => "user1",
+                "email" => "user1@gmail.com",
+                "password" => bcrypt("password123"),
+                "profile" => [
+                    "first_name" => "Jane",
+                    "last_name" => "Smith",
+                    "contact_number" => "09123456789",
+                ],
+            ],
+            // Add more users as needed
+        ];
 
         $categories = [
             "Jacket",
@@ -22,26 +45,26 @@ class DatabaseSeeder extends Seeder
             "Shirt",
             "T-Shirt",
             "Sunglasses",
-            
         ];
+        
+
+
+/////////////////////////////////////////////
+
 
         foreach ($categories as $category) {
             Category::create([
                 "name" => $category
             ]);
         }
-
-        $user = User::create([
-            "username" => "admin",
-            "email" => "admin@gmail.com",
-            "password" => "admin",
-        ]);
-
-        $user->profile()->create([
-            "first_name" => "John",
-            "last_name" => "Doe",
-            "contact_number" => "0909090909",
-        ]);
+    
+        foreach ($users as $userData) {
+            $profileData = $userData['profile'];
+            unset($userData['profile']); // Remove profile data from the main array
+    
+            $user = User::create($userData); // Create user
+            $user->profile()->create($profileData); // Create profile using relationship
+        }
 
         Product::create([
             "name" => "Lipstick",
