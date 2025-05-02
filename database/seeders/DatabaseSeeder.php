@@ -75,7 +75,7 @@ class DatabaseSeeder extends Seeder
         foreach ($users as $userData) {
             // Extract profile data separately
             $profileData = $userData['profile']; 
-            unset($userData['profile']); // Remove profile from user array before inserting
+            unset($userData['profile']); 
             
             // Create user in the database
             $user = User::create($userData);
@@ -240,8 +240,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Shipped'],
             ['name' => 'Delivered'],
             ['name' => 'Cancelled'],
-            ['name' => 'Returned'],
-            ['name' => 'Refunded']
+            ['name' => 'Returned']
         ];
         foreach ($statuses as $status) {
             TransactionStatus::firstOrCreate($status);
@@ -251,8 +250,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Inbound'],
             ['name' => 'Outbound'],
             ['name' => 'Void'],
-            ['name' => 'Returned'],
-            ['name' => 'Refunded'],
+            ['name' => 'Returned']
         ];
         foreach ($types as $type) {
             TransactionType::firstOrCreate($type);
