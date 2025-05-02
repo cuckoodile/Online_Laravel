@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ProductTransaction;
+
 class Product extends Model
 {
     protected $fillable = [
@@ -39,9 +39,5 @@ class Product extends Model
     public function product_specifications()
     {
         return $this->hasMany(ProductSpecification::class);
-    }
-    public function product_images()
-    {
-        return $this->hasMany(ProductImage::class);
     }
 }

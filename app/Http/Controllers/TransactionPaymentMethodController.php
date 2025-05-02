@@ -39,82 +39,43 @@ class TransactionPaymentMethodController extends Controller
      */
     public function store(Request $request)
     {
-        // Define default payment methods first
-        $defaultMethods = ['Cash On Delivery', 'Gcash', 'Debit Cards', 'Credit Cards', 'Digital Wallet'];
-
-        $inputs = $request->all();
-        $inputs["name"] = $this->SanitizedName($inputs["name"]);
-
-        // Apply validation with a custom message
-        $validator = validator()->make($inputs, [
-            "name" => [
-                "required",
-                "string",
-                function ($attribute, $value, $fail) use ($defaultMethods) {
-                    if (!in_array($value, $defaultMethods)) {
-                        $fail("Invalid Method! Please choose only the available methods: " . implode(", ", $defaultMethods));
-                    }
-                }
-            ]
+        $request->validate([
+            "name" => "required|string|exists:transaction_payment_methods,name"
         ]);
-
-        if ($validator->fails()) {
-            return $this->BadRequest($validator->errors());
-        }
-
-        // Ensure default payment methods exist in the database
-        foreach ($defaultMethods as $method) {
-            if (!TransactionPaymentMethod::where('name', $method)->exists()) {
-                TransactionPaymentMethod::create(['name' => $method]);
-            }
-        }
-
-        $method = TransactionPaymentMethod::create($validator->validated());
-
-        return $this->Created($method, "Transaction Payment Method has been created");
+    
+        // Retrieve the existing payment method
+        $paymentMethod = TransactionPaymentMethod::where('name', $request->name)->first();
+    
+        return $this->Created($paymentMethod, "Transaction Payment Method has been referenced successfully");
     }
 
 
     /**
-     * Update the specified payment method.
+     * Update the specified transaction payment method.
      */
     public function update(Request $request, string $id)
     {
-        // Define default payment methods first
-        $defaultMethods = ['Cash On Delivery', 'Gcash', 'Debit Cards', 'Credit Cards', 'Digital Wallet'];
-    
         $inputs = $request->all();
         $inputs["name"] = $this->SanitizedName($inputs["name"] ?? "");
-    
-        // Find the payment method before validation
-        $method = TransactionPaymentMethod::find($id);
-    
-        if (empty($method)) {
-            return $this->NotFound("Transaction Payment Method not found");
-        }
-    
-        // Apply validation with a custom message
+
+        // Find the payment method using findOrFail()
+        $method = TransactionPaymentMethod::findOrFail($id);
+
+        // Validate that the name exists in the transaction_payment_methods table
         $validator = validator()->make($inputs, [
-            "name" => [
-                "required",
-                "string",
-                function ($attribute, $value, $fail) use ($defaultMethods) {
-                    if (!in_array($value, $defaultMethods)) {
-                        $fail("Invalid Method! Please choose only the available methods: " . implode(", ", $defaultMethods));
-                    }
-                }
-            ]
+            "name" => "required|string|exists:transaction_payment_methods,name"
         ]);
-    
+
         if ($validator->fails()) {
             return $this->BadRequest($validator->errors());
         }
-    
-        // Update the payment method name
+
+        // Update the payment method
         $method->update($validator->validated());
-    
-        return $this->Ok($method, "Transaction Payment Method has been updated");
+
+        return $this->Ok($method, "Transaction Payment Method has been updated successfully.");
     }
+
     
     /**
      * Remove the specified payment method.
@@ -135,36 +96,36 @@ class TransactionPaymentMethodController extends Controller
     /**
      * Store or update the transaction with a valid payment method.
      */
-    public function storeTransaction(Request $request)
-    {
-        // Validate the payment_method_name field
-        $validator = validator()->make($request->all(), [
-            'payment_method_name' => 'required|string|in:Cash On Delivery,Gcash,Debit or Credit Cards,Digital Wallet',
-        ]);
+    // public function storeTransaction(Request $request)
+    // {
+    //     // Validate the payment_method_name field
+    //     $validator = validator()->make($request->all(), [
+    //         'payment_method_name' => 'required|string|in:Cash On Delivery,Gcash,Debit or Credit Cards,Digital Wallet',
+    //     ]);
 
-        if ($validator->fails()) {
-            return $this->BadRequest($validator->errors());
-        }
+    //     if ($validator->fails()) {
+    //         return $this->BadRequest($validator->errors());
+    //     }
 
-        // Get the payment method name from the validated input
-        $paymentMethodName = $request->input('payment_method_name');
+    //     // Get the payment method name from the validated input
+    //     $paymentMethodName = $request->input('payment_method_name');
 
-        // Find or create the payment method
-        $paymentMethod = TransactionPaymentMethod::firstOrCreate([
-            'name' => $paymentMethodName
-        ]);
+    //     // Find or create the payment method
+    //     $paymentMethod = TransactionPaymentMethod::firstOrCreate([
+    //         'name' => $paymentMethodName
+    //     ]);
 
-        // Create the transaction
-        $transaction = new Transaction();
-        $transaction->payment_method_id = $paymentMethod->id;
+    //     // Create the transaction
+    //     $transaction = new Transaction();
+    //     $transaction->payment_method_id = $paymentMethod->id;
 
-        // Additional transaction details (like user_id, product_id, etc.) can be added here
-        // Assuming you have more fields like user_id, products, etc.
-        $transaction->user_id = $request->user()->id;  // Example, assuming you are using user authentication
+    //     // Additional transaction details (like user_id, product_id, etc.) can be added here
+    //     // Assuming you have more fields like user_id, products, etc.
+    //     $transaction->user_id = $request->user()->id;  // Example, assuming you are using user authentication
 
-        $transaction->save();
+    //     $transaction->save();
 
-        // Return success response with the created transaction
-        return $this->Created($transaction, "Transaction has been created with payment method: {$paymentMethodName}");
-    }
+    //     // Return success response with the created transaction
+    //     return $this->Created($transaction, "Transaction has been created with payment method: {$paymentMethodName}");
+    // }
 }
