@@ -26,30 +26,6 @@ class DatabaseSeeder extends Seeder
     {
         $users = [
             [
-                "username" => "admin",
-                "email" => "admin@gmail.com",
-                "password" => bcrypt("admin"),
-                "profile" => [
-                    "first_name" => "John",
-                    "last_name" => "Doe",
-                    "contact_number" => "0909090909",
-                ],
-            ],
-            [
-                "username" => "user1",
-                "email" => "user1@gmail.com",
-                "password" => bcrypt("password123"),
-                "profile" => [
-                    "first_name" => "Jane",
-                    "last_name" => "Smith",
-                    "contact_number" => "09123456789",
-                ],
-            ],
-            // Add more users as needed
-        ];
-
-        $users = [
-            [
                 "username" => "DEVSIXauth",
                 "email" => "devsix@gmail.com",
                 "password" => bcrypt("admin"),
