@@ -101,6 +101,7 @@ class DatabaseSeeder extends Seeder
             [
                 "user_id" => 2,
                 "address" => [
+                    "name" => "Home",
                     "house_address" => "Blk 7 Lot 8 Molave St, Palmera Woodlands ",
                     "region" => "Calabarzon",
                     "province" => "Rizal",
@@ -112,6 +113,7 @@ class DatabaseSeeder extends Seeder
             [
                 "user_id" => 3,
                 "address" => [
+                    "name" => "Work",
                     "house_address" => "I don't know",
                     "region" => "Calabarzon",
                     "province" => "Rizal",
@@ -123,6 +125,7 @@ class DatabaseSeeder extends Seeder
             [
                 "user_id" => 4,
                 "address" => [
+                    "name" => "School",
                     "house_address" => "I don't know",
                     "region" => "NCR",
                     "province" => "Metro Manila",
