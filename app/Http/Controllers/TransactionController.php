@@ -41,7 +41,6 @@ class TransactionController extends Controller
             "address_id.baranggay" => "required|string",
             "address_id.zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
         ]);
-            
     
         if ($validator->fails()) {
             return $this->BadRequest($validator->errors());
