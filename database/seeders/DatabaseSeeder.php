@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
                 ],
             ],
             
-        // ];
+         ];
         // foreach ($users as $userData) {
         //     // Extract profile data separately
         //     $profileData = $userData['profile']; 
@@ -223,16 +223,7 @@ class DatabaseSeeder extends Seeder
         // }
 
         // Seed default payment methods
-        $paymentMethods = [
-            ['name' => 'Cash On Delivery'],
-            ['name' => 'Gcash'],
-            ['name' => 'Debit Cards'],
-            ['name' => 'Credit Cards'],
-            ['name' => 'E-Wallet']
-        ];
-        foreach ($paymentMethods as $method) {
-            TransactionPaymentMethod::firstOrCreate($method);
-        }
+
         // Seed default transaction status
          $statuses = [
             ['name' => 'Pending'],
