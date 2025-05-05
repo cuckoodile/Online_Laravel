@@ -8,6 +8,7 @@ class Address extends Model
 {
     protected $fillable = [
         'user_id',
+        'name',
         'house_address',
         'region',
         'province',
@@ -20,10 +21,7 @@ class Address extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
+
     public function transactions() 
     {
         return $this->hasMany(Transaction::class);

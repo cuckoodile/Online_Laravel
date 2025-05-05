@@ -31,8 +31,8 @@ class TransactionController extends Controller
         $inputs = $request->all();
     
         $validator = validator()->make($inputs, [
-            "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
             "type_id" => "required|exists:transaction_types,id|integer",
+            "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
             "cart_id" => "required|exists:carts,id|integer",
             "address_id.house_address" => "required|string",
             "address_id.region" => "required|string",
@@ -41,20 +41,12 @@ class TransactionController extends Controller
             "address_id.baranggay" => "required|string",
             "address_id.zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
         ]);
-    
+
         if ($validator->fails()) {
             return $this->BadRequest($validator->errors());
         }
     
         $user = $request->user();
-    
-        // Get all items from the user's cart
-        $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
-        if ($cartItems->isEmpty()) {
-            return $this->BadRequest("Your cart is empty!");
-        }
-    
-        
         $addressData = $inputs['address_id'];
 
         $address = Address::where('user_id', $user->id)->first();

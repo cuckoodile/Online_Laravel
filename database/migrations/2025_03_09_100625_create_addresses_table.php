@@ -14,17 +14,16 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("user_id")->unique();
-            // $table->unsignedBigInteger('transaction_id')->nullable();
+            $table->string("name");
             $table->string("house_address");
             $table->string("region");
             $table->string("province");
             $table->string("city");
             $table->string("baranggay");
             $table->string("zip_code");
+            $table->timestamps();
             
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
-            $table->timestamps();
-            // $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
         });
     }
 

@@ -14,16 +14,13 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("address_id");
-            $table->unsignedBigInteger("cart_id")->nullable();
             $table->unsignedBigInteger("type_id");
             $table->unsignedBigInteger("status_id");
             $table->unsignedBigInteger("payment_method_id");
-            $table->boolean('is_void')->default(false);
             $table->timestamps();
 
             // Foreign keys
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
-            $table->foreign("cart_id")->references("id")->on("carts")->onDelete("cascade");
             $table->foreign("address_id")->references("id")->on("addresses")->onDelete("cascade");
             $table->foreign("type_id")->references("id")->on("transaction_types")->onDelete("cascade");
             $table->foreign("status_id")->references("id")->on("transaction_statuses")->onDelete("cascade");
