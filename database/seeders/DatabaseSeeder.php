@@ -25,51 +25,51 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        // $users = [
-        //     [
-        //         "username" => "DEVSIXauth",
-        //         "email" => "devsix@gmail.com",
-        //         "password" => bcrypt("admin"),
-        //         "profile" => [
-        //             "profile_image" => "https://img.freepik.com/free-vector/environmental-logo-vector-with-ecology-text_53876-112070.jpg",
-        //             "first_name" => "Developer",
-        //             "last_name" => "Six",
-        //             "contact_number" => "09090909090",
-        //         ],
-        //     ],
-        //     [
-        //         "username" => "CatCodes",
-        //         "email" => "alxrdvno09@gmail.com",
-        //         "password" => bcrypt("password123"),
-        //         "profile" => [
-        //             "profile_image" => "	https://i.pinimg.com/736x/50/d4/10/50d410a1d3910c435a1b45fba23d8658.jpg",
-        //             "first_name" => "Alexander Miguel",
-        //             "last_name" => "Divino",
-        //             "contact_number" => "09543549694",
-        //         ],
-        //     ],
-        //     [
-        //         "username" => "Cuckoodile",
-        //         "email" => "cuckoodile@gmail.com",
-        //         "password" => bcrypt("password123"),
-        //         "profile" => [
-        //             "profile_image" => "https://thumbs.dreamstime.com/b/funny-sleeping-crocodile-23816758.jpg",
-        //             "first_name" => "Lhourde Ian",
-        //             "last_name" => "Sube",
-        //             "contact_number" => "09987654321",
-        //         ],
-        //     ],
-        //     [
-        //         "username" => "Fluffy",
-        //         "email" => "fluffluff@gmail.com",
-        //         "password" => bcrypt("password123"),
-        //         "profile" => [
-        //             "profile_image" => "https://i.pinimg.com/736x/41/3a/34/413a349d67a791c998e11c1b9a296f6a.jpg",
-        //             "first_name" => "Zanjoe",
-        //             "last_name" => "Gonzales",
-        //             "contact_number" => "09123456789",
-        //         ],
-        //     ],
+        $users = [
+            [
+                "username" => "DEVSIXauth",
+                "email" => "devsix@gmail.com",
+                "password" => bcrypt("admin"),
+                "profile" => [
+                    "profile_image" => "https://img.freepik.com/free-vector/environmental-logo-vector-with-ecology-text_53876-112070.jpg",
+                    "first_name" => "Developer",
+                    "last_name" => "Six",
+                    "contact_number" => "09090909090",
+                ],
+            ],
+            [
+                "username" => "CatCodes",
+                "email" => "alxrdvno09@gmail.com",
+                "password" => bcrypt("password123"),
+                "profile" => [
+                    "profile_image" => "	https://i.pinimg.com/736x/50/d4/10/50d410a1d3910c435a1b45fba23d8658.jpg",
+                    "first_name" => "Alexander Miguel",
+                    "last_name" => "Divino",
+                    "contact_number" => "09543549694",
+                ],
+            ],
+            [
+                "username" => "Cuckoodile",
+                "email" => "cuckoodile@gmail.com",
+                "password" => bcrypt("password123"),
+                "profile" => [
+                    "profile_image" => "https://thumbs.dreamstime.com/b/funny-sleeping-crocodile-23816758.jpg",
+                    "first_name" => "Lhourde Ian",
+                    "last_name" => "Sube",
+                    "contact_number" => "09987654321",
+                ],
+            ],
+            [
+                "username" => "Fluffy",
+                "email" => "fluffluff@gmail.com",
+                "password" => bcrypt("password123"),
+                "profile" => [
+                    "profile_image" => "https://i.pinimg.com/736x/41/3a/34/413a349d67a791c998e11c1b9a296f6a.jpg",
+                    "first_name" => "Zanjoe",
+                    "last_name" => "Gonzales",
+                    "contact_number" => "09123456789",
+                ],
+            ],
             
         // ];
         // foreach ($users as $userData) {
