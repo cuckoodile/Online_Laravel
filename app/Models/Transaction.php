@@ -22,12 +22,12 @@ class Transaction extends Model
         "status_id",
         "address_id",
         "is_void"
-
     ];
 
     public function user() {
         return $this->belongsTo(User::class);
     }
+
     public function transaction_types() {
         return $this->belongsTo(TransactionType::class,"type_id","id");
     }
@@ -39,9 +39,11 @@ class Transaction extends Model
     public function transaction_payment_methods() {
         return $this->belongsTo(TransactionPaymentMethod::class,"payment_method_id","id");
     }
+
     public function products() {
         return $this->belongsToMany(Product::class)->withPivot('quantity','total_price');
     }
+    
     public function address() {
         return $this->belongsTo(Address::class);
     }
