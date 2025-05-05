@@ -1,0 +1,22 @@
+meta {
+  name: Update Specification
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://127.0.0.1:8000/api/specifications/3?_method=PATCH
+  body: json
+  auth: inherit
+}
+
+params:query {
+  _method: PATCH
+}
+
+body:json {
+  {
+    "product_id": 1,
+    "details": ["Oishi", "Poop", "High Quality"]
+  }
+}

@@ -33,15 +33,15 @@ class TransactionController extends Controller
         $validator = validator()->make($inputs, [
             "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
             "type_id" => "required|exists:transaction_types,id|integer",
-            "status_id" => "required|exists:transaction_statuses,id|integer",
-
-            "house_address"=>"required|string",
-            "region"=>"required|string",
-            "province" => "required|string",
-            "city" => "required|string",
-            "baranggay" => "required|string",
-            "zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
+            "cart_id" => "required|exists:carts,id|integer",
+            "address_id.house_address" => "required|string",
+            "address_id.region" => "required|string",
+            "address_id.province" => "required|string",
+            "address_id.city" => "required|string",
+            "address_id.baranggay" => "required|string",
+            "address_id.zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
         ]);
+            
     
         if ($validator->fails()) {
             return $this->BadRequest($validator->errors());
@@ -56,19 +56,19 @@ class TransactionController extends Controller
         }
     
         
+        $addressData = $inputs['address_id'];
+
         $address = Address::where('user_id', $user->id)->first();
-    
-        // If the user doesn't have an address, create one
+        
         if (!$address) {
             $address = Address::create([
                 'user_id' => $user->id,
-                'house_address' => $inputs['house_address'],
-                'region' => $inputs['region'],
-                'province' => $inputs['province'],
-                'city' => $inputs['city'],
-                'baranggay' => $inputs['baranggay'],
-                'zip_code' => $inputs['zip_code']
-
+                'house_address' => $addressData['house_address'],
+                'region' => $addressData['region'],
+                'province' => $addressData['province'],
+                'city' => $addressData['city'],
+                'baranggay' => $addressData['baranggay'],
+                'zip_code' => $addressData['zip_code']
             ]);
         }
 
@@ -79,25 +79,22 @@ class TransactionController extends Controller
        
 
 
-        $validator = validator()->make($inputs,[
-        //    "user_id" => "required|exists:users,id|integer" ,
-           "payment_method_id" => "required|exists:transaction_payment_methods,id|integer" ,
-           "type_id" => "required|exists:transaction_types,id|integer",
-           "status_id" => "required|exists:transaction_statuses,id|integer",
-
-           "products" => "required|array",
-           "products.*" => "array",
-           "products.*.product_id" => "required|exists:products,id|integer",
-           "products.*.quantity" => "required|integer|min:1",
-    
-            "house_address" => "required|string",
-            "region" => "required|string",
-            "province" => "required|string",
-            "city" => "required|string",
-            "baranggay" => "required|string",
-            "zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
-
+        $validator = validator()->make($inputs, [
+            "user_id" => "required|exists:users,id|integer",
+            "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
+            "type_id" => "required|exists:transaction_types,id|integer",
+            "status_id" => "required|exists:transaction_statuses,id|integer",
+            "cart_id" => "required|exists:carts,id|integer",
+        
+            // Validation for the nested address object
+            "address_id.house_address" => "required|string",
+            "address_id.region" => "required|string",
+            "address_id.province" => "required|string",
+            "address_id.city" => "required|string",
+            "address_id.baranggay" => "required|string",
+            "address_id.zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
         ]);
+    
     
         if ($validator->fails()) {
             return $this->BadRequest($validator->errors());
@@ -113,20 +110,21 @@ class TransactionController extends Controller
     
         
         $address = Address::where('user_id', $user->id)->first();
-    
+
         // If the user doesn't have an address, create one
         if (!$address) {
+            $addressData = $inputs['address_id']; // Extract nested address data
+        
             $address = Address::create([
                 'user_id' => $user->id,
-                'house_address' => $inputs['house_address'],
-                'region' => $inputs['region'],
-                'province' => $inputs['province'],
-                'city' => $inputs['city'],
-                'baranggay' => $inputs['baranggay'],
-                'zip_code' => $inputs['zip_code']
+                'house_address' => $addressData['house_address'],
+                'region' => $addressData['region'],
+                'province' => $addressData['province'],
+                'city' => $addressData['city'],
+                'baranggay' => $addressData['baranggay'],
+                'zip_code' => $addressData['zip_code']
             ]);
         }
-    
        
 
         $transaction = $user->transactions()->create([
@@ -184,62 +182,81 @@ class TransactionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
         $transaction = Transaction::find($id);
-
+    
         if (empty($transaction)) {
             return $this->NotFound("Transaction not found!");
         }
-
+    
         $inputs = $request->all();
-
+    
         $validator = validator()->make($inputs, [
-           "payment_method_id" => "exists:transaction_payment_methods,id|integer",
-           "type_id" => "exists:transaction_types,id|integer",
-           "status_id" => "exists:transaction_statuses,id|integer",
+            "payment_method_id" => "exists:transaction_payment_methods,id|integer",
+            "type_id" => "exists:transaction_types,id|integer",
+            "status_id" => "exists:transaction_statuses,id|integer",
+            "cart_id" => "exists:carts,id|integer",
+            "user_id" => "exists:users,id|integer",
 
-           "contact_number" => "phone:PH|sometimes|unique:profiles|min:11|max:11",
-           "house_address"=>"sometimes|string",
-           "region"=>"sometimes|string",
-           "province" => "sometimes|string",
-           "city" => "sometimes|string",
-           "baranggay" => "sometimes|string",
-           "zip_code" => "sometimes|string|min:4|regex:/^[0-9]+$/",
-          
-            // PIVOT TABLE: This part is only for product validation kaya di ko na nilagay sa store function
-           "products" => "array",
-           "products.*" => "array",
-           "products.*.product_id" => "exists:products,id|integer",
-           "products.*.quantity" => "integer|min:1"
-
+            // Nested address validation
+            "address_id.house_address" => "sometimes|string",
+            "address_id.region" => "sometimes|string",
+            "address_id.province" => "sometimes|string",
+            "address_id.city" => "sometimes|string",
+            "address_id.baranggay" => "sometimes|string",
+            "address_id.zip_code" => "sometimes|string|min:4|regex:/^[0-9]+$/",
+    
+            // Product validation (pivot table)
+            "products" => "array",
+            "products.*" => "array",
+            "products.*.product_id" => "exists:products,id|integer",
+            "products.*.quantity" => "integer|min:1"
+    
         ], [
-            "contact_number.phone" => "The :attribute must be a valid phone number",
+            "contact_number.phone" => "The :attribute must be a valid phone number"
         ]);
-
+    
         if ($validator->fails()) {
-            return $this->BadRequest($validator);
+            return $this->BadRequest($validator->errors());
         }
-
+    
+        // Update transaction fields
         $transaction->update($validator->validated());
-
+    
+        if (isset($inputs['address_id'])) {
+            $address = Address::find($inputs['address_id']);
+        
+            if ($address && isset($inputs['address'])) {
+                $address->update(array_filter([
+                    'house_address' => $inputs['address']['house_address'] ?? $address->house_address,
+                    'region' => $inputs['address']['region'] ?? $address->region,
+                    'province' => $inputs['address']['province'] ?? $address->province,
+                    'city' => $inputs['address']['city'] ?? $address->city,
+                    'baranggay' => $inputs['address']['baranggay'] ?? $address->baranggay,
+                    'zip_code' => $inputs['address']['zip_code'] ?? $address->zip_code
+                ]));
+            }
+        
+            $transaction->update(['address_id' => $address->id]);  
+        }
+    
+        // Update products if provided
         if (isset($inputs['products'])) {
             $items = [];
-            $products = Product::all();
-
             foreach ($inputs['products'] as $product) {
-                $items[$product['product_id']] = [
-                    "total_price" => $products->where('id', $product['product_id'])->first()->total_price,
-                    "quantity" => $product['quantity']
-                ];
+                $productModel = Product::find($product['product_id']);
+    
+                if ($productModel) {
+                    $items[$product['product_id']] = [
+                        "total_price" => $productModel->price * $product['quantity'],
+                        "quantity" => $product['quantity']
+                    ];
+                }
             }
-
+    
             $transaction->products()->sync($items);
         }
-
-        $transaction->products;
-
-        return $this->Ok($transaction, "Transaction has been updated!");
-
+    
+        return $this->Ok($transaction->load('products', 'address'), "Transaction has been updated!");
     }
 
     /**

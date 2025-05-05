@@ -1,0 +1,17 @@
+meta {
+  name: Create Category
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:8000/api/categories
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Japanese Section"
+  }
+}

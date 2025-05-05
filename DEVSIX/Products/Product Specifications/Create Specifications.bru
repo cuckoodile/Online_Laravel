@@ -1,0 +1,18 @@
+meta {
+  name: Create Specifications
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:8000/api/specifications
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "product_id": 1,
+    "details": ["Oishi", "Natural", "High Quality"]
+  }
+}

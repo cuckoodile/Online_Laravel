@@ -1,0 +1,23 @@
+meta {
+  name: REGISTER
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/api/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "profile_image": "https://www.shutterstock.com/shutterstock/photos/2503158851/display_1500/stock-photo-surprised-cat-meme-cat-face-2503158851.jpg",
+    "first_name": "Alexander Miguel",
+    "last_name": "Divino",
+    "username": "ALXER",
+    "email": "alxer@gmail.com",
+    "contact_number": "+639543549694",
+    "password": "password123"
+  }
+}
