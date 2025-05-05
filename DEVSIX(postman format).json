@@ -1,0 +1,1661 @@
+{
+  "info": {
+    "name": "DEVSIX",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "LOGIN",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/login",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1:8000"
+          ],
+          "path": [
+            "api",
+            "login"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"ALXER\",\n  \"password\": \"password123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "LOGOUT",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://127.0.0.1:8000/logout",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1:8000"
+          ],
+          "path": [
+            "logout"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "REGISTER",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/register",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1:8000"
+          ],
+          "path": [
+            "api",
+            "register"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"profile_image\": \"https://www.shutterstock.com/shutterstock/photos/2503158851/display_1500/stock-photo-surprised-cat-meme-cat-face-2503158851.jpg\",\n  \"first_name\": \"Alexander Miguel\",\n  \"last_name\": \"Divino\",\n  \"username\": \"ALXER\",\n  \"email\": \"alxer@gmail.com\",\n  \"contact_number\": \"+639543549694\",\n  \"password\": \"password123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "User Delete",
+      "event": [],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/users/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1:8000"
+          ],
+          "path": [
+            "api",
+            "users",
+            "1"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "User Index",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/users",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1:8000"
+          ],
+          "path": [
+            "api",
+            "users"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "User Show",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/users/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1:8000"
+          ],
+          "path": [
+            "api",
+            "users",
+            "1"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "User Update",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/users/1?_method=PATCH",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1:8000"
+          ],
+          "path": [
+            "api",
+            "users",
+            "1"
+          ],
+          "query": [
+            {
+              "key": "_method",
+              "value": "PATCH"
+            }
+          ],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"profile_image\": \"https://i.pinimg.com/736x/ba/92/7f/ba927ff34cd961ce2c184d47e8ead9f6.jpg\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Create Cart",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/carts",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "carts"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 1,\n  \"product_id\": 1,\n  \"quantity\": 10\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/carts/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "1"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Retrieve Cart",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/carts",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "carts"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/carts/1?_method=PATCH",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "_method",
+                  "value": "PATCH"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": \"4\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Create Category",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/categories",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Japanese Section\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/categories/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "1"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Retrieve Categories",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/categories",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/categories/1?_method=PATCH",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "_method",
+                  "value": "PATCH"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cuisine\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/products/",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "products",
+                ""
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 1,\n  \"name\": \"Cat\",\n  \"product_image\":[\"https://www.shutterstock.com/shutterstock/photos/2503158851/display_1500/stock-photo-surprised-cat-meme-cat-face-2503158851.jpg\"],\n  \"description\": \"Japanese Food\",\n  \"price\": 30,\n  \"stock\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/products/2",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "2"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Retrieve Product",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/products/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "1"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/products/2?_method=PATCH",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "2"
+              ],
+              "query": [
+                {
+                  "key": "_method",
+                  "value": "PATCH"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_image\": [\"https://example.com/image.jpg\", \"/images/uploaded_file1.jpg\"]\n}\n\n\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Product Comment",
+          "item": [
+            {
+              "name": "Create Comment",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/comments",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "comments"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": 1,\n  \"user_id\": 1,\n  \"comment\": \"Great just minimal adjustments\",\n  \"rating\": 5,\n  \"comment_id\":\"\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Delete Comment",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/comments/1",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "comments",
+                    "1"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Retrieve Average Rate",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/aveRate",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "aveRate"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Retrieve Comments",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/comments",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "comments"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Retrieve Specific Rate",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/rateCount",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "rateCount"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Retrieve Total Reviews",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/reviewsCount",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "reviewsCount"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Update Comment",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/comments/1?_method=PATCH",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "comments",
+                    "1"
+                  ],
+                  "query": [
+                    {
+                      "key": "_method",
+                      "value": "PATCH"
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": 1,\n  \"user_id\": 1,\n  \"comment\": \"Very good quality\",\n  \"rating\": 5,\n  \"comment_id\":\"\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Product Specifications",
+          "item": [
+            {
+              "name": "Create Specifications",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/specifications",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "specifications"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": 1,\n  \"details\": [\"Oishi\", \"Natural\", \"High Quality\"]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Delete Specification",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/specifications/3",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "specifications",
+                    "3"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Retrieve Specification",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/specifications",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "specifications"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Update Specification",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://127.0.0.1:8000/api/specifications/3?_method=PATCH",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1:8000"
+                  ],
+                  "path": [
+                    "api",
+                    "specifications",
+                    "3"
+                  ],
+                  "query": [
+                    {
+                      "key": "_method",
+                      "value": "PATCH"
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_id\": 1,\n  \"details\": [\"Oishi\", \"Poop\", \"High Quality\"]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Transaction Payment Method",
+      "item": [
+        {
+          "name": "Create Transaction Payment",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/payment",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "payment"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cash On Delivery\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Transaction Payment",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/payment/6",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "payment",
+                "6"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Retrieve Transaction Payment",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/payment",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "payment"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Update Transactions Payment",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/payment/1?_method=PATCH",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "payment",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "_method",
+                  "value": "PATCH"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Credit Card\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Status",
+      "item": [
+        {
+          "name": "Create Transaction Payment",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/status",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "status"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pending\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Transaction Payment",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/status/8",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "status",
+                "8"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Retrieve Transaction Payment",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/status",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "status"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Update Transactions Payment",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/status/1?_method=PATCH",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "status",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "_method",
+                  "value": "PATCH"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Type",
+      "item": [
+        {
+          "name": "Create Transaction Type",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/type",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "type"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Inbound\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Transaction Type",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/type/6",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "type",
+                "6"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Retrieve Transaction Type",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/type",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "type"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Update Transactions Type",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/type/1?_method=PATCH",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "type",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "_method",
+                  "value": "PATCH"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Create Transaction",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_method_id\": 1,\n  \"type_id\": 1,\n  \"status_id\": 1,\n  \"cart_id\": 1,\n  \"user_id\": 1,\n  \"address_id\": {\n    \"house_address\": \"Blk 7 Lot 8 Molave St. Palmera Woodlands \",\n    \"region\": \"CALABARZON\",\n    \"province\": \"Rizal\",\n    \"city\": \"Antipolo City\",\n    \"baranggay\": \"Cupang\",\n    \"zip_code\": \"1870\"\n    \n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Transactions",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/1",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "1"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Retrieve Transaction",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Update Transactions",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/transactions/1?_method=PATCH",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1:8000"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "_method",
+                  "value": "PATCH"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_method_id\": 1,\n  \"type_id\": 1,\n  \"status_id\": 1,\n  \"cart_id\": 2,\n  \"user_id\": 1,\n  \"address_id\": 1,\n  \"address\": {\n    \"house_address\": \"Blk 7 Lot 8 Molave St. Palmera Woodlands \",\n    \"region\": \"CALABARZON\",\n    \"province\": \"Rizal\",\n    \"city\": \"Antipolo City\",\n    \"baranggay\": \"Cupang\",\n    \"zip_code\": \"1870\"\n    \n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": []
+}
