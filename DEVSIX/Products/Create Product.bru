@@ -1,0 +1,22 @@
+meta {
+  name: Create Product
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:8000/api/products/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "category_id": 1,
+    "name": "Cat",
+    "product_image":["https://www.shutterstock.com/shutterstock/photos/2503158851/display_1500/stock-photo-surprised-cat-meme-cat-face-2503158851.jpg"],
+    "description": "Japanese Food",
+    "price": 30,
+    "stock": 50
+  }
+}
