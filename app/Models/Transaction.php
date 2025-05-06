@@ -41,7 +41,9 @@ class Transaction extends Model
         return $this->belongsTo(TransactionType::class,"type_id","id");
     }
 
-    public function products() {
-        return $this->belongsToMany(Product::class)->withPivot('quantity','sub_total');
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_transaction')
+                    ->withPivot('quantity', 'price', 'sub_total');
     }
 }

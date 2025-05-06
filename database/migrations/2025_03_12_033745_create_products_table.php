@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('admin_id')->nullable();
             $table->string('description')->nullable();
             $table->decimal('price', 12, 2);
-            $table->integer('stock')->default(0);
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories');
@@ -31,6 +30,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('stock');
+        });
         Schema::dropIfExists('products');
     }
 };

@@ -52,19 +52,39 @@ class TransactionController extends Controller
             return $this->BadRequest($validator);
         }
 
+        $products = Product::whereIn('id', collect($inputs['products'])->pluck('product_id'))->get();
+
+        foreach ($inputs['products'] as $product) {
+            $productModel = $products->where('id', $product['product_id'])->first();
+
+            if ($inputs['type_id'] == 2) {
+                $inboundStock = $productModel->transactions()
+                    ->where('type_id', 1)
+                    ->sum('product_transaction.quantity');
+
+                $outboundStock = $productModel->transactions()
+                    ->where('type_id', 2)
+                    ->sum('product_transaction.quantity');
+
+                $availableStock = $inboundStock - $outboundStock;
+
+                if (!$productModel || $product['quantity'] > $availableStock) {
+                    return $this->BadRequest("The quantity for product ID {$product['product_id']} exceeds the available stock. Available: {$availableStock}, Attempt: {$product['quantity']}");
+                }
+            }
+        }
+
         $transactions =  $request->user()->transactions()->create($validator->validated());
 
         $items = [];
-        $products = Product::all();
-        
-        foreach($inputs['products'] as $product){
-            $product_price = $products->where('id',$product['product_id'])->first()->price;
+        foreach ($inputs['products'] as $product) {
+            $productModel = $products->where('id', $product['product_id'])->first();
             $product_quantity = $product['quantity'];
 
             $items[$product['product_id']] = [
-                "price" => $product_price,
+                "price" => $productModel->price,
                 "quantity" => $product_quantity,
-                "sub_total" => $product_quantity * $product_price
+                "sub_total" => $product_quantity * $productModel->price,
             ];
         }
 

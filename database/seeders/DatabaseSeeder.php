@@ -165,7 +165,6 @@ class DatabaseSeeder extends Seeder
                 'admin_id' => 1,
                 'product_image' => json_encode(['image1.jpg', 'image2.jpg']),
                 'description' => 'A high-end smartphone with great features.',
-                'stock' => 50,
                 'category_id' => 1,
             ],
             [
@@ -174,7 +173,6 @@ class DatabaseSeeder extends Seeder
                 'admin_id' => 1,
                 'product_image' => json_encode(['novel.jpg']),
                 'description' => 'A bestselling novel.',
-                'stock' => 100,
                 'category_id' => 2,
             ],
         ];

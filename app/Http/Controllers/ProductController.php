@@ -17,6 +17,7 @@ class ProductController extends Controller
             $product->product_image;
             $product->category;
             $product->product_comments;
+            $product->stock = $product->stock; // Include stock as a temporary attribute
         }
         
         return $this->Ok($products);

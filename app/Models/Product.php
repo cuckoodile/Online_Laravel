@@ -12,7 +12,6 @@ class Product extends Model
         "admin_id",
         "product_image",
         "description",
-        "stock",
         "category_id"
     ];
 
@@ -30,7 +29,8 @@ class Product extends Model
     }
     public function transactions()
     {
-        return $this->hasMany(Transaction::class)->withPivot('quantity','total_price');
+        return $this->belongsToMany(Transaction::class, 'product_transaction')
+                    ->withPivot('quantity', 'price', 'sub_total');
     }
     public function product_comments()
     {
@@ -39,5 +39,18 @@ class Product extends Model
     public function product_specifications()
     {
         return $this->hasMany(ProductSpecification::class);
+    }
+
+    public function getStockAttribute()
+    {
+        $inboundStock = $this->transactions()
+            ->where('type_id', 1)
+            ->sum('product_transaction.quantity');
+
+        $outboundStock = $this->transactions()
+            ->where('type_id', 2)
+            ->sum('product_transaction.quantity');
+
+        return $inboundStock - $outboundStock;
     }
 }
