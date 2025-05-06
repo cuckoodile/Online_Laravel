@@ -16,7 +16,8 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::with(['transaction_types', 'transaction_statuses', 'transaction_payment_methods', 'products', 'address'])->get();
+        $transactions = Transaction::with(['products', 'transaction_types', 'transaction_statuses', 'transaction_payment_methods', 'address'])->get();
+
         if ($transactions->isEmpty()) {
             return $this->NotFound("No transactions found!");
         }
@@ -29,121 +30,92 @@ class TransactionController extends Controller
      */
     public function store(Request $request) {
         $inputs = $request->all();
-    
-        $validator = validator()->make($inputs, [
-            "type_id" => "required|exists:transaction_types,id|integer",
-            "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
-            "cart_id" => "required|exists:carts,id|integer",
-            "address_id.house_address" => "required|string",
-            "address_id.region" => "required|string",
-            "address_id.province" => "required|string",
-            "address_id.city" => "required|string",
-            "address_id.baranggay" => "required|string",
-            "address_id.zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
+
+        $validator = validator()->make($inputs,[
+        //    "user_id" => "required|exists:users,id|integer" ,
+           "payment_method_id" => "required|exists:transaction_payment_methods,id|integer" ,
+           "type_id" => "required|exists:transaction_types,id|integer",
+           "status_id" => "required|exists:transaction_statuses,id|integer",
+
+           "address_id" => "required|exists:addresses,id|integer",
+
+           "products" => "required|array",
+           "products.*" => "array",
+           "products.*.product_id" => "required|exists:products,id|integer",
+           "products.*.quantity" => "required|integer|min:1"
         ]);
 
-        if ($validator->fails()) {
-            return $this->BadRequest($validator->errors());
-        }
-    
-        $user = $request->user();
-        $addressData = $inputs['address_id'];
-
-        $address = Address::where('user_id', $user->id)->first();
-        
-        if (!$address) {
-            $address = Address::create([
-                'user_id' => $user->id,
-                'house_address' => $addressData['house_address'],
-                'region' => $addressData['region'],
-                'province' => $addressData['province'],
-                'city' => $addressData['city'],
-                'baranggay' => $addressData['baranggay'],
-                'zip_code' => $addressData['zip_code']
-            ]);
+        if($validator->fails()){
+            return $this->BadRequest($validator);
         }
 
-    // 'region' => $inputs['region'],
-    // 'district' => $inputs['district'],
-    // 'subdivision_village' => $inputs['subdivision_village'] ?? null,
-    // 'street' => $inputs['street'] ?? null,
-       
+        // Log::info($request->user());
+
+        $transactions =  $request->user()->transactions()->create($validator->validated());
+
+        $items = [];
+        $products = Product::all();
 
 
-        $validator = validator()->make($inputs, [
-            "user_id" => "required|exists:users,id|integer",
-            "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
-            "type_id" => "required|exists:transaction_types,id|integer",
-            "status_id" => "required|exists:transaction_statuses,id|integer",
-            "cart_id" => "required|exists:carts,id|integer",
-        
-            // Validation for the nested address object
-            "address_id.house_address" => "required|string",
-            "address_id.region" => "required|string",
-            "address_id.province" => "required|string",
-            "address_id.city" => "required|string",
-            "address_id.baranggay" => "required|string",
-            "address_id.zip_code" => "required|string|min:4|regex:/^[0-9]+$/"
-        ]);
-    
-    
-        if ($validator->fails()) {
-            return $this->BadRequest($validator->errors());
-        }
-    
-        $user = $request->user();
-    
-        // Get all items from the user's cart
-        $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
-        if ($cartItems->isEmpty()) {
-            return $this->BadRequest("Your cart is empty!");
-        }
-    
-        
-        $address = Address::where('user_id', $user->id)->first();
-
-        // If the user doesn't have an address, create one
-        if (!$address) {
-            $addressData = $inputs['address_id']; // Extract nested address data
-        
-            $address = Address::create([
-                'user_id' => $user->id,
-                'house_address' => $addressData['house_address'],
-                'region' => $addressData['region'],
-                'province' => $addressData['province'],
-                'city' => $addressData['city'],
-                'baranggay' => $addressData['baranggay'],
-                'zip_code' => $addressData['zip_code']
-            ]);
-        }
-       
-
-        $transaction = $user->transactions()->create([
-            'address_id' => $address->id,
-            'payment_method_id' => $inputs['payment_method_id'],
-            'type_id' => $inputs['type_id'],
-            'status_id' => $inputs['status_id']
-        ]);
-    
-        // Prepare pivot data for products
-        $pivotData = [];
-        foreach ($cartItems as $item) {
-            $pivotData[$item->product_id] = [
-                'quantity' => $item->quantity,
-                'total_price' => $item->product->price * $item->quantity
+        foreach($inputs['products'] as $product){
+            $items[$product['product_id']] = [
+                "price" => $products->where('id',$product['product_id'])->first()->price,
+                "quantity" => $product['quantity']
             ];
         }
-    
-        
-        $transaction->products()->sync($pivotData);
-    
-        // pang-clear lang ito after mo mag-checkout
-        Cart::where('user_id', $user->id)->delete();
-    
-        return $this->Created(
-            $transaction->load('products', 'transaction_payment_methods', 'transaction_types', 'transaction_statuses', 'address', 'cart'),
-            "Transaction has been created!"
-        );
+
+        $transactions->products()->sync($items);
+
+        $transactions->products;
+
+        return $this->Created($transactions, "Transaction has been created!");
+
+
+
+
+
+        // $inputs = $request->all();
+        // $user = auth()->user()->id;
+        // // $products = $inputs['products'];
+
+        // // return $products;
+
+        // $validator = validator()->make($inputs, [
+        //     "type_id" => "required|exists:transaction_types,id|integer",
+        //     "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
+        //     "status_id" => "required|exists:transaction_statuses,id|integer",
+            
+        //     "products" => "required|array",
+        //     "products.*" => "required|array",
+        //     "products.*.product_id" => "required|exists:products,id|integer",
+        //     "products.*.quantity" => "required|integer|min:1",
+
+        //     "address_id" => "required|exists:addresses,id|integer",
+        //     "username" => $user
+        // ]);
+
+        // if ($validator->fails()) {
+        //     return $this->BadRequest($validator->errors());
+        // }
+
+        // $transactions = $request->user()->create($validator->validated());
+
+        // // Prepare pivot data for products
+        // $items = [];
+        // $products = Product::all();
+
+
+        // foreach($inputs['products'] as $product){
+        //     $items[$product['product_id']] = [
+        //         "price" => $products->where('id',$product['product_id'])->first()->price,
+        //         "quantity" => $product['quantity']
+        //     ];
+        // }
+
+        // $transactions->products()->sync($items);
+        // $transactions->products;
+
+        // return $this->Created($transactions, "Transaction has been created!");
     }
     
 

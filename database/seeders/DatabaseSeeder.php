@@ -99,7 +99,7 @@ class DatabaseSeeder extends Seeder
 
         $addresses = [
             [
-                "user_id" => 2,
+                "user_id" => 1,
                 "address" => [
                     "name" => "Home",
                     "house_address" => "Blk 7 Lot 8 Molave St, Palmera Woodlands ",
@@ -273,35 +273,16 @@ class DatabaseSeeder extends Seeder
         // Seed transactions
         // $transactions = [
         //     [
-        //         'user_id' => 2,
-        //         'cart_id' => 1,
+        //         'user_id' => 1,
+        //         'address_id' => 1,
         //         'payment_method_id' => 1,
         //         'type_id' => 1,
         //         'status_id' => 1,
-        //         'address_id' => 1,
-        //         'is_void' => false,
-        //     ],
-        //     [
-        //         'user_id' => 3,
-        //         'cart_id' => 2,
-        //         'payment_method_id' => 2,
-        //         'type_id' => 2,
-        //         'status_id' => 2,
-        //         'address_id' => 2,
-        //         'is_void' => false,
+        //         'products' => "hehe"
         //     ],
         // ];
         // foreach ($transactions as $transactionData) {
-            
-        //     $cart = Cart::where('user_id', $transactionData['user_id'])->first();
-            
-        //     if ($cart) {
-        //         $transactionData['cart_id'] = $cart->id; 
-        //         Transaction::create($transactionData); 
-        //     } else {
-                
-        //         Log::warning("No cart found for user_id: " . $transactionData['user_id']);
-        //     }
+        //     Transaction::create($transactionData); 
         // }
         
     }

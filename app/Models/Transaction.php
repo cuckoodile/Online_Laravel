@@ -22,7 +22,6 @@ class Transaction extends Model
         "status_id",
         "payment_method_id",
         "type_id",
-        "is_void"
     ];
 
     public function user() {
