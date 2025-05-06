@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('transaction_id');
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
-            $table->decimal('total_price', 10, 2); // Add total_price column
+            $table->decimal('sub_total', 10, 2);
 
             $table->primary(['product_id', 'transaction_id']);
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_transaction'); // Fix table name
+        Schema::dropIfExists('product_transaction');
     }
 };

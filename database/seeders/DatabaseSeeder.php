@@ -147,7 +147,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // // Seed categories
+        // Seed categories
         $categories = [
             ['name' => 'Electronics'],
             ['name' => 'Books'],
@@ -157,7 +157,7 @@ class DatabaseSeeder extends Seeder
             Category::create($category);
         }
 
-        // // Seed products
+        // Seed products
         $products = [
             [
                 'name' => 'Smartphone',
@@ -182,7 +182,7 @@ class DatabaseSeeder extends Seeder
             Product::create($product);
         }
 
-        // // Seed product specifications
+        // Seed product specifications
         $productSpecifications = [
             [
                 'product_id' => 1,
@@ -197,7 +197,7 @@ class DatabaseSeeder extends Seeder
             ProductSpecification::create($specification);
         }
 
-        // // Seed product comments
+        // Seed product comments
         $productComments = [
             [
                 'product_id' => 1,
@@ -218,7 +218,7 @@ class DatabaseSeeder extends Seeder
             ProductComment::create($comment);
         }
 
-        // // Seed carts
+        // Seed carts
         $carts = [
             [
                 'user_id' => 2,
@@ -259,6 +259,7 @@ class DatabaseSeeder extends Seeder
         foreach ($statuses as $status) {
             TransactionStatus::firstOrCreate($status);
         }
+        
         // Seed default transaction types
         $types = [
             ['name' => 'Inbound'],

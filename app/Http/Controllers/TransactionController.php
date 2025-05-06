@@ -49,18 +49,19 @@ class TransactionController extends Controller
             return $this->BadRequest($validator);
         }
 
-        // Log::info($request->user());
-
         $transactions =  $request->user()->transactions()->create($validator->validated());
 
         $items = [];
         $products = Product::all();
-
-
+        
         foreach($inputs['products'] as $product){
+            $product_price = $products->where('id',$product['product_id'])->first()->price;
+            $product_quantity = $product['quantity'];
+
             $items[$product['product_id']] = [
-                "price" => $products->where('id',$product['product_id'])->first()->price,
-                "quantity" => $product['quantity']
+                "price" => $product_price,
+                "quantity" => $product_quantity,
+                "sub_total" => $product_quantity * $product_price
             ];
         }
 
@@ -69,53 +70,6 @@ class TransactionController extends Controller
         $transactions->products;
 
         return $this->Created($transactions, "Transaction has been created!");
-
-
-
-
-
-        // $inputs = $request->all();
-        // $user = auth()->user()->id;
-        // // $products = $inputs['products'];
-
-        // // return $products;
-
-        // $validator = validator()->make($inputs, [
-        //     "type_id" => "required|exists:transaction_types,id|integer",
-        //     "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
-        //     "status_id" => "required|exists:transaction_statuses,id|integer",
-            
-        //     "products" => "required|array",
-        //     "products.*" => "required|array",
-        //     "products.*.product_id" => "required|exists:products,id|integer",
-        //     "products.*.quantity" => "required|integer|min:1",
-
-        //     "address_id" => "required|exists:addresses,id|integer",
-        //     "username" => $user
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return $this->BadRequest($validator->errors());
-        // }
-
-        // $transactions = $request->user()->create($validator->validated());
-
-        // // Prepare pivot data for products
-        // $items = [];
-        // $products = Product::all();
-
-
-        // foreach($inputs['products'] as $product){
-        //     $items[$product['product_id']] = [
-        //         "price" => $products->where('id',$product['product_id'])->first()->price,
-        //         "quantity" => $product['quantity']
-        //     ];
-        // }
-
-        // $transactions->products()->sync($items);
-        // $transactions->products;
-
-        // return $this->Created($transactions, "Transaction has been created!");
     }
     
 
