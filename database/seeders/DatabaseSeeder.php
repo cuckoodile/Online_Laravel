@@ -272,19 +272,42 @@ class DatabaseSeeder extends Seeder
         }
 
         // Seed transactions
-        // $transactions = [
-        //     [
-        //         'user_id' => 1,
-        //         'address_id' => 1,
-        //         'payment_method_id' => 1,
-        //         'type_id' => 1,
-        //         'status_id' => 1,
-        //         'products' => "hehe"
-        //     ],
-        // ];
-        // foreach ($transactions as $transactionData) {
-        //     Transaction::create($transactionData); 
-        // }
+        $transactions = [
+            [
+                'user_id' => 1,
+                'address_id' => 1,
+                'payment_method_id' => 1,
+                'type_id' => 1,
+                'status_id' => 1,
+                'products' => [
+                    ['product_id' => 1, 'quantity' => 2],
+                    ['product_id' => 2, 'quantity' => 1],
+                ],
+            ],
+        ];
+
+        foreach ($transactions as $transactionData) {
+            // Extract products data
+            $products = $transactionData['products'];
+            unset($transactionData['products']);
+
+            // Create the transaction
+            $transaction = Transaction::create($transactionData);
+
+            // Insert products into the pivot table
+            $items = [];
+            foreach ($products as $product) {
+                $productModel = Product::find($product['product_id']);
+                if ($productModel) {
+                    $items[$product['product_id']] = [
+                        'quantity' => $product['quantity'],
+                        'price' => $productModel->price,
+                        'sub_total' => $productModel->price * $product['quantity'],
+                    ];
+                }
+            }
+            $transaction->products()->sync($items);
+        }
         
     }
 }

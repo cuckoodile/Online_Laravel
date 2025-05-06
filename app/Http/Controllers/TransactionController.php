@@ -22,6 +22,10 @@ class TransactionController extends Controller
             return $this->NotFound("No transactions found!");
         }
 
+        $transactions->each(function ($transaction) {
+            $transaction->total = $transaction->products->sum('pivot.sub_total');
+        });
+
         return $this->Ok($transactions);
     }
 
@@ -32,7 +36,6 @@ class TransactionController extends Controller
         $inputs = $request->all();
 
         $validator = validator()->make($inputs,[
-        //    "user_id" => "required|exists:users,id|integer" ,
            "payment_method_id" => "required|exists:transaction_payment_methods,id|integer" ,
            "type_id" => "required|exists:transaction_types,id|integer",
            "status_id" => "required|exists:transaction_statuses,id|integer",
@@ -42,7 +45,7 @@ class TransactionController extends Controller
            "products" => "required|array",
            "products.*" => "array",
            "products.*.product_id" => "required|exists:products,id|integer",
-           "products.*.quantity" => "required|integer|min:1"
+           "products.*.quantity" => "required|integer|min:1",
         ]);
 
         if($validator->fails()){
