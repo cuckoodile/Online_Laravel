@@ -12,10 +12,12 @@ use App\Models\Transaction;
 use App\Models\TransactionPaymentMethod;
 use App\Models\TransactionType;
 use App\Models\TransactionStatus;
-// use App\Models\TransactionAddress;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log; //for debugging only
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Seeder;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -84,18 +86,39 @@ class DatabaseSeeder extends Seeder
             ],
             
          ];
+        
+        // Create roles and permissions
+        $roleAdmin = Role::firstOrCreate(["name" => "admin", "guard_name" => "api"]);
+        $rolePermissionAdmin = Permission::firstOrCreate(["name" => "Manage All Works", "guard_name" => "api"]);
+        $roleAdmin->givePermissionTo($rolePermissionAdmin);
+
+        $roleUser = Role::firstOrCreate(["name" => "user", "guard_name" => "api"]);
+        $rolePermissionUser = Permission::firstOrCreate(["name" => "Manage Own Post", "guard_name" => "api"]);
+        $roleUser->givePermissionTo($rolePermissionUser);
+
+        // if ($roleName === 'admin') {
+        //     $permission = Permission::create(['name' => 'Manage All Works', 'guard_name' => 'api']);
+        //     $role->givePermissionTo($permission);
+        // } else {
+        //     $permission = Permission::create(['name' => 'Manage Own Post', 'guard_name' => 'api']);
+        //     $role->givePermissionTo($permission);
+        // }
+
         foreach ($users as $userData) {
             // Extract profile data separately
-            $profileData = $userData['profile']; 
-            unset($userData['profile']); 
-            
+            $profileData = $userData['profile'];
+            unset($userData['profile']);
+
             // Create user in the database
             $user = User::create($userData);
-            
-            // If you have a separate Profile model with a relation, associate the profile
+
+            // Associate the profile
             $user->profile()->create($profileData);
+
+            // Assign role based on is_admin
+            $role = $profileData['is_admin'] ?? false ? $roleAdmin : $roleUser;
+            $user->assignRole($role);
         }
-        
 
         $addresses = [
             [

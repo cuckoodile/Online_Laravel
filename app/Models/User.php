@@ -14,6 +14,8 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
+    protected $table = 'users';
+    protected $connection = 'mysql';
 
     /**
      * The attributes that are mass assignable.
@@ -61,6 +63,11 @@ class User extends Authenticatable
 
     public function transactions() {
         return $this->hasMany(Transaction::class);
+    }
+
+    protected function getDefaultGuardName(): string
+    {
+        return 'api'; 
     }
 
 }

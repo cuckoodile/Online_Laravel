@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -44,23 +47,26 @@ class UserController extends Controller
             "profile_image" => "required|nullable|string|max:2048", // Validate as a string for URLs or local paths
             "first_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
             "last_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
-            "username" => "required|unique:users|min:4|regex:/^[^\p{C}]+$/u|max:32",
+            "username" => "required|unique:users,username|min:4|regex:/^[^\p{C}]+$/u|max:32",
             "email" => "required|unique:users|email|max:255",
             "contact_number" => "phone:PH|required|unique:profiles|min:10|max:15",
-            "is_admin" => "sometimes|boolean",
+            "is_admin" => "required|boolean",
             "password" => "required|min:8|max:255",
         ]);
     
         if ($validator->fails()) {
             return $this->BadRequest($validator);
         }
+
+        $validated = $validator->validated();
+        $validated['password'] = Hash::make($validated['password']);
+
     
         // Handle the profile_image input
-        $profileImage = $inputs["profile_image"] ?? null;
+        $profileImage = $validated["profile_image"] ?? null;
         if ($request->hasFile('profile_image')) {
             $uploadedImage = $request->file('profile_image');
     
-            // Validate and process the uploaded file
             $fileValidator = validator()->make(['file' => $uploadedImage], [
                 'file' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
@@ -69,25 +75,53 @@ class UserController extends Controller
                 return $this->BadRequest($fileValidator);
             }
     
-            // Move the file to public/images directory
             $fileName = time() . '_' . $uploadedImage->getClientOriginalName();
             $uploadedImage->move(public_path('images'), $fileName);
-    
-            // Set profile_image to the local path
             $profileImage = '/images/' . $fileName;
         }
     
         // Save the user and their profile
         $user = User::create(array_merge(
-            $validator->validated(),
-            ["profile_image" => $profileImage] // Add profile_image to validated data
-        ));
-    
-        $user->profile()->create(array_merge(
-            $validator->validated(),
+            $validated,
             ["profile_image" => $profileImage]
         ));
     
+        $user->profile()->create(array_merge(
+            $validated,
+            ["profile_image" => $profileImage]
+        ));
+
+        // Assign the user role based on is_admin
+        // $roleName = $inputs['is_admin'] ? 'admin' : 'user';
+        // $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
+        // $user->assignRole($role);
+
+        // $roleName = $inputs['is_admin'] ? 'admin' : 'user';
+
+            // Create or get the role
+        // $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
+
+            // Create or get the permission
+        // $permissionName = $roleName === 'admin' ? 'Manage All Works' : 'Manage Own Post';
+        // $permission = Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'api']);
+
+            // Assign permission to role
+        // $role->givePermissionTo($permission);
+
+        $roleName = $inputs['is_admin'] ? 'admin' : 'user';
+        $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
+        $permissionName = $roleName === 'admin' ? 'Manage All Works' : 'Manage Own Post';
+        $permission = Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'api']);
+
+        // this is only the connection between the role and the permission
+        $role->givePermissionTo($permission); // Assign permission to role
+        $user->assignRole($role); // Assign role to user
+        $user->givePermissionTo($permission); // Assign permission to user
+
+        // $roleUser = Role::firstOrCreate(["name" => "user", "guard_name" => "api"]);
+        // $rolePermissionUser = Permission::firstOrCreate(["name" => "Manage Own Post", "guard_name" => "api"]);
+        // $roleUser->givePermissionTo($rolePermissionUser);
+        
         return $this->Created($user, "User created successfully!");
     }
     
@@ -196,6 +230,15 @@ class UserController extends Controller
             $validator->validated(),
             ["profile_image" => $profileImage]
         ));
+
+        // Assign the user role
+        $role = Role::where('name',$inputs['role'])->first()->name;
+
+        $user = User::find($inputs['id']);
+
+        $user->syncRoles($role);
+
+        $user->update($inputs);
     
         return $this->Ok($user, "User {$user->name}'s information has been updated successfully!");
     }
