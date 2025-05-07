@@ -87,7 +87,7 @@ class UserController extends Controller
         ));
     
         $user->profile()->create(array_merge(
-            $validated,
+            $validator->validated(),
             ["profile_image" => $profileImage]
         ));
 

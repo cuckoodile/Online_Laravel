@@ -70,4 +70,5 @@ class User extends Authenticatable
         return 'api'; 
     }
 
+
 }

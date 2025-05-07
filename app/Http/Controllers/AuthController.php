@@ -43,23 +43,23 @@ class AuthController extends Controller
             auth('api')->login($user); // Note: Only works if JWT or session guard is configured
             Log::info('User successfully authenticated', ['user_id' => $user->id]);
         } catch (\Exception $e) {
-            Log::error('Auth login failed', ['message' => $e->getMessage()]);
-        }
+            Log::error('Auth login failed', ['message' => $e->getMessage()]); 
+        } // this is for debug only, you can modify it or remove it and change syntax for cleanliness
     
         // Load related data in array
         $userData = [
             'id' => $user->id,
             'username' => $user->username,
             'email' => $user->email,
+            'token' => $user->createToken("api")->plainTextToken,
             'profile' => $user->profile,
             'roles' => $user->getRoleNames(),
             'permissions' => $user->getAllPermissions()->pluck('name'),
-            'token' => $user->createToken("api")->plainTextToken,
         ];
     
         Log::info('Login successful, token generated', ['user_id' => $user->id]);
     
-        return $this->Ok($user, "Login successfully");
+        return $this->Ok($userData, "Login successfully");
     }
 
     public function logout(Request $request)
