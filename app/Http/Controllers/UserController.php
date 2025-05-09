@@ -190,7 +190,7 @@ class UserController extends Controller
         $inputs = $this->sanitizeUserInputs($inputs);
     
         // Handle image uploads/Base64 before validation
-        $profileImage = $user->profile_image;
+        $profileImage = $user->profile_image;  // Preserve current image by default
         if ($request->hasFile('profile_image')) {
             $inputs['profile_image'] = $request->file('profile_image');
         } elseif (isset($inputs['profile_image']) && is_string($inputs['profile_image'])) {
@@ -206,6 +206,7 @@ class UserController extends Controller
             "profile_image" => [
                 'sometimes',
                 function ($attribute, $value, $fail) {
+                    // Accepts: UploadedFile, processed filename string, or null
                     if (
                         !($value instanceof UploadedFile) &&
                         !is_string($value) &&
@@ -233,7 +234,7 @@ class UserController extends Controller
             $fileName = 'user_' . time() . '_' . Str::random(8) . '.' . $inputs['profile_image']->extension();
             $inputs['profile_image']->move(public_path('images'), $fileName);
             
-            // Delete old image
+            // if New file saved successfully, it will delete the old file
             if ($user->profile_image && file_exists(public_path('images/' . $user->profile_image))) {
                 @unlink(public_path('images/' . $user->profile_image));
             }
