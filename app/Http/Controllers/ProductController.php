@@ -54,29 +54,24 @@ class ProductController extends Controller
         return $this->Ok($imageUrls);
     }
 
-    public function store (Request $request)
+    public function store(Request $request)
     {
         $inputs = $request->all();
-
+    
         // Sanitize name
         $inputs["name"] = $this->SanitizedName($inputs["name"]);
-
-        // Ensure 'product_image' is an array
-        if (!is_array($inputs['product_image'])) {
-            $inputs['product_image'] = [];
-        }
-
+    
         $validator = validator()->make($inputs, [
             "name" => "required|string|unique:products",
             "product_image" => "required|array",
-            "product_image.*" => "nullable|url|max:2048",
+            "product_image.*" => "image|mimes:jpeg,png,jpg,gif|max:2048",
             "admin_id" => "sometimes|exists:users,id|integer",
             "price" => "required|numeric",
             "stock" => "required|integer|min:0|max:10000",
             "description" => "required|string",
             "category_id" => "required|exists:categories,id|integer"
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 "ok" => false,
@@ -84,41 +79,22 @@ class ProductController extends Controller
                 "message" => "Validation Failed!"
             ], 400);
         }
-
+    
         $imageNames = [];
-
-        foreach ($inputs["product_image"] as $image) {
-            if (filter_var($image, FILTER_VALIDATE_URL)) {
-                // If it's a valid URL, add it to the array
-                $imageNames[] = $image;
-            } elseif ($request->hasFile('product_image')) {
-                // If it's a file, validate and process the upload
-                $uploadedImage = $request->file('product_image');
-                $fileValidator = validator()->make(['file' => $uploadedImage], [
-                    'file' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-                ]);
-        
-                if ($fileValidator->fails()) {
-                    return response()->json(["error" => $fileValidator->errors()], 400);
-                }
-        
-                // Move the file and store its name
-                $singleImageName = time() . '_' . $uploadedImage->getClientOriginalName();
-                $uploadedImage->move(public_path('images'), $singleImageName);
+    
+        if ($request->hasFile('product_image')) {
+            foreach ($request->file('product_image') as $image) {
+                $singleImageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('images'), $singleImageName);
                 $imageNames[] = $singleImageName;
-            } else {
-                return response()->json(["error" => "Invalid image format."], 400);
             }
         }
-
-        // Storing JSON format image names
+    
         $Product = Product::create(array_merge(
             $validator->validated(),
             ["product_image" => json_encode($imageNames)]
         ));
-
-        $Product = Product::create($validator->validated());
-
+    
         return $this->Created($Product, "Product has been created");
     }
 
@@ -130,14 +106,14 @@ class ProductController extends Controller
         // Sanitize the name if provided
         $inputs["name"] = $this->SanitizedName($inputs["name"] ?? "");
         if (empty($inputs["name"])) {
-            unset($inputs["name"]);    
+            unset($inputs["name"]);
         }
+    
         // Validation rules
-        
         $validator = validator()->make($inputs, [
             "name" => "sometimes|string|unique:products,name," . $id,
             "product_image" => "sometimes|array",
-            "product_image.*" => "nullable|string|max:2048",
+            "product_image.*" => "image|mimes:jpeg,png,jpg,gif|max:2048",
             "admin_id" => "sometimes|exists:users,id|integer",
             "price" => "sometimes|numeric",
             "stock" => "sometimes|integer|min:0|max:10000",
@@ -152,7 +128,6 @@ class ProductController extends Controller
                 "message" => "Validation Failed!"
             ], 400);
         }
-        
     
         // Find the product
         $Product = Product::find($id);
@@ -160,45 +135,25 @@ class ProductController extends Controller
             return $this->NotFound("Product not found");
         }
     
-        // Handle product_image input
-        if (isset($inputs["product_image"])) {
-            $imageNames = $Product->product_image ?? [];
+        // Handle product_image files if provided
+        if ($request->hasFile('product_image')) {
+            $imageNames = $Product->product_image ? json_decode($Product->product_image, true) : [];
     
-            foreach ($inputs["product_image"] as $image) {
-                if (filter_var($image, FILTER_VALIDATE_URL)) {
-                   
-                    $imageNames[] = $image;
-                } elseif (str_starts_with($image, '/images/')) {
-                    // Local link: Add directly
-                    $imageNames[] = $image;
-                } elseif ($request->hasFile('product_image')) {
-                    foreach ($request->file('product_image') as $uploadedImage) {
-                        // Validate and process uploaded files
-                        $fileValidator = validator()->make(['file' => $uploadedImage], [
-                            'file' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-                        ]);
-    
-                        if ($fileValidator->fails()) {
-                            return $this->BadRequest($fileValidator);
-                        }
-    
-                        $singleImageName = time() . '_' . $uploadedImage->getClientOriginalName();
-                        $uploadedImage->move(public_path('images'), $singleImageName);
-                        $imageNames[] = '/images/' . $singleImageName;
-                    }
-                } else {
-                    return response()->json(["error" => "Invalid product_image format"], 400);
-                }
+            foreach ($request->file('product_image') as $uploadedImage) {
+                $singleImageName = time() . '_' . $uploadedImage->getClientOriginalName();
+                $uploadedImage->move(public_path('images'), $singleImageName);
+                $imageNames[] = $singleImageName;
             }
     
-            // Directly update product_image using $casts
-            $Product->product_image = $imageNames;
-            $Product->save();
+            $inputs['product_image'] = json_encode($imageNames);
+        } else {
+            // If no new images are being uploaded but product_image is in request, remove it
+            unset($inputs['product_image']);
         }
     
-        // Update other fields
-        $Product->update($validator->validated());
-        
+        // Update the product
+        $Product->update($inputs);
+    
         return $this->Ok($Product, "Product has been updated");
     }
     

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
 
 class UserController extends Controller
 {
@@ -30,21 +32,51 @@ class UserController extends Controller
         $inputs = $request->all();
     
         // Sanitize name fields if they exist
+        // Ensure names are properly formatted and free of unwanted characters
         if (isset($inputs["first_name"])) {
             $inputs["first_name"] = $this->SanitizedName($inputs["first_name"]);
         }
-    
         if (isset($inputs["last_name"])) {
             $inputs["last_name"] = $this->SanitizedName($inputs["last_name"]);
         }
-    
         if (isset($inputs["username"])) {
             $inputs["username"] = $this->SanitizedName($inputs["username"]);
         }
-    
-        // Validation
+
+        // Handle both file upload and base64 BEFORE validation
+        // If the profile image is a file, process it as an uploaded file
+        // If it's a base64 string, decode and save it as a file
+        $profileImage = null;
+        if ($request->hasFile('profile_image')) {
+            $inputs['profile_image'] = $request->file('profile_image');
+        } elseif (isset($inputs['profile_image']) && is_string($inputs['profile_image'])) {
+            $image = $this->createBase64Image($inputs['profile_image']);
+            if (!$image) {
+                // Return an error if the base64 image is invalid
+                return response()->json(['error' => 'Invalid base64 image'], 400);
+            }
+            $inputs['profile_image'] = $image; 
+            $profileImage = $image; // Store for later use
+        }
+
+        // Validation rules
+        // Ensure all required fields are present and valid
+        // Avoid using overly strict rules that may block valid inputs
+        // NOTE: The file upload should be a real file or else it will
         $validator = validator()->make($inputs, [
-            "profile_image" => "required|nullable|string|max:2048", // Validate as a string for URLs or local paths
+            "profile_image" => [
+                'sometimes',
+                function ($attribute, $value, $fail) {
+                    // Allow: (1) Uploaded file, (2) Processed filename, or (3) null
+                    if (
+                        !$this->isValidFile($value) && 
+                        !is_string($value) && 
+                        !is_null($value)
+                    ) {
+                        $fail('Invalid profile image format.'); 
+                    }
+                },
+            ],
             "first_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
             "last_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
             "username" => "required|unique:users,username|min:4|regex:/^[^\p{C}]+$/u|max:32",
@@ -53,76 +85,77 @@ class UserController extends Controller
             "is_admin" => "required|boolean",
             "password" => "required|min:8|max:255",
         ]);
-    
+
         if ($validator->fails()) {
+            // Return validation errors if any
             return $this->BadRequest($validator);
         }
 
         $validated = $validator->validated();
-        $validated['password'] = Hash::make($validated['password']);
+        $validated['password'] = Hash::make($validated['password']); // Hash the password before saving
 
-    
-        // Handle the profile_image input
-        $profileImage = $validated["profile_image"] ?? null;
-        if ($request->hasFile('profile_image')) {
+        // Handle file upload if not already processed (Base64 case handled earlier)
+        if ($request->hasFile('profile_image') && !$profileImage) {
             $uploadedImage = $request->file('profile_image');
-    
-            $fileValidator = validator()->make(['file' => $uploadedImage], [
-                'file' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]);
-    
-            if ($fileValidator->fails()) {
-                return $this->BadRequest($fileValidator);
-            }
-    
             $fileName = time() . '_' . $uploadedImage->getClientOriginalName();
             $uploadedImage->move(public_path('images'), $fileName);
-            $profileImage = '/images/' . $fileName;
+            $profileImage = $fileName;
         }
-    
-        // Save the user and their profile
+
+        // Save the user and profile
+        // Ensure the user and profile are created together
         $user = User::create(array_merge(
             $validated,
             ["profile_image" => $profileImage]
         ));
-    
         $user->profile()->create(array_merge(
-            $validator->validated(),
+            $validated,
             ["profile_image" => $profileImage]
         ));
 
-        // Assign the user role based on is_admin
-        // $roleName = $inputs['is_admin'] ? 'admin' : 'user';
-        // $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
-        // $user->assignRole($role);
-
-        // $roleName = $inputs['is_admin'] ? 'admin' : 'user';
-
-            // Create or get the role
-        // $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
-
-            // Create or get the permission
-        // $permissionName = $roleName === 'admin' ? 'Manage All Works' : 'Manage Own Post';
-        // $permission = Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'api']);
-
-            // Assign permission to role
-        // $role->givePermissionTo($permission);
-
+        // Role and permission handling
+        // Assign roles and permissions based on the is_admin field
         $roleName = $inputs['is_admin'] ? 'admin' : 'user';
         $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
         $permissionName = $roleName === 'admin' ? 'Manage All Works' : 'Manage Own Post';
         $permission = Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'api']);
 
-        // this is only the connection between the role and the permission
-        $role->givePermissionTo($permission); // Assign permission to role
+        $role->givePermissionTo($permission); // Link permission to role
         $user->assignRole($role); // Assign role to user
         $user->givePermissionTo($permission); // Assign permission to user
 
-        // $roleUser = Role::firstOrCreate(["name" => "user", "guard_name" => "api"]);
-        // $rolePermissionUser = Permission::firstOrCreate(["name" => "Manage Own Post", "guard_name" => "api"]);
-        // $roleUser->givePermissionTo($rolePermissionUser);
-        
+        // Return success response
         return $this->Created($user, "User created successfully!");
+    }
+    
+    // Helper Methods (add these to your controller)
+    protected function createBase64Image($base64)
+    {
+        if (!preg_match('/^data:image\/(\w+);base64,/', $base64, $type)) {
+            return false;
+        }
+    
+        $image = substr($base64, strpos($base64, ',') + 1);
+        $image = str_replace(' ', '+', $image);
+        $decodedImage = base64_decode($image);
+    
+        if (!$decodedImage) {
+            return false;
+        }
+    
+        $extension = $type[1];
+        $filename = 'img_' . time() . '_' . Str::random(8) . '.' . $extension;
+        file_put_contents(public_path('images/' . $filename), $decodedImage);
+    
+        return $filename;
+    }
+    
+    protected function isValidFile($value)
+    {
+        if ($value instanceof UploadedFile) {
+            return $value->isValid();
+        }
+        return false;
     }
     
 
@@ -145,102 +178,132 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Find the user
-        $user = User::find($id);
-    
-        if (empty($user)) {
-            return $this->NotFound("User Not Found!");
+        // Find user with profile
+        $user = User::with('profile')->find($id);
+        if (!$user) {
+            return $this->NotFound("User not found!");
         }
     
         $inputs = $request->all();
     
-        // Sanitize the name fields if they exist
-        if (isset($inputs["first_name"])) {
-            $inputs["first_name"] = $this->SanitizedName($inputs["first_name"]);
-        }
+        // Sanitize inputs
+        $inputs = $this->sanitizeUserInputs($inputs);
     
-        if (isset($inputs["last_name"])) {
-            $inputs["last_name"] = $this->SanitizedName($inputs["last_name"]);
-        }
-    
-        if (isset($inputs["username"])) {
-            $inputs["username"] = $this->SanitizedName($inputs["username"]);
+        // Handle image uploads/Base64 before validation
+        $profileImage = $user->profile_image;
+        if ($request->hasFile('profile_image')) {
+            $inputs['profile_image'] = $request->file('profile_image');
+        } elseif (isset($inputs['profile_image']) && is_string($inputs['profile_image'])) {
+            $image = $this->updateBase64Image($inputs['profile_image']);
+            if (!$image) {
+                return response()->json(['error' => 'Invalid base64 image'], 400);
+            }
+            $inputs['profile_image'] = $image;
         }
     
         // Validation rules
         $validator = validator()->make($inputs, [
-            "profile_image" => "sometimes|nullable|string|max:2048", // Accepts URLs or strings for paths
+            "profile_image" => [
+                'sometimes',
+                function ($attribute, $value, $fail) {
+                    if (
+                        !($value instanceof UploadedFile) &&
+                        !is_string($value) &&
+                        !is_null($value)
+                    ) {
+                        $fail('Invalid profile image format.');
+                    }
+                },
+            ],
             "first_name" => "sometimes|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
             "last_name" => "sometimes|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
-            "username" => "sometimes|unique:users,username,$id|min:4|regex:/^[A-Za-z0-9,.'\-\s]+$/|max:32",
-            "email" => "sometimes|unique:users,email,$id|email|max:255",
-            "contact_number" => "phone:PH|sometimes|unique:profiles|min:10|max:15",
-            "password" => "sometimes|min:8|max:255",
+            "username" => "sometimes|unique:users,username,".$user->id."|min:4|regex:/^[^\p{C}]+$/u|max:32",
+            "email" => "sometimes|unique:users,email,".$user->id."|email|max:255",
+            "contact_number" => "sometimes|phone:PH|unique:profiles,contact_number,".$user->profile?->id."|min:10|max:15",
             "is_admin" => "sometimes|boolean",
+            "password" => "sometimes|min:8|max:255",
         ]);
     
         if ($validator->fails()) {
-            return response()->json([
-                "ok" => false,
-                "errors" => $validator->errors(),
-                "message" => "Validation Failed!"
-            ], 400);
+            return $this->BadRequest($validator);
         }
     
-        // Handle profile_image
-        $profileImage = $inputs["profile_image"] ?? null;
-        if ($request->hasFile('profile_image')) {
-            $uploadedImage = $request->file('profile_image');
-    
-            // Validate the uploaded file
-            $fileValidator = validator()->make(['file' => $uploadedImage], [
-                'file' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]);
-    
-            if ($fileValidator->fails()) {
-                return response()->json([
-                    "ok" => false,
-                    "errors" => $fileValidator->errors(),
-                    "message" => "File validation failed!"
-                ], 400);
+        // Process image if not already done (for file uploads)
+        if ($request->hasFile('profile_image') && is_uploaded_file($inputs['profile_image']->path())) {
+            $fileName = 'user_' . time() . '_' . Str::random(8) . '.' . $inputs['profile_image']->extension();
+            $inputs['profile_image']->move(public_path('images'), $fileName);
+            
+            // Delete old image
+            if ($user->profile_image && file_exists(public_path('images/' . $user->profile_image))) {
+                @unlink(public_path('images/' . $user->profile_image));
             }
-    
-            // Move the file to public/images directory
-            $fileName = time() . '_' . $uploadedImage->getClientOriginalName();
-            $uploadedImage->move(public_path('images'), $fileName);
-    
-            // Set the profile_image to the local path
-            $profileImage = '/images/' . $fileName;
+            
+            $profileImage = $fileName;
         }
     
-        // Update the user profile
-        if (!$user->profile) {
-            $user->profile()->create([
-                "profile_image" => $profileImage,
+        // Prepare update data
+        $updateData = $validator->validated();
+        if (isset($updateData['password'])) {
+            $updateData['password'] = Hash::make($updateData['password']);
+        }
+        $updateData['profile_image'] = $profileImage;
+    
+        // Update user
+        $user->update($updateData);
+    
+        // Update profile
+        if ($user->profile) {
+            $user->profile->update([
+                'profile_image' => $profileImage,
+                'contact_number' => $inputs['contact_number'] ?? $user->profile->contact_number
             ]);
         } else {
-            $user->profile->update(array_merge(
-                $validator->validated(),
-                ["profile_image" => $profileImage]
-            ));
+            $user->profile()->create([
+                'profile_image' => $profileImage,
+                'contact_number' => $inputs['contact_number'] ?? null
+            ]);
         }
     
-        // Update the user record
-        $user->update(array_merge(
-            $validator->validated(),
-            ["profile_image" => $profileImage]
-        ));
-
-        // Assign the user role
-        $role = Role::where('name',$inputs['role'])->first()->name;
-
-        $user = User::find($inputs['id']);
-
-        $user->syncRoles($role);
-
-        $user->update($inputs);
+        // Update role if changed
+        if (isset($inputs['is_admin'])) {
+            $roleName = $inputs['is_admin'] ? 'admin' : 'user';
+            $user->syncRoles($roleName);
+        }
     
-        return $this->Ok($user, "User {$user->name}'s information has been updated successfully!");
+        return $this->Ok($user, "User updated successfully");
+    }
+    
+    // Helper Methods
+    protected function sanitizeUserInputs(array $inputs): array
+    {
+        $sanitizable = ['first_name', 'last_name', 'username'];
+        foreach ($sanitizable as $field) {
+            if (isset($inputs[$field])) {
+                $inputs[$field] = $this->SanitizedName($inputs[$field]);
+            }
+        }
+        return $inputs;
+    }
+    
+    protected function updateBase64Image($base64)
+    {
+        if (!preg_match('/^data:image\/(\w+);base64,/', $base64, $type)) {
+            return false;
+        }
+    
+        $image = substr($base64, strpos($base64, ',') + 1);
+        $image = str_replace(' ', '+', $image);
+        $decodedImage = base64_decode($image);
+    
+        if (!$decodedImage) {
+            return false;
+        }
+    
+        $extension = $type[1];
+        $filename = 'user_' . time() . '_' . Str::random(8) . '.' . $extension;
+        file_put_contents(public_path('images/' . $filename), $decodedImage);
+    
+        return $filename;
     }
     
     /**
