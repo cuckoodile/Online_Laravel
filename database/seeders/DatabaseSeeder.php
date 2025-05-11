@@ -242,7 +242,7 @@ class DatabaseSeeder extends Seeder
         // Seed carts
         $carts = [
             [
-                'user_id' => 2,
+                'user_id' => 1,
                 'product_id' => 1,
                 'quantity' => 2,
                 'total_price' => 1399.98,
