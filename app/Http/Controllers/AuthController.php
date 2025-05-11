@@ -72,6 +72,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         $user->profile;
+        $user->token = $request->bearerToken(); // Include the current logged user token
         return $this->Ok($user, "User has been retrieved");
     }   
 }
