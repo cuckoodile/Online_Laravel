@@ -64,6 +64,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $user = $request->user();
         $request->user()->currentAccessToken()->delete();
         return $this->Ok(null, "Logout successful");
     }
@@ -72,7 +73,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         $user->profile;
-        $user->token = $request->bearerToken(); // Include the current logged user token
+        $user->token = $request->bearerToken();
         return $this->Ok($user, "User has been retrieved");
     }   
 }
