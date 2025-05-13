@@ -66,7 +66,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         $request->user()->currentAccessToken()->delete();
-        return $this->Ok(null, "Logout successful");
+        return $this->Ok($user, "Logout successful");
     }
 
     public function checkToken(Request $request)
