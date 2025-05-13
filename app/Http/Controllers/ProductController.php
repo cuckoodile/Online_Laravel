@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -37,6 +38,7 @@ class ProductController extends Controller
         $Product->product_image;
         $Product->category;
         $Product->product_comments;
+        $Product->stock = $Product->stock;
 
         return $this->Ok($Product);
     }
@@ -93,54 +95,50 @@ class ProductController extends Controller
         // Validation rules (supports both file objects and processed filenames)
         $validator = validator()->make($inputs, [
             "name" => "required|string|unique:products",
-            "product_image" => "required|array|min:1",
-            "product_image.*" => [
-                function ($attribute, $value, $fail) {
-                    if (
-                        !($value instanceof UploadedFile) &&
-                        !is_string($value)
-                    ) {
-                        $fail('Each product image must be a file or valid Base64 string.');
-                    }
-                },
-                'max:2048' // Applies to both files and Base64 decoded size
-            ],
-            "admin_id" => "sometimes|exists:users,id|integer",
-            "price" => "sometimes|numeric",
-            "stock" => "sometimes|integer|min:0|max:10000",
-            "description" => "sometimes|string",
-            "category_id" => "sometimes|exists:categories,id|integer"
+            "product_image" => "required|array|min:4|max:10",
+            "product_image.*" => "nullable|string|max:2048",
+            "admin_id" => "required|exists:users,id|integer",
+            "price" => "required|numeric",
+            "description" => "required|string",
+            "category_id" => "required|exists:categories,id|integer",
+            "stock" => "required|integer|min:1",
+            "product_specifications" => "required|array|min:2|max:15",
+            "product_specifications.*.details" => "required|array"
         ]);
-    
+
         if ($validator->fails()) {
-            return response()->json([
-                "ok" => false,
-                "errors" => $validator->errors(),
-                "message" => "Validation Failed!"
-            ], 400);
+            return $this->BadRequest($validator->errors());
         }
-    
-        $imageNames = [];
-    
-        // Process file uploads
-        if ($request->hasFile('product_image')) {
-            foreach ($request->file('product_image') as $image) {
-                $singleImageName = 'prod_' . time() . '_' . Str::random(6) . '.' . $image->extension();
-                $image->move(public_path('product_images'), $singleImageName);
-                $imageNames[] = $singleImageName;
-            }
+
+        $inputs['admin_id'] = $request->user()->id; // Set the admin_id to the current logged-in user
+
+        $product = Product::create($validator->validated());
+
+        // Save product specifications
+        foreach ($inputs['product_specifications'] as $specification) {
+            $product->product_specifications()->create([
+                'details' => json_encode($specification['details']),
+            ]);
         }
-    
-        // Merge processed Base64 images
-        $imageNames = array_merge($imageNames, $processedImages);
-    
-        // Create product with JSON encoded image paths
-        $Product = Product::create(array_merge(
-            $validator->validated(),
-            ["product_image" => json_encode($imageNames)]
-        ));
-    
-        return $this->Created($Product, "Product has been created");
+
+        // If stock is provided, create an inbound transaction
+        $transaction = Transaction::create([
+            'user_id' => $request->user()->id,
+            'type_id' => 1, // Inbound transaction type
+            'status_id' => 1, // Default status (e.g., Pending)
+            'payment_method_id' => 1, // Default payment method (e.g., Cash)
+            'address_id' => 1, // Default address (can be adjusted as needed)
+        ]);
+
+        $transaction->products()->attach($product->id, [
+            'quantity' => $inputs['stock'],
+            'price' => $product->price,
+            'sub_total' => $inputs['stock'] * $product->price,
+        ]);
+
+        $product->stock = $product->stock; // Include dynamically calculated stock in the response
+
+        return $this->Created($product, "Product has been created with specifications and stock!");
     }
     
     /**
@@ -351,6 +349,6 @@ class ProductController extends Controller
 
         $Product->delete();
 
-        return $this->Ok(null, "Product has been deleted");
+        return $this->Ok($Product, "Product has been deleted");
     }
 }
