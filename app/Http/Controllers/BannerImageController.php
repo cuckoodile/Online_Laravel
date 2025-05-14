@@ -12,8 +12,16 @@ class BannerImageController extends Controller
         // Fetch all banner images from the database
         $bannerImages = BannerImage::all();
 
+        if(empty($bannerImages)) {
+            return $this->ok(null , "No image found!");
+        }
+        
         // Return the view with the banner images
-        return view('banner_images.index', compact('bannerImages'));
+        return response()->json([
+            "ok" => true,
+            "message" => "success",
+            "data" => $bannerImages
+        ]);
     }
 
     public function show($id) {
@@ -21,7 +29,7 @@ class BannerImageController extends Controller
         $bannerImage = BannerImage::findOrFail($id);
 
         // Return the view with the specific banner image
-        return view('banner_images.show', compact('bannerImage'));
+        return response()->json(compact('bannerImage'));
     }
 
     public function store(Request $request)
