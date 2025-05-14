@@ -45,10 +45,10 @@ class ProductController extends Controller
 
     public function getProductImage(string $id)
     {
-        $Product = Product::find($id);
+        $Product = Product::find($id); // if you put findOrFail it will automatically return 404 error if product not found
 
         if (!$Product) {
-            return $this->NotFound("Product Image not found");
+            return $this->NotFound("Product Image not found"); // so this may not need to be used
         }
 
         $imageUrls = collect(json_decode($Product->product_image))->map(function ($image) {
@@ -58,297 +58,190 @@ class ProductController extends Controller
         return $this->Ok($imageUrls);
     }
 
+
     public function store(Request $request)
     {
-        $inputs = $request->all();
-    
-        // Sanitize product name to prevent XSS
-        $inputs["name"] = $this->SanitizedName($inputs["name"]);
-    
-        /* 
-         * Image Processing Pipeline:
-         * 1. Convert Base64 strings to files if present
-         * 2. Keep existing file upload handling
-         */
-        $processedImages = [];
-        
-        if (isset($inputs['product_image']) && is_array($inputs['product_image'])) {
-            foreach ($inputs['product_image'] as $key => $image) {
-                if (is_string($image) && preg_match('/^data:image\/(\w+);base64,/', $image)) {
-                    // Process Base64 image
-                    $filename = $this->processProductImage($image);
-                    if (!$filename) {
-                        return response()->json([
-                            "ok" => false,
-                            "errors" => ["product_image.$key" => ["Invalid Base64 image format"]],
-                            "message" => "Validation Failed!"
-                        ], 400);
-                    }
-                    $processedImages[] = $filename;
-                } elseif ($request->hasFile("product_image.$key")) {
-                    // Handle traditionally uploaded files
-                    $processedImages[] = $image; // Will be processed in validation
-                }
-            }
-        }
-    
-        // Validation rules (supports both file objects and processed filenames)
-        $validator = validator()->make($inputs, [
+        // Validate the input
+        $request->validate([
             "name" => "required|string|unique:products",
-            "product_image" => "required|array|min:4|max:10",
-            "product_image.*" => "nullable|string|max:2048",
-            "admin_id" => "required|exists:users,id|integer",
+            "product_image" => "required|array|min:1|max:10",
+            "product_image.*" => "required|image|mimes:jpeg,png,jpg,gif,webp,jfif", // we can add additional extensions if needed
             "price" => "required|numeric",
             "description" => "required|string",
-            "category_id" => "required|exists:categories,id|integer",
-            "stock" => "required|integer|min:1",
-            "product_specifications" => "required|array|min:2|max:15",
+            "category_id" => "required|exists:categories,id",
+            "product_specifications" => "required|array|min:2|max:10",
             "product_specifications.*.details" => "required|array"
         ]);
 
-        if ($validator->fails()) {
-            return $this->BadRequest($validator->errors());
+        // Sanitize product name
+        $name = $this->SanitizedName($request->name);
+
+        // Upload images and collect paths
+        $imagePaths = [];
+        foreach ($request->file('product_image') as $file) {
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . uniqid() . '.' . $extension;
+            $file->move(public_path('product_images'), $fileName);
+            $imagePaths[] = 'product_images/' . $fileName;
         }
 
-        $inputs['admin_id'] = $request->user()->id; // Set the admin_id to the current logged-in user
+        // Create product record
+        $product = Product::create([
+            'name' => $name,
+            'price' => $request->price,
+            'admin_id' => $request->user()->id,
+            'product_image' => $imagePaths,
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+        ]);
 
-        $product = Product::create($validator->validated());
+        // Save specifications
+            foreach ($request->product_specifications as $spec) {
+                $product->product_specifications()->create([
+                    'details' => json_encode($spec['details']),
+                ]);
+            }
 
-        // Save product specifications
-        foreach ($inputs['product_specifications'] as $specification) {
+            // If stock is provided, create an inbound transaction
+            $transaction = Transaction::create([
+                'user_id' => $request->user()->id,
+                'type_id' => 1, // Inbound transaction type
+                'status_id' => 1, // Default status (e.g., Pending)
+                'payment_method_id' => 1, // Default payment method (e.g., Cash)
+                'address_id' => 1, // Default address (can be adjusted as needed)
+            ]);
+
+            $transaction->products()->attach($product->id, [
+                'quantity' => $request->stock,
+                'price' => $product->price,
+                'sub_total' => $request->stock * $product->price,
+            ]);
+
+            $product->stock = $product->stock; // Include dynamically calculated stock in the response
+
+            return $this->Created($product, "Product has been created with specifications and stock!");
+    }
+    
+
+
+    public function update(Request $request, Product $product)
+{
+
+    Log::info('Starting update for product: '.$product->id);
+    Log::info('Request data:', $request->all());
+    // Define validation rules for all possible fields
+    $validator = validator()->make($request->all(), [
+        "name" => "sometimes|string|unique:products,name,".$product->id,
+        "product_image" => "sometimes|array|min:1|max:10",
+        "product_image.*" => "sometimes|image|mimes:jpeg,png,jpg,gif,webp,jfif",
+        "price" => "sometimes|numeric",
+        "description" => "sometimes|string",
+        "category_id" => "sometimes|exists:categories,id",
+        "product_specifications" => "sometimes|array|min:2|max:10",
+        "product_specifications.*.details" => "sometimes|array",
+        "stock" => "sometimes|numeric|min:0"
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    // Update name if provided
+    if ($request->has('name')) {
+        $product->name = $this->SanitizedName($request->name);
+    }
+
+    // Update images if provided
+    if ($request->hasFile('product_image')) {
+        $imagePaths = [];
+        foreach ($request->file('product_image') as $file) {
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time().'_'.uniqid().'.'.$extension;
+            $file->move(public_path('product_images'), $fileName);
+            $imagePaths[] = 'product_images/'.$fileName;
+        }
+        
+        // Delete old images if they exist
+        if (is_array($product->product_image)) {
+            foreach ($product->product_image as $oldImage) {
+                if (file_exists(public_path($oldImage))) {
+                    unlink(public_path($oldImage));
+                }
+            }
+        }
+        
+        $product->product_image = $imagePaths;
+    }
+
+    // Update other simple fields if provided
+    $simpleFields = ['price', 'description', 'category_id'];
+    foreach ($simpleFields as $field) {
+        if ($request->has($field)) {
+            $product->$field = $request->$field;
+        }
+    }
+
+    // Save only if there are changes
+    if ($product->isDirty()) {
+        $product->save();
+    }
+
+    // Update specifications if provided
+    if ($request->has('product_specifications')) {
+        $product->product_specifications()->delete();
+        foreach ($request->product_specifications as $spec) {
             $product->product_specifications()->create([
-                'details' => json_encode($specification['details']),
+                'details' => json_encode($spec['details']),
             ]);
         }
+    }
 
-        // If stock is provided, create an inbound transaction
+    // Handle stock adjustment if provided
+    if ($request->has('stock') && $request->stock != 0) {
+        $transactionType = $request->stock > 0 ? 1 : 2;
         $transaction = Transaction::create([
             'user_id' => $request->user()->id,
-            'type_id' => 1, // Inbound transaction type
-            'status_id' => 1, // Default status (e.g., Pending)
-            'payment_method_id' => 1, // Default payment method (e.g., Cash)
-            'address_id' => 1, // Default address (can be adjusted as needed)
+            'type_id' => $transactionType,
+            'status_id' => 1,
+            'payment_method_id' => 1,
+            'address_id' => 1,
         ]);
 
         $transaction->products()->attach($product->id, [
-            'quantity' => $inputs['stock'],
+            'quantity' => abs($request->stock),
             'price' => $product->price,
-            'sub_total' => $inputs['stock'] * $product->price,
+            'sub_total' => abs($request->stock) * $product->price,
         ]);
-
-        $product->stock = $product->stock; // Include dynamically calculated stock in the response
-
-        return $this->Created($product, "Product has been created with specifications and stock!");
     }
+
+    // Return the updated product
+    return $this->Ok($product, "Product has been updated successfully!");
+}
+
+
+public function destroy($id)
+{
+    // Find the product by ID
+    $product = Product::findOrFail($id);
+
+    // Optionally, delete related transactions
+    $product->transactions()->detach(); // Detach the product from any transactions (if needed)
     
-    /**
-     * Processes Base64 image for products
-     */
-    protected function processProductImage($base64)
-    {
-        if (!preg_match('/^data:image\/(\w+);base64,/', $base64, $type)) {
-            return false;
-        }
-    
-        $imageData = substr($base64, strpos($base64, ',') + 1);
-        $imageData = str_replace(' ', '+', $imageData);
-        $decoded = base64_decode($imageData);
-    
-        if (!$decoded) {
-            return false;
-        }
-    
-        // Generate secure filename
-        $filename = 'prod_' . time() . '_' . Str::random(8) . '.' . $type[1];
-        $path = public_path('product_images/' . $filename);
-    
-        // Save with exclusive lock
-        try {
-            file_put_contents($path, $decoded, LOCK_EX);
-            return $filename;
-        } catch (\Exception $e) {
-            Log::error("Product image save failed: " . $e->getMessage());
-            return false;
+    // Delete product specifications
+    $product->product_specifications()->delete();
+
+    // Delete the product images from storage (if you want to delete the actual images)
+    foreach ($product->product_image as $imagePath) {
+        $imagePath = public_path($imagePath);
+        if (file_exists($imagePath)) {
+            unlink($imagePath); // Delete the image file from the server
         }
     }
 
+    // Delete the product
+    $product->delete();
 
-    public function update(Request $request, string $id)
-    {
-        // Find the product
-        $Product = Product::find($id);
-        if (empty($Product)) {
-            return $this->NotFound("Product not found");
-        }
+    return $this->Ok("Product has been successfully deleted.");
+}
 
-        $inputs = $request->all();
-    
-        // Sanitize product name if provided
-        if (isset($inputs["name"])) {
-            $inputs["name"] = $this->SanitizedName($inputs["name"]);
-            if (empty($inputs["name"])) {
-                unset($inputs["name"]);
-            }
-        }
-    
-        /* 
-         * Image Processing Pipeline:
-         * 1. Convert Base64 strings to files if present
-         * 2. Keep existing file upload handling
-         * 3. Preserve existing images if none provided
-         */
-        $existingImages = $Product->product_image ? json_decode($Product->product_image, true) : [];
-        $newImages = [];
-    
-        if (isset($inputs['product_image']) && is_array($inputs['product_image'])) {
-            foreach ($inputs['product_image'] as $key => $image) {
-                if (is_string($image)) {
-                    if ($image === '') {
-                        continue; // Skip empty strings
-                    } elseif (str_starts_with($image, 'data:image/')) {
-                        // Process Base64 image
-                        $filename = $this->processProductImage($image);
-                        if (!$filename) {
-                            return response()->json([
-                                "ok" => false,
-                                "errors" => ["product_image.$key" => ["Invalid Base64 image format"]],
-                                "message" => "Validation Failed!"
-                            ], 400);
-                        }
-                        $newImages[] = $filename;
-                    } elseif (str_starts_with($image, 'images/')) {
-                        // Keep existing image paths
-                        $newImages[] = $image;
-                    }
-                } elseif ($request->hasFile("product_image.$key")) {
-                    // Will be processed in validation
-                    continue;
-                }
-            }
-        }
-    
-        // Validation rules (supports both file objects and processed filenames)
-        $validator = validator()->make($inputs, [
-            "name" => "sometimes|string|unique:products,name," . $id,
-            "product_image" => "sometimes|array",
-            "product_image.*" => [
-                function ($attribute, $value, $fail) {
-                    if (
-                        !($value instanceof UploadedFile) &&
-                        !is_string($value)
-                    ) {
-                        $fail('Each product image must be a file or valid image string.');
-                    }
-                },
-                'max:2048' // Applies to both files and Base64 decoded size
-            ],
-            "admin_id" => "sometimes|exists:users,id|integer",
-            "price" => "sometimes|numeric",
-            "stock" => "sometimes|integer|min:0|max:10000",
-            "description" => "sometimes|string",
-            "category_id" => "sometimes|exists:categories,id|integer"
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                "ok" => false,
-                "errors" => $validator->errors(),
-                "message" => "Validation Failed!"
-            ], 400);
-        }
-    
-        // Process file uploads if any
-        if ($request->hasFile('product_image')) {
-            foreach ($request->file('product_image') as $uploadedImage) {
-                $singleImageName = 'prod_' . time() . '_' . Str::random(6) . '.' . $uploadedImage->extension();
-                $uploadedImage->move(public_path('product_images'), $singleImageName);
-                $newImages[] = $singleImageName;
-            }
-        }
-    
-        // Determine final image array
-        $finalImages = [];
-        if (!empty($newImages)) {
-            // Use new images (Base64 + file uploads)
-            $finalImages = $newImages;
-            
-            // Delete old images that weren't preserved
-            $this->cleanupOldImages($existingImages, $finalImages);
-        } elseif (array_key_exists('product_image', $inputs)) {
-            // Explicit empty array case
-            $this->cleanupOldImages($existingImages, []);
-        } else {
-            // No image changes, keep existing
-            $finalImages = $existingImages;
-        }
-    
-        // Update product data
-        $updateData = $validator->validated();
-        if (!empty($finalImages)) {
-            $updateData['product_image'] = json_encode($finalImages);
-        }
-    
-        $Product->update($updateData);
-    
-        return $this->Ok($Product, "Product has been updated");
-    }
-    
-    /**
-     * Processes Base64 image for products
-     */
-    protected function updateProductImage($base64)
-    {
-        if (!preg_match('/^data:image\/(\w+);base64,/', $base64, $type)) {
-            return false;
-        }
-    
-        $imageData = substr($base64, strpos($base64, ',') + 1);
-        $imageData = str_replace(' ', '+', $imageData);
-        $decoded = base64_decode($imageData);
-    
-        if (!$decoded) {
-            return false;
-        }
-    
-        // Generate secure filename
-        $filename = 'prod_' . time() . '_' . Str::random(8) . '.' . $type[1];
-        $path = public_path('product_images/' . $filename);
-    
-        // Save with exclusive lock
-        try {
-            file_put_contents($path, $decoded, LOCK_EX);
-            return $filename;
-        } catch (\Exception $e) {
-            Log::error("Product image save failed: " . $e->getMessage());
-            return false;
-        }
-    }
-    
-    /**
-     * Cleans up old images that are no longer needed
-     */
-    protected function cleanupOldImages(array $oldImages, array $newImages)
-    {
-        foreach ($oldImages as $oldImage) {
-            if (!in_array($oldImage, $newImages)) {
-                $path = public_path($oldImage);
-                if (file_exists($path)) {
-                    @unlink($path);
-                }
-            }
-        }
-    }
-
-    public function destroy(string $id)
-    {
-        $Product = Product::find($id);
-
-        if (empty($Product)) {
-            return $this->NotFound("Product not found");
-        }
-
-        $Product->delete();
-
-        return $this->Ok($Product, "Product has been deleted");
-    }
 }

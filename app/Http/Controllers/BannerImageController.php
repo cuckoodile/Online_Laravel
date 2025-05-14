@@ -19,7 +19,7 @@ class BannerImageController extends Controller
         // Return the view with the banner images
         return response()->json([
             "ok" => true,
-            "message" => "success",
+            "message" => "List of images was retrieved successfully.",
             "data" => $bannerImages
         ]);
     }
@@ -35,7 +35,7 @@ class BannerImageController extends Controller
         // Return the view with the specific banner image
         return response()->json([
             "ok" => true,
-            "message" => "success",
+            "message" => "Image was retrieved successfully.",
             "data" => $bannerImage
         ]);
     }
