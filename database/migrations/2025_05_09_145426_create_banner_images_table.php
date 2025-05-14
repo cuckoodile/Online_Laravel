@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('banner_images', function (Blueprint $table) {
             $table->id();
             $table->string('image')->nullable();
-            $table->string('timestamp')->nullable();
+            $table->string('timestamp');
             $table->timestamps();
         });
     }

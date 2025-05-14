@@ -10,7 +10,4 @@ class BannerImage extends Model
         'image',
         'timestamp'
     ];
-    protected $casts = [
-        'image' => 'array',
-    ];
 }

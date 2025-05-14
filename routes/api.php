@@ -10,6 +10,7 @@ use App\Http\Controllers\TransactionPaymentMethodController;
 use App\Http\Controllers\TransactionStatusController;
 use App\Http\Controllers\TransactionTypeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BannerImageController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,11 @@ Route::group(["prefix" => "users", "middleware" => "auth:sanctum"], function () 
     Route::patch("/{id}", [UserController::class, "update"]);
 });
 
+Route::group(["prefix" => "banner"], function () {
+    Route::get("/", [BannerImageController::class, "index"]);
+    Route::post("/", [BannerImageController::class, "store"]);
+    Route::get("/{id}", [BannerImageController::class, "show"]); // Added route to fetch a specific banner by ID
+});
 
 Route::group(["prefix" => "categories"], function () {
     Route::get("/", [CategoryController::class, "index"]);

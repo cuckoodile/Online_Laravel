@@ -62,7 +62,7 @@ class UserController extends Controller
         // Validation rules
         // Ensure all required fields are present and valid
         // Avoid using overly strict rules that may block valid inputs
-        // NOTE: The file upload should be a real file or else it will
+        // NOTE: The file upload should be a real file or else it will not work
         $validator = validator()->make($inputs, [
             "profile_image" => [
                 'sometimes',
