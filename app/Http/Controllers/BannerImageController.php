@@ -48,7 +48,7 @@ class BannerImageController extends Controller
 
         if (!$request->hasFile('image')) {
             return response()->json([
-                'success' => false,
+                'ok' => false,
                 'message' => 'No image was uploaded.'
             ], 400);
         }
@@ -129,7 +129,7 @@ class BannerImageController extends Controller
         $bannerImage->delete();
 
         return response()->json([
-            'success' => true,
+            'ok' => true,
             'message' => 'Banner image deleted successfully.'
         ]);
     }
