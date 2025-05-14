@@ -12,8 +12,8 @@ class BannerImageController extends Controller
         // Fetch all banner images from the database
         $bannerImages = BannerImage::all();
 
-        if(empty($bannerImages)) {
-            return $this->ok(null , "No image found!");
+        if(!$bannerImages) {
+            return $this->NotFound("No image found!");
         }
         
         // Return the view with the banner images
@@ -26,10 +26,18 @@ class BannerImageController extends Controller
 
     public function show($id) {
         // Fetch the specific banner image by ID
-        $bannerImage = BannerImage::findOrFail($id);
+        $bannerImage = BannerImage::find($id);
+
+        if (!$bannerImage) {
+            return  $this->NotFound("No image found!");
+        }
 
         // Return the view with the specific banner image
-        return response()->json(compact('bannerImage'));
+        return response()->json([
+            "ok" => true,
+            "message" => "success",
+            "data" => $bannerImage
+        ]);
     }
 
     public function store(Request $request)
@@ -56,7 +64,7 @@ class BannerImageController extends Controller
         ]);
 
         return response()->json([
-            'success' => true,
+            'ok' => true,
             'message' => 'Banner image uploaded successfully.',
             'data' => [
                 'filename' => $fileName,
@@ -65,6 +73,64 @@ class BannerImageController extends Controller
                 'id' => $banner->id,
                 'timestamp' => $banner->timestamp
             ]
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp,jfif|max:2048',
+        ]);
+
+        // Find the banner image to update
+        $bannerImage = BannerImage::findOrFail($id);
+
+        // Delete the old image file if it exists
+        if (file_exists(public_path($bannerImage->image))) {
+            unlink(public_path($bannerImage->image));
+        }
+
+        // Upload the new image
+        $file = $request->file('image');
+        $extension = $file->getClientOriginalExtension();
+        $fileName = time() . '.' . $extension;
+        $file->move(public_path('banner_images'), $fileName);
+
+        // Update the banner image record
+        $bannerImage->update([
+            'image' => 'banner_images/' . $fileName,
+            'timestamp' => now(),
+        ]);
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Banner image updated successfully.',
+            'data' => [
+                'filename' => $fileName,
+                'path' => 'banner_images/' . $fileName,
+                'full_url' => asset('banner_images/' . $fileName),
+                'id' => $bannerImage->id,
+                'timestamp' => $bannerImage->timestamp
+            ]
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        // Find the banner image to delete
+        $bannerImage = BannerImage::findOrFail($id);
+
+        // Delete the image file if it exists
+        if (file_exists(public_path($bannerImage->image))) {
+            unlink(public_path($bannerImage->image));
+        }
+
+        // Delete the record from database
+        $bannerImage->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Banner image deleted successfully.'
         ]);
     }
 }

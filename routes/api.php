@@ -29,7 +29,9 @@ Route::group(["prefix" => "users", "middleware" => "auth:sanctum"], function () 
 Route::group(["prefix" => "banner"], function () {
     Route::get("/", [BannerImageController::class, "index"]);
     Route::post("/", [BannerImageController::class, "store"]);
-    Route::get("/{id}", [BannerImageController::class, "show"]); // Added route to fetch a specific banner by ID
+    Route::get("/{id}", [BannerImageController::class, "show"]);
+    Route::patch("/{id}", [BannerImageController::class, "update"]);
+    Route::delete("/{id}", [BannerImageController::class, "destroy"]);
 });
 
 Route::group(["prefix" => "categories"], function () {
