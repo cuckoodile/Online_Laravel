@@ -138,12 +138,12 @@ class UserController extends Controller
         // Validation rules
         $validator = validator()->make($inputs, [
             "profile_image" => "sometimes|image|mimes:jpeg,png,jpg,gif,webp,jfif",
-            "first_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
-            "last_name" => "required|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
-            "username" => "required|min:4|regex:/^.+$/|max:32|unique:users,username," . $user->id,
-            "email" => "required|email|max:255|unique:users,email," . $user->id,
-            "contact_number" => "required|min:10|regex:/^[0-9]+$/|max:15|unique:profiles,contact_number," . $user->profile->id,
-            "is_admin" => "required|boolean",
+            "first_name" => "sometimes|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
+            "last_name" => "sometimes|min:4|max:255|string|regex:/^[A-Za-z\s]+$/i",
+            "username" => "sometimes|min:4|regex:/^.+$/|max:32|unique:users,username," . $user->id,
+            "email" => "sometimes|email|max:255|unique:users,email," . $user->id,
+            "contact_number" => "sometimes|min:10|regex:/^[0-9]+$/|max:15|unique:profiles,contact_number," . $user->profile->id,
+            "is_admin" => "sometimes|boolean",
             "password" => "nullable|min:8|max:255",
         ]);
 
@@ -167,21 +167,29 @@ class UserController extends Controller
 
         $validated = $validator->validated();
 
+        // Handle password hashing
         if (isset($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
-            $user->update($validated);
         } else {
             unset($validated['password']);
-            $user->update($validated);
         }
 
-        $user->profile()->update(array_merge(
-            $validated,
-            ["profile_image" => $profileImage]
-        ));
+        // Update user and profile separately
+    // Separate user and profile fields
+    $userFields = array_intersect_key($validated, array_flip([
+        'username', 'email', 'password', 'is_admin'
+    ]));
+
+    $profileFields = array_intersect_key($validated, array_flip([
+        'contact_number', 'profile_image', 'first_name', 'last_name'
+    ]));
+
+    // Perform updates
+    $user->update($userFields);
+    $user->profile()->update($profileFields);
 
         // Role and permission handling
-        $roleName = $inputs['is_admin'] ? 'admin' : 'user';
+        $roleName = isset($validated['is_admin']) && $validated['is_admin'] ? 'admin' : 'user';
         $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
         $permissionName = $roleName === 'admin' ? 'Manage All Works' : 'Manage Own Post';
         $permission = Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'api']);
