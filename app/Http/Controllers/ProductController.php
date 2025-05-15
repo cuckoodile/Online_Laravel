@@ -92,6 +92,7 @@ class ProductController extends Controller
             'admin_id' => $request->user()->id,
             'product_image' => $imagePaths,
             'description' => $request->description,
+            'product_specifications' => $request->product_specifications,
             'category_id' => $request->category_id,
         ]);
 
@@ -101,6 +102,7 @@ class ProductController extends Controller
                     'details' => json_encode($spec['details']),
                 ]);
             }
+            $product->product_specifications = $product->product_specifications;
 
             // If stock is provided, create an inbound transaction
             $transaction = Transaction::create([
