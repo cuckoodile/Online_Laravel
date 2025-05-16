@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductCommentController;
 use App\Http\Controllers\ProductSpecificationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PriceRangeController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransactionPaymentMethodController;
 use App\Http\Controllers\TransactionStatusController;
@@ -48,6 +49,14 @@ Route::group(["prefix" => "products"], function () {
     Route::post("/", [ProductController::class, "store"])->middleware("auth:sanctum");
     Route::delete("/{id}", [ProductController::class, "destroy"])->middleware("auth:sanctum");
     Route::patch("/{id}", [ProductController::class, "update"])->middleware("auth:sanctum");
+});
+
+Route::group(["prefix" => "prices"], function() {
+    Route::get("/", [PriceRangeController::class, "index"]);
+    Route::get("/{id}", [PriceRangeController::class, "show"]);
+    Route::post("/", [PriceRangeController::class, "store"]);
+    Route::delete("/{id}", [PriceRangeController::class, "destroy"]);
+    Route::patch("/{id}", [PriceRangeController::class, "update"]);
 });
 
 
