@@ -2,11 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\ProductSpecification;
 use App\Models\ProductComment;
+use App\Models\BannerImage;
 use App\Models\Cart;
 use App\Models\Transaction;
 use App\Models\TransactionPaymentMethod;
@@ -39,6 +41,15 @@ class DatabaseSeeder extends Seeder
                     "contact_number" => "09090909090",
                     "is_admin" => 1,
                 ],
+                "address" => [ // I tried to create but it fails
+                    "name" => "I Don't know what's this??", //please remove if it doesn't need
+                    "house_address" => "MFI Building, Ortigas Avenue, Metro Manila",
+                    "region" => "NCR",
+                    "province" => "null",
+                    "city" => "Pasig",
+                    "baranggay" => "Ugong",
+                    "zip_code" => 1604,
+                ]
             ],
             [
                 "username" => "CatCodes",
@@ -50,6 +61,27 @@ class DatabaseSeeder extends Seeder
                     "last_name" => "Divino",
                     "contact_number" => "09543549694",
                 ],
+                "address" => [
+                    "name" => "mimimimeeww",
+                    "house_address" => "Station Eos-9, Module 42-B, Lagrange Point Alpha (L1) ",
+                    "region" => "Orion Arm, Milky Way Galaxy",
+                    "province" => "Outer Exosphere", 
+                    "city" => "Earth Deep Space Zone",
+                    "baranggay" => "Interstellar Zone 7",
+                    "zip_code" => "OS-00042",
+                ],
+                //  "transactions" => [
+                //     [
+                //         "payment_method_id" => 1, // Assuming payment method ID 1 is 'Cash On Delivery'
+                //         "type_id" => 1,           // Assuming transaction type ID 1 is 'Inbound'
+                //         "status_id" => 1,         // Assuming status ID 1 is 'Pending'
+                //         "products" => [
+                //             ["product_id" => 5, "quantity" => 1],
+                //             ["product_id" => 21, "quantity" => 1],
+                //         ],
+                //     ]
+                // ]
+            
             ],
             [
                 "username" => "Cuckoodile",
@@ -61,6 +93,15 @@ class DatabaseSeeder extends Seeder
                     "last_name" => "Sube",
                     "contact_number" => "09987654321",
                 ],
+                "address" => [
+                    "name" => "Rawr",
+                    "house_address" => "Void Citadel, Sector 12-X, Command Tower Zeta",
+                    "region" => "Celestial Gateway",
+                    "province" => "42.7°N, 118.5°E (Deep Space Quadrant)", 
+                    "city" => "Andromeda Expanse",
+                    "baranggay" => "Deep Space Quadrant Zone 1000",
+                    "zip_code" => "VDX-4444",
+                ]
             ],
             
          ];
@@ -87,6 +128,14 @@ class DatabaseSeeder extends Seeder
             $profileData = $userData['profile'];
             unset($userData['profile']);
 
+            // first is to remove address from user data
+            $addressData = $userData['address'];
+            unset($userData['address']);
+
+            // Remove transaction too first
+            $transactions = $userData['transactions'] ?? [];
+            unset($userData['transactions']);
+
             // Create user in the database
             $user = User::create($userData);
 
@@ -96,6 +145,35 @@ class DatabaseSeeder extends Seeder
             // Assign role based on is_admin
             $role = $profileData['is_admin'] ?? false ? $roleAdmin : $roleUser;
             $user->assignRole($role);
+
+            $addressData['user_id'] = $user->id;
+            Address::create($addressData);
+
+            // // Create transactions for this user
+            // foreach ($transactions as $transactionData) {
+            //     $products = $transactionData['products'] ?? [];
+            //     unset($transactionData['products']);
+
+            //     // Set user_id and address_id for the transaction
+            //     $transactionData['user_id'] = $user->id;
+            //     $transactionData['address_id'] = $address->id;
+
+            //     $transaction = Transaction::create($transactionData);
+
+            //     // Attach products to the transaction
+            //     $items = [];
+            //     foreach ($products as $product) {
+            //         $productModel = Product::find($product['product_id']);
+            //         if ($productModel) {
+            //             $items[$product['product_id']] = [
+            //                 'quantity' => $product['quantity'],
+            //                 'price' => $productModel->price,
+            //                 'sub_total' => $productModel->price * $product['quantity'],
+            //             ];
+            //         }
+            //     }
+            //     $transaction->products()->sync($items);
+            // }
         }
 
         // Seed categories
@@ -115,6 +193,22 @@ class DatabaseSeeder extends Seeder
             Category::create($category);
         }
 
+
+        $banner_images = [
+            ['image' => 'assets/media/Hats/hat-beanie-img1.webp'],
+            ['image' => 'assets/media/Necklace/necklace-arrow-img1.webp'],
+            ['image' => 'assets/media/Pants/pants-cargo-img1.webp'],
+            ['image' => 'assets/media/Shirts/shirt-button-img1.webp'],
+            ['image' => 'assets/media/Shoes/shoe-casual-img1.webp'],
+            ['image' => 'assets/media/Shorts/shorts-beach-img1.webp'],
+            ['image' => 'assets/media/Slacks/slacks-classic-img1.webp'],
+            ['image' => 'assets/media/Socks/sock-long-img1.webp'],
+            ['image' => 'assets/media/Sunglasses/sunglasses-aviator-img1.webp'],
+            ['image' => 'assets/media/Tshirt_2/tshirt-crew-img1.webp']
+        ];
+        foreach ($banner_images as $images){
+            BannerImage::create($images);
+        }
 
         // Seed New Products with Category
         $products = [
@@ -1993,96 +2087,92 @@ class DatabaseSeeder extends Seeder
         }
 
 
-//         // Seed carts
-//         $carts = [
-//             [
-//                 'user_id' => 1,
-//                 'product_id' => 1,
-//                 'quantity' => 2,
-//                 'total_price' => 1399.98,
-//             ],
-//             [
-//                 'user_id' => 3,
-//                 'product_id' => 2,
-//                 'quantity' => 1,
-//                 'total_price' => 19.99,
-//             ],
-//         ];
-//         foreach ($carts as $cart) {
-//             Cart::create($cart);
-//         }
+         // Seed carts
+        $carts = [
+            [
+                'user_id' => 2,
+                'product_id' => 21,
+                'quantity' => 1,
+                'total_price' => 1000.50
+            ],
+        ];
+        foreach ($carts as $cart) {
+            Cart::create($cart);
+        }
 
-//         // Seed default payment methods
-//         $payment_methods = [
-//             ['name' => 'Cash On Delivery'],
-//             ['name' => 'Bank'],
-//             ['name' => 'Gcash'],
-//         ];
-//         foreach ($payment_methods as $method) {
-//             TransactionPaymentMethod::firstOrCreate($method);
-//         }
+         // Seed default payment methods
+        $payment_methods = [
+            ['name' => 'Cash On Delivery'],
+            ['name' => 'E-Wallet'],
+            ['name' => 'Debit Card'],
+            ['name' => 'Credit Card'],
+            ['name' => 'Gcash'],
+        ];
+        foreach ($payment_methods as $method) {
+            TransactionPaymentMethod::create($method);
+        }
 
-//         // Seed default transaction status
-//          $statuses = [
-//             ['name' => 'Pending'],
-//             ['name' => 'Confirmed'],
-//             ['name' => 'Shipped'],
-//             ['name' => 'Delivered'],
-//             ['name' => 'Cancelled'],
-//             ['name' => 'Returned']
-//         ];
-//         foreach ($statuses as $status) {
-//             TransactionStatus::firstOrCreate($status);
-//         }
+        //  Seed default transaction status
+         $statuses = [
+            ['name' => 'Pending'],
+            ['name' => 'Confirmed'],
+            ['name' => 'Shipped'],
+            ['name' => 'Delivered'],
+            ['name' => 'Cancelled'],
+            ['name' => 'Returned']
+        ];
+        foreach ($statuses as $status) {
+            TransactionStatus::create($status);
+        }
         
-//         // Seed default transaction types
-//         $types = [
-//             ['name' => 'Inbound'],
-//             ['name' => 'Outbound'],
-//             ['name' => 'Void'],
-//             ['name' => 'Returned']
-//         ];
-//         foreach ($types as $type) {
-//             TransactionType::firstOrCreate($type);
-//         }
+        // Seed default transaction types
+        $types = [
+            ['name' => 'Inbound'],
+            ['name' => 'Outbound'],
+            ['name' => 'Void'],
+            ['name' => 'Returned']
+        ];
+        foreach ($types as $type) {
+            TransactionType::create($type);
+        }
 
-//         // Seed transactions
-//         $transactions = [
-//             [
-//                 'user_id' => 1,
-//                 'address_id' => 1,
-//                 'payment_method_id' => 1,
-//                 'type_id' => 1,
-//                 'status_id' => 1,
-//                 'products' => [
-//                     ['product_id' => 1, 'quantity' => 2],
-//                     ['product_id' => 2, 'quantity' => 1],
-//                 ],
-//             ],
-//         ];
+        //  Seed transactions
+        $transactions = [
+            [
+                'user_id' => 2,
+                'address_id' => 2,
+                'payment_method_id' => 1,
+                'type_id' => 1,
+                'status_id' => 1,
+                'products' => [
+                    ['product_id' => 5, 'quantity' => 2],
+                    ['product_id' => 21, 'quantity' => 1],
+                ],
+            ],
+        ];
 
-//         foreach ($transactions as $transactionData) {
-//             // Extract products data
-//             $products = $transactionData['products'];
-//             unset($transactionData['products']);
+        foreach ($transactions as $transactionData) {
+            // Extract products data
+            $products = $transactionData['products'];
+            unset($transactionData['products']);
 
-//             // Create the transaction
-//             $transaction = Transaction::create($transactionData);
+            // Create the transaction
+            $transaction = Transaction::create($transactionData);
 
-//             // Insert products into the pivot table
-//             $items = [];
-//             foreach ($products as $product) {
-//                 $productModel = Product::find($product['product_id']);
-//                 if ($productModel) {
-//                     $items[$product['product_id']] = [
-//                         'quantity' => $product['quantity'],
-//                         'price' => $productModel->price,
-//                         'sub_total' => $productModel->price * $product['quantity'],
-//                     ];
-//                 }
-//             }
-//             $transaction->products()->sync($items);
-//         }
+            // Insert products into the pivot table
+            $items = [];
+            foreach ($products as $product) {
+                $productModel = Product::find($product['product_id']);
+                if ($productModel) {
+                    $items[$product['product_id']] = [
+                        'quantity' => $product['quantity'],
+                        'price' => $productModel->price,
+                        'sub_total' => $productModel->price * $product['quantity'],
+                    ];
+                }
+            }
+            $transaction->products()->sync($items);
+        }
         
     }
 }

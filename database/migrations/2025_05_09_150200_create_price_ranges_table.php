@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('price_ranges', function (Blueprint $table) {
             $table->id();
             $table->integer(('price'));
-            $table->string('timestamp')->nullable();
             $table->timestamps();
         });
     }

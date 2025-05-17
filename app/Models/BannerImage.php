@@ -8,6 +8,5 @@ class BannerImage extends Model
 {
     protected $fillable = [
         'image',
-        'timestamp'
     ];
 }

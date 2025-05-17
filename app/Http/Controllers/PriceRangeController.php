@@ -11,7 +11,11 @@ class PriceRangeController extends Controller
     public function index()
     {
         $priceRanges = PriceRange::all();
-        return response()->json($priceRanges);
+        return response()->json([
+            "ok" => true,
+            "message" => "List of price was retrieved successfully.",
+            "data" => $priceRanges
+        ]);
     }
 
     // Store a new price range

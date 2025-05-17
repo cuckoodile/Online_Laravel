@@ -43,7 +43,7 @@ class BannerImageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,jfif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,jfif|max:2048'
         ]);
 
         if (!$request->hasFile('image')) {
