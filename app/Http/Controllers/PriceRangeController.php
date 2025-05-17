@@ -18,6 +18,22 @@ class PriceRangeController extends Controller
         ]);
     }
 
+    public function show($id) {
+        // Fetch the specific banner image by ID
+        $priceRange = PriceRange::find($id);
+
+        if (!$priceRange) {
+            return  $this->NotFound("Price to this item Not found!");
+        }
+
+        // Return the view with the specific banner image
+        return response()->json([
+            "ok" => true,
+            "message" => "Price to this item was retrieved successfully.",
+            "data" => $priceRange
+        ]);
+    }
+
     // Store a new price range
     public function store(Request $request)
     {
@@ -28,13 +44,6 @@ class PriceRangeController extends Controller
 
         $priceRange = PriceRange::create($validated);
         return $this->Ok($priceRange, "Price Inserted");
-    }
-
-    // Show a specific price range
-    public function show($id)
-    {
-        $priceRange = PriceRange::findOrFail($id);
-        return response()->json($priceRange);
     }
 
     // Update a specific price range
