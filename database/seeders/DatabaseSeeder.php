@@ -2093,7 +2093,16 @@ class DatabaseSeeder extends Seeder
                 'user_id' => 2,
                 'product_id' => 21,
                 'quantity' => 1,
-                'total_price' => 1000.50
+            ],
+            [
+                'user_id' => 1,
+                'product_id' => 13,
+                'quantity' => 10,
+            ],
+            [
+                'user_id' => 1,
+                'product_id' => 21,
+                'quantity' => 26,
             ],
         ];
         foreach ($carts as $cart) {
