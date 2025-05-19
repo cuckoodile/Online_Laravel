@@ -19,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
         // Retrieve all users and load their profiles
-        $users = User::with('profile')->get();
+        $users = User::with(['profile', 'address', 'transactions'])->get();
 
         return $this->Ok($users);
     }
@@ -112,6 +112,10 @@ class UserController extends Controller
         if(empty($user)){
             return $this->NotFound("User Not Found!");
         }
+
+        $user->profile;
+        $user->address;
+        $user->transactions;
 
         return $this->Ok($user);
     }
