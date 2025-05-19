@@ -31,9 +31,9 @@ class DatabaseSeeder extends Seeder
 
         $users = [
             [
-                "username" => "DEVSIX",
-                "email" => "devsix@gmail.com",
-                "password" => bcrypt("devsixtech"),
+                "username" => "admin",
+                "email" => "admin@gmail.com",
+                "password" => bcrypt("admin"),
                 "profile" => [
                     "profile_image" => "assets/media/users/TeamLogo.webp",
                     "first_name" => "Developer",
