@@ -81,12 +81,12 @@ class ProductController extends Controller
         // Validate the input
         $request->validate([
             "name" => "required|string|unique:products",
-            "product_image" => "required|array|min:1|max:10",
+            "product_image" => "required|array|min:1|max:4",
             "product_image.*" => "required|image|mimes:jpeg,png,jpg,gif,webp,jfif",
             "price" => "required|numeric",
             "description" => "required|string",
             "category_id" => "required|exists:categories,id",
-            "product_specifications" => "required|array|min:2|max:10",
+            "product_specifications" => "required|array|min:2|max:4",
             "product_specifications.*.details" => "required|array",
             "stock" => "required|numeric|min:1"
         ]);
