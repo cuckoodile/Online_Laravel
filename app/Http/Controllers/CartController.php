@@ -155,6 +155,19 @@ class CartController extends Controller
                     ->where('user_id', $userId)
                     ->get();
 
+        foreach ($carts as $cart) {
+            $product = $cart->product;
+            if ($product) {
+                $images = $product->product_image;
+                if (is_string($images)) {
+                    $images = json_decode($images, true);
+                }
+                $product->product_image = array_map(function ($img) {
+                    return "http://127.0.0.1:8000/{$img}";
+                }, $images ?? []);
+            }
+        }
+
         if ($carts->isEmpty()) {
             return $this->NotFound("No items in the cart");
         }
@@ -173,6 +186,17 @@ class CartController extends Controller
 
         if (empty($cart)) {
             return $this->NotFound("Cart item not found");
+        }
+
+        $product = $cart->product;
+        if ($product) {
+            $images = $product->product_image;
+            if (is_string($images)) {
+                $images = json_decode($images, true);
+            }
+            $product->product_image = array_map(function ($img) {
+                return "http://127.0.0.1:8000/{$img}";
+            }, $images ?? []);
         }
 
         return $this->Ok($cart);

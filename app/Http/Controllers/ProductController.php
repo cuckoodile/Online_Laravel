@@ -176,6 +176,12 @@ class ProductController extends Controller
             $product->product_image = array_map(function ($img) {
                 return "http://127.0.0.1:8000/{$img}";
             }, $images ?? []);
+
+            // On deployment
+            // $product->product_image = array_map(function ($img) {
+            //     return "https://apidevsixtech.styxhydra.com/{$img}";
+            // }, $images ?? []);
+
             $product->category;
             $product->product_comments;
             // Calculate and include stock

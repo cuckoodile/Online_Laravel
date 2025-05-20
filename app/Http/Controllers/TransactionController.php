@@ -204,7 +204,7 @@ class TransactionController extends Controller
         //     return $date->year === 2024 && $date->month === 3;
         // });
 
-        $march2024Transactions = count($transactions->where('type_id' , '1'));
+        $march2024Transactions = count($transactions->where('created_at' , '1'));
         return $this->Ok($march2024Transactions);
 
     }
