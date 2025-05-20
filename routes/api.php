@@ -105,6 +105,7 @@ Route::group(["prefix" => "transactions/payment"], function () {
 
 Route::group(["prefix" => "transactions", "middleware" => "auth:sanctum"], function () {
     Route::get("/", [TransactionController::class, "index"]);
+    Route::get("/count", [TransactionController::class, "countTransaction"]);
     Route::get("/{id}", [TransactionController::class, "show"]);
     Route::post("/", [TransactionController::class, "store"]);
     Route::delete("/{id}", [TransactionController::class, "destroy"]);

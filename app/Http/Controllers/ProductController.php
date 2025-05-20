@@ -178,6 +178,10 @@ class ProductController extends Controller
             }, $images ?? []);
             $product->category;
             $product->product_comments;
+            // Calculate and include stock
+            $inboundStock = $product->transactions()->where('type_id', 1)->sum('product_transaction.quantity');
+            $outboundStock = $product->transactions()->where('type_id', 2)->sum('product_transaction.quantity');
+            $product->stock = $inboundStock - $outboundStock;
         }
 
         return $this->Ok($products);
@@ -281,10 +285,11 @@ class ProductController extends Controller
         // Save specifications (accept key-value pairs)
         if (is_array($request->product_specifications)) {
             foreach ($request->product_specifications as $key => $value) {
-                ProductSpecification::create([
+                $productSpecification = [
                     'product_id' => $product->id,
                     'details' => json_encode([$key => $value]),
-                ]);
+                ];
+                ProductSpecification::create($productSpecification);
             }
         }
 
@@ -296,11 +301,17 @@ class ProductController extends Controller
             'address_id' => 1, // Default address (can be adjusted as needed)
         ]);
 
-        $transaction->products()->attach($request->id, [
+        $transaction->products()->attach($product->id, [
             'quantity' => $request->stock,
             'price' => $request->price,
             'sub_total' => $request->stock * $request->price,
         ]);
+
+        // Calculate stock based on inbound and outbound transactions
+        $inboundStock = $product->transactions()->where('type_id', 1)->sum('product_transaction.quantity');
+        $outboundStock = $product->transactions()->where('type_id', 2)->sum('product_transaction.quantity');
+        $stock = $inboundStock - $outboundStock;
+        $product->stock = $stock;
 
         return $this->Created($product, "Product has been created with specifications and stock!");
     }

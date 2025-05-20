@@ -189,26 +189,48 @@ class TransactionController extends Controller
         return $this->Ok($transactions);
     }
 
+    public function countTransaction()
+    {
+        $transactions = Transaction::with(['products', 'transaction_types', 'transaction_statuses', 'transaction_payment_methods', 'address'])->get();
+
+        if ($transactions->isEmpty()) {
+            return $this->NotFound("No transactions foundss!");
+        }
+
+        // Filter transactions where created_at is in March 2024 (format: Y-m-dTH:i:s.uZ)
+        // $march2024Transactions = $transactions->filter(function ($transaction) {
+        //     if (!$transaction->created_at) return false;
+        //     $date = \Carbon\Carbon::parse($transaction->created_at);
+        //     return $date->year === 2024 && $date->month === 3;
+        // });
+
+        $march2024Transactions = count($transactions->where('type_id' , '1'));
+        return $this->Ok($march2024Transactions);
+
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $inputs = $request->all();
 
-        $validator = validator()->make($inputs,[
-           "payment_method_id" => "required|exists:transaction_payment_methods,id|integer" ,
-           "type_id" => "required|exists:transaction_types,id|integer",
-           "status_id" => "required|exists:transaction_statuses,id|integer",
+        $validator = validator()->make($inputs, [
+            "payment_method_id" => "required|exists:transaction_payment_methods,id|integer",
+            "type_id" => "required|exists:transaction_types,id|integer",
+            "status_id" => "required|exists:transaction_statuses,id|integer",
 
-           "address_id" => "required|exists:addresses,id|integer",
+            "address_id" => "required|exists:addresses,id|integer",
 
-           "products" => "required|array",
-           "products.*" => "array",
-           "products.*.product_id" => "required|exists:products,id|integer",
-           "products.*.quantity" => "required|integer|min:1",
+            "products" => "required|array",
+            "products.*" => "array",
+            "products.*.product_id" => "required|exists:products,id|integer",
+            "products.*.quantity" => "required|integer|min:1",
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->BadRequest($validator);
         }
 
@@ -234,7 +256,7 @@ class TransactionController extends Controller
             }
         }
 
-        $transactions =  $request->user()->transactions()->create($validator->validated());
+        $transactions = $request->user()->transactions()->create($validator->validated());
 
         $items = [];
         foreach ($inputs['products'] as $product) {
@@ -254,9 +276,9 @@ class TransactionController extends Controller
 
         return $this->Created($transactions, "Transaction has been created!");
     }
-    
 
-    
+
+
     /**
      * Display the specified resource.
      */
@@ -264,7 +286,7 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::find($id);
 
-        if(empty($transactions)){
+        if (empty($transactions)) {
             return $this->NotFound("Transaction not found!");
         }
 
@@ -283,13 +305,13 @@ class TransactionController extends Controller
     public function update(Request $request, string $id)
     {
         $transaction = Transaction::find($id);
-    
+
         if (empty($transaction)) {
             return $this->NotFound("Transaction not found!");
         }
-    
+
         $inputs = $request->all();
-    
+
         $validator = validator()->make($inputs, [
             "payment_method_id" => "exists:transaction_payment_methods,id|integer",
             "type_id" => "exists:transaction_types,id|integer",
@@ -304,27 +326,27 @@ class TransactionController extends Controller
             "address_id.city" => "sometimes|string",
             "address_id.baranggay" => "sometimes|string",
             "address_id.zip_code" => "sometimes|string|min:4|regex:/^[0-9]+$/",
-    
+
             // Product validation (pivot table)
             "products" => "array",
             "products.*" => "array",
             "products.*.product_id" => "exists:products,id|integer",
             "products.*.quantity" => "integer|min:1"
-    
+
         ], [
             "contact_number.phone" => "The :attribute must be a valid phone number"
         ]);
-    
+
         if ($validator->fails()) {
             return $this->BadRequest($validator->errors());
         }
-    
+
         // Update transaction fields
         $transaction->update($validator->validated());
-    
+
         if (isset($inputs['address_id'])) {
             $address = Address::find($inputs['address_id']);
-        
+
             if ($address && isset($inputs['address'])) {
                 $address->update(array_filter([
                     'house_address' => $inputs['address']['house_address'] ?? $address->house_address,
@@ -335,16 +357,16 @@ class TransactionController extends Controller
                     'zip_code' => $inputs['address']['zip_code'] ?? $address->zip_code
                 ]));
             }
-        
-            $transaction->update(['address_id' => $address->id]);  
+
+            $transaction->update(['address_id' => $address->id]);
         }
-    
+
         // Update products if provided
         if (isset($inputs['products'])) {
             $items = [];
             foreach ($inputs['products'] as $product) {
                 $productModel = Product::find($product['product_id']);
-    
+
                 if ($productModel) {
                     $items[$product['product_id']] = [
                         "total_price" => $productModel->price * $product['quantity'],
@@ -352,10 +374,10 @@ class TransactionController extends Controller
                     ];
                 }
             }
-    
+
             $transaction->products()->sync($items);
         }
-    
+
         return $this->Ok($transaction->load('products', 'address'), "Transaction has been updated!");
     }
 

@@ -1820,9 +1820,10 @@ class DatabaseSeeder extends Seeder
         //  Seed default transaction status
         $statuses = [
             ['name' => 'Pending'],
-            ['name' => 'Confirmed'],
+            ['name' => 'Shipping'],
             ['name' => 'Shipped'],
-            ['name' => 'Delivered'],
+            ['name' => 'On local hub'],
+            ['name' => 'Received'],
             ['name' => 'Cancelled'],
             ['name' => 'Returned']
         ];
@@ -1841,7 +1842,65 @@ class DatabaseSeeder extends Seeder
             TransactionType::create($type);
         }
 
+        // In-memory stock tracking for each product
+        $productStocks = Product::all()->pluck('id')->mapWithKeys(function ($id) {
+            return [$id => 0];
+        })->toArray();
+
         //  Seed transactions using factory
-        Transaction::factory(20)->create();
+        $startDate = '2023-06-22 00:00:00';
+        $endDate = now();
+        Transaction::factory(1000)->make()->each(function ($transaction) use (&$productStocks, $startDate, $endDate) {
+            // Generate random created_at/updated_at within range
+            $createdAt = fake()->dateTimeBetween($startDate, $endDate);
+            $transaction->created_at = $createdAt;
+            $transaction->updated_at = $createdAt;
+            $transaction->save();
+
+            $products = Product::inRandomOrder()->limit(rand(2, 4))->get();
+            foreach ($products as $product) {
+                $productId = $product->id;
+                $currentStock = $productStocks[$productId] ?? 0;
+
+                // Only allow outbound if stock is available, otherwise always inbound
+                $typeId = 1; // Default to inbound
+                // Increase inbound quantity range for higher stock
+                $inboundMin = 20;
+                $inboundMax = 100;
+                $outboundMax = 15;
+                $maxQuantity = $inboundMax;
+                if ($currentStock > 0) {
+                    $typeId = [1, 2][rand(0, 1)];
+                    if ($typeId === 2) {
+                        $maxQuantity = min($currentStock, $outboundMax);
+                        if ($maxQuantity <= 0) {
+                            $typeId = 1;
+                            $maxQuantity = $inboundMax;
+                        }
+                    } else {
+                        $maxQuantity = $inboundMax;
+                    }
+                }
+                $quantity = $typeId === 1 ? rand($inboundMin, $maxQuantity) : rand(1, $maxQuantity);
+                $price = $product->price;
+                $subTotal = $quantity * $price;
+
+                // Update in-memory stock
+                if ($typeId === 1) {
+                    $productStocks[$productId] += $quantity;
+                } else {
+                    $productStocks[$productId] -= $quantity;
+                }
+
+                // Create the transaction-product relation with the correct type
+                $transaction->type_id = $typeId;
+                $transaction->save();
+                $transaction->products()->attach($productId, [
+                    'quantity' => $quantity,
+                    'price' => $price,
+                    'sub_total' => $subTotal,
+                ]);
+            }
+        });
     }
 }
