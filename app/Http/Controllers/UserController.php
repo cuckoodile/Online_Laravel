@@ -162,6 +162,16 @@ class UserController extends Controller
         // Retrieve all users and load their profiles
         $users = User::with(['profile', 'address', 'transactions'])->get();
 
+        // Format profile_image to include localhost URL for each user
+        foreach ($users as $user) {
+            if ($user->profile && $user->profile->profile_image) {
+                $image = $user->profile->profile_image;
+                if (!str_starts_with($image, 'http')) {
+                    $user->profile->profile_image = "http://127.0.0.1:8000/{$image}";
+                }
+            }
+        }
+
         return $this->Ok($users);
     }
 
@@ -257,6 +267,14 @@ class UserController extends Controller
         $user->profile;
         $user->address;
         $user->transactions;
+
+        // Format profile_image to include localhost URL
+        if ($user->profile && $user->profile->profile_image) {
+            $image = $user->profile->profile_image;
+            if (!str_starts_with($image, 'http')) {
+                $user->profile->profile_image = "http://127.0.0.1:8000/{$image}";
+            }
+        }
 
         return $this->Ok($user);
     }
