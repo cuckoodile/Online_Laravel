@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
                     "name" => "mimimimeeww",
                     "house_address" => "Station Eos-9, Module 42-B, Lagrange Point Alpha (L1) ",
                     "region" => "Orion Arm, Milky Way Galaxy",
-                    "province" => "Outer Exosphere", 
+                    "province" => "Outer Exosphere",
                     "city" => "Earth Deep Space Zone",
                     "baranggay" => "Interstellar Zone 7",
                     "zip_code" => "OS-00042",
@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
                 //         ],
                 //     ]
                 // ]
-            
+
             ],
             [
                 "username" => "Cuckoodile",
@@ -97,15 +97,15 @@ class DatabaseSeeder extends Seeder
                     "name" => "Rawr",
                     "house_address" => "Void Citadel, Sector 12-X, Command Tower Zeta",
                     "region" => "Celestial Gateway",
-                    "province" => "42.7°N, 118.5°E (Deep Space Quadrant)", 
+                    "province" => "42.7°N, 118.5°E (Deep Space Quadrant)",
                     "city" => "Andromeda Expanse",
                     "baranggay" => "Deep Space Quadrant Zone 1000",
                     "zip_code" => "VDX-4444",
                 ]
             ],
-            
-         ];
-        
+
+        ];
+
         // Create roles and permissions
         $roleAdmin = Role::firstOrCreate(["name" => "admin", "guard_name" => "api"]);
         $rolePermissionAdmin = Permission::firstOrCreate(["name" => "Manage All Works", "guard_name" => "api"]);
@@ -187,7 +187,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Slacks'],
             ['name' => 'Socks'],
             ['name' => 'Sunglasses'],
-            ['name' => 'Tshirt_2'],            
+            ['name' => 'Tshirt_2'],
         ];
         foreach ($categories as $category) {
             Category::create($category);
@@ -206,7 +206,7 @@ class DatabaseSeeder extends Seeder
             ['image' => 'assets/media/Sunglasses/sunglasses-aviator-img1.webp'],
             ['image' => 'assets/media/Tshirt_2/tshirt-crew-img1.webp']
         ];
-        foreach ($banner_images as $images){
+        foreach ($banner_images as $images) {
             BannerImage::create($images);
         }
 
@@ -686,7 +686,7 @@ class DatabaseSeeder extends Seeder
                     "assets/media/Pants/pants-jogger-img2.webp",
                     "assets/media/Pants/pants-jogger-img3.webp",
                     "assets/media/Pants/pants-jogger-img4.webp",
-                    
+
                 ],
                 "description" => 'Versatile jogger pants designed for comfort and an athletic look. Great for workouts or casual lounging.',
                 "category_id" => 3,
@@ -2063,7 +2063,6 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
             ]
-
         ];
 
         foreach ($products as $productData) {
@@ -2087,7 +2086,7 @@ class DatabaseSeeder extends Seeder
         }
 
 
-         // Seed carts
+        // Seed carts
         $carts = [
             [
                 'user_id' => 2,
@@ -2109,7 +2108,7 @@ class DatabaseSeeder extends Seeder
             Cart::create($cart);
         }
 
-         // Seed default payment methods
+        // Seed default payment methods
         $payment_methods = [
             ['name' => 'Cash On Delivery'],
             ['name' => 'E-Wallet'],
@@ -2122,7 +2121,7 @@ class DatabaseSeeder extends Seeder
         }
 
         //  Seed default transaction status
-         $statuses = [
+        $statuses = [
             ['name' => 'Pending'],
             ['name' => 'Confirmed'],
             ['name' => 'Shipped'],
@@ -2133,7 +2132,7 @@ class DatabaseSeeder extends Seeder
         foreach ($statuses as $status) {
             TransactionStatus::create($status);
         }
-        
+
         // Seed default transaction types
         $types = [
             ['name' => 'Inbound'],
@@ -2145,43 +2144,7 @@ class DatabaseSeeder extends Seeder
             TransactionType::create($type);
         }
 
-        //  Seed transactions
-        $transactions = [
-            [
-                'user_id' => 2,
-                'address_id' => 2,
-                'payment_method_id' => 1,
-                'type_id' => 1,
-                'status_id' => 1,
-                'products' => [
-                    ['product_id' => 5, 'quantity' => 2],
-                    ['product_id' => 21, 'quantity' => 1],
-                ],
-            ],
-        ];
-
-        foreach ($transactions as $transactionData) {
-            // Extract products data
-            $products = $transactionData['products'];
-            unset($transactionData['products']);
-
-            // Create the transaction
-            $transaction = Transaction::create($transactionData);
-
-            // Insert products into the pivot table
-            $items = [];
-            foreach ($products as $product) {
-                $productModel = Product::find($product['product_id']);
-                if ($productModel) {
-                    $items[$product['product_id']] = [
-                        'quantity' => $product['quantity'],
-                        'price' => $productModel->price,
-                        'sub_total' => $productModel->price * $product['quantity'],
-                    ];
-                }
-            }
-            $transaction->products()->sync($items);
-        }
-        
+        //  Seed transactions using factory
+        Transaction::factory(20)->create();
     }
 }

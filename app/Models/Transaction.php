@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\TransactionType;
 use App\Models\TransactionStatus;
 use App\Models\TransactionPaymentMethod;
@@ -14,6 +15,8 @@ use App\Models\Address;
 
 class Transaction extends Model
 {
+    use HasFactory;
+
     public $fillable = [
         // Auto Filled Based on the Logged User
         "user_id",

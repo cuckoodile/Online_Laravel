@@ -23,7 +23,7 @@ class ProductController extends Controller
             if (is_string($images)) {
                 $images = json_decode($images, true);
             }
-            $product->product_image = array_map(function($img) {
+            $product->product_image = array_map(function ($img) {
                 return "http://127.0.0.1:8000/{$img}";
             }, $images ?? []);
             $product->category;
@@ -47,8 +47,8 @@ class ProductController extends Controller
         if (is_string($images)) {
             $images = json_decode($images, true);
         }
-        $Product->product_image = array_map(function($img) {
-            return "https://apidevsixtech.styxhydra.com/{$img}";
+        $Product->product_image = array_map(function ($img) {
+            return "http://127.0.0.1:8000/{$img}";
         }, $images ?? []);
         $Product->category;
         $Product->product_comments;
@@ -158,31 +158,30 @@ class ProductController extends Controller
 
 
 
-    public function update(Request $request, Product $product)
+    public function update(Request $request, string $id)
     {
+        $product = Product::find($id);
 
-        Log::info('Starting update for product: ' . $product->id);
-        Log::info('Request data:', $request->all());
         // Define validation rules for all possible fields
         $validator = validator()->make($request->all(), [
-            "name" => "sometimes|string|unique:products,name," . $product->id,
+            "name" => "sometimes|string|unique:products,name,$id",
             "product_image" => "sometimes|array|min:1|max:10",
             "product_image.*" => "sometimes|image|mimes:jpeg,png,jpg,gif,webp,jfif",
             "price" => "sometimes|numeric",
             "description" => "sometimes|string",
-            "category_id" => "sometimes|exists:categories,id",
+            "category_id" => "sometimes|exists:categories,$id",
             "product_specifications" => "sometimes|array|min:2|max:10",
             "product_specifications.*.details" => "sometimes|array",
             "stock" => "sometimes|numeric|min:0"
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return $this->BadRequest($validator->errors());
         }
 
         // Update name if provided
         if ($request->has('name')) {
-            $product->name = $this->SanitizedName($request->name);
+            $request->name = $this->SanitizedName($request->name);
         }
 
         // Update images if provided
@@ -192,32 +191,27 @@ class ProductController extends Controller
                 $extension = $file->getClientOriginalExtension();
                 $fileName = time() . '_' . uniqid() . '.' . $extension;
                 $file->move(public_path('product_images'), $fileName);
-                $imagePaths[] = 'product_images/' . $fileName;
+                $imagePaths[] = "product_images/$fileName";
             }
 
             // Delete old images if they exist
-            if (is_array($product->product_image)) {
-                foreach ($product->product_image as $oldImage) {
+            if (is_array($request->product_image)) {
+                foreach ($request->product_image as $oldImage) {
                     if (file_exists(public_path($oldImage))) {
                         unlink(public_path($oldImage));
                     }
                 }
             }
 
-            $product->product_image = $imagePaths;
+            $request->product_image = $imagePaths;
         }
 
         // Update other simple fields if provided
         $simpleFields = ['price', 'description', 'category_id'];
         foreach ($simpleFields as $field) {
             if ($request->has($field)) {
-                $product->$field = $request->$field;
+                $request->$field = $request->$field;
             }
-        }
-
-        // Save only if there are changes
-        if ($product->isDirty()) {
-            $product->save();
         }
 
         // Update specifications if provided
@@ -248,8 +242,10 @@ class ProductController extends Controller
             ]);
         }
 
-        // Return the updated product
-        return $this->Ok($product, "Product has been updated successfully!");
+        $product->update($validator->validated());
+
+        // Return the updated product   
+        return $this->Ok($request, "Product ID: $request->id has been updated successfully!");
     }
 
 

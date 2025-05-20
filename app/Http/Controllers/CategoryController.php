@@ -53,7 +53,7 @@ class CategoryController extends Controller
         $inputs["name"] = $this->SanitizedName($inputs["name"] ?? "");
 
         $validator = validator()->make($request->all(), [
-            "name" => "required|string|unique:categories,name,$id|"
+            "name" => "required|string|unique:categories,name,$id"
         ]);
 
         if ($validator->fails()) {
