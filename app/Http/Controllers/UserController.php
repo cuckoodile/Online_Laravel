@@ -11,6 +11,147 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 
+
+/**
+ * @OA\Get(
+ *     path="/api/users",
+ *     summary="Get all users",
+ *     tags={"User"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of users",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(ref="#/components/schemas/User")
+ *             )
+ *         )
+ *     )
+ * )
+ *
+ * @OA\Post(
+ *     path="/api/register",
+ *     summary="Register a new user",
+ *     tags={"User"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"first_name","last_name","username","email","contact_number","is_admin","password"},
+ *             @OA\Property(property="profile_image", type="string", format="binary"),
+ *             @OA\Property(property="first_name", type="string", example="John"),
+ *             @OA\Property(property="last_name", type="string", example="Doe"),
+ *             @OA\Property(property="username", type="string", example="johndoe"),
+ *             @OA\Property(property="email", type="string", example="johndoe@email.com"),
+ *             @OA\Property(property="contact_number", type="string", example="09123456789"),
+ *             @OA\Property(property="is_admin", type="boolean", example=false),
+ *             @OA\Property(property="password", type="string", example="password123")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="User created successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation failed"
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/users/{id}",
+ *     summary="Get a specific user by ID",
+ *     tags={"User"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User found",
+ *         @OA\JsonContent(ref="#/components/schemas/User")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     )
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/users/{id}",
+ *     summary="Update a user",
+ *     tags={"User"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="profile_image", type="string", format="binary"),
+ *             @OA\Property(property="first_name", type="string"),
+ *             @OA\Property(property="last_name", type="string"),
+ *             @OA\Property(property="username", type="string"),
+ *             @OA\Property(property="email", type="string"),
+ *             @OA\Property(property="contact_number", type="string"),
+ *             @OA\Property(property="is_admin", type="boolean"),
+ *             @OA\Property(property="password", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User updated successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     )
+ * )
+ *
+ * @OA\Delete(
+ *     path="/api/users/{id}",
+ *     summary="Delete a user",
+ *     tags={"User"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User deleted"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="User",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="first_name", type="string"),
+ *     @OA\Property(property="last_name", type="string"),
+ *     @OA\Property(property="username", type="string"),
+ *     @OA\Property(property="email", type="string"),
+ *     @OA\Property(property="contact_number", type="string"),
+ *     @OA\Property(property="is_admin", type="boolean"),
+ *     @OA\Property(property="profile_image", type="string"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
 class UserController extends Controller
 {
     /**

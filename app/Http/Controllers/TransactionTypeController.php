@@ -5,6 +5,128 @@ namespace App\Http\Controllers;
 use App\Models\TransactionType;
 use Illuminate\Http\Request;
 
+
+/**
+ * @OA\Get(
+ *     path="/api/transactions/type",
+ *     summary="Get all transaction types",
+ *     tags={"TransactionType"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of transaction types",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(ref="#/components/schemas/TransactionType")
+ *             )
+ *         )
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/transactions/type/{id}",
+ *     summary="Get a specific transaction type by ID",
+ *     tags={"TransactionType"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction type found",
+ *         @OA\JsonContent(ref="#/components/schemas/TransactionType")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction Type not found"
+ *     )
+ * )
+ *
+ * @OA\Post(
+ *     path="/api/transactions/type",
+ *     summary="Reference an existing transaction type by name",
+ *     tags={"TransactionType"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"name"},
+ *             @OA\Property(property="name", type="string", example="delivery")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Transaction Type has been referenced successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error"
+ *     )
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/transactions/type/{id}",
+ *     summary="Update a transaction type",
+ *     tags={"TransactionType"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"name"},
+ *             @OA\Property(property="name", type="string", example="pickup")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction Type has been updated successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction Type not found"
+ *     )
+ * )
+ *
+ * @OA\Delete(
+ *     path="/api/transactions/type/{id}",
+ *     summary="Delete a transaction type",
+ *     tags={"TransactionType"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction Type has been deleted"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction Type not found"
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="TransactionType",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
 class TransactionTypeController extends Controller
 {
     /**

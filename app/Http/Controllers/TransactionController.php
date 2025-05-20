@@ -9,6 +9,166 @@ use \App\Models\Transaction;
 
 use Illuminate\Http\Request;
 
+
+/**
+ * @OA\Get(
+ *     path="/api/transactions",
+ *     summary="Get all transactions",
+ *     tags={"Transaction"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of transactions",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(ref="#/components/schemas/Transaction")
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="No transactions found"
+ *     )
+ * )
+ *
+ * @OA\Post(
+ *     path="/api/transactions",
+ *     summary="Create a new transaction",
+ *     tags={"Transaction"},
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"payment_method_id","type_id","status_id","address_id","products"},
+ *             @OA\Property(property="payment_method_id", type="integer", example=1),
+ *             @OA\Property(property="type_id", type="integer", example=1),
+ *             @OA\Property(property="status_id", type="integer", example=1),
+ *             @OA\Property(property="address_id", type="integer", example=1),
+ *             @OA\Property(
+ *                 property="products",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="product_id", type="integer", example=1),
+ *                     @OA\Property(property="quantity", type="integer", example=2)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Transaction created"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error or insufficient stock"
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/transactions/{id}",
+ *     summary="Get a specific transaction by ID",
+ *     tags={"Transaction"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction found",
+ *         @OA\JsonContent(ref="#/components/schemas/Transaction")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction not found"
+ *     )
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/transactions/{id}",
+ *     summary="Update a transaction",
+ *     tags={"Transaction"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="payment_method_id", type="integer"),
+ *             @OA\Property(property="type_id", type="integer"),
+ *             @OA\Property(property="status_id", type="integer"),
+ *             @OA\Property(property="cart_id", type="integer"),
+ *             @OA\Property(property="user_id", type="integer"),
+ *             @OA\Property(property="address_id", type="integer"),
+ *             @OA\Property(
+ *                 property="products",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="product_id", type="integer"),
+ *                     @OA\Property(property="quantity", type="integer")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction updated"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction not found"
+ *     )
+ * )
+ *
+ * @OA\Delete(
+ *     path="/api/transactions/{id}",
+ *     summary="Delete a transaction",
+ *     tags={"Transaction"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction deleted"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction not found"
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Transaction",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="user_id", type="integer"),
+ *     @OA\Property(property="payment_method_id", type="integer"),
+ *     @OA\Property(property="type_id", type="integer"),
+ *     @OA\Property(property="status_id", type="integer"),
+ *     @OA\Property(property="address_id", type="integer"),
+ *     @OA\Property(
+ *         property="products",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/Product")
+ *     ),
+ *     @OA\Property(property="total", type="number", format="float"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
 class TransactionController extends Controller
 {
     /**

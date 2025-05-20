@@ -5,6 +5,194 @@ namespace App\Http\Controllers;
 use App\Models\ProductComment;
 use Illuminate\Http\Request;
 
+
+/**
+ * @OA\Get(
+ *     path="/api/comments",
+ *     summary="Get all comments for a product",
+ *     tags={"ProductComment"},
+ *     @OA\Parameter(
+ *         name="product_id",
+ *         in="query",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of comments",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(ref="#/components/schemas/ProductComment")
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Missing product_id"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="No comments found for the product"
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/comments/{productId}/{commentId}",
+ *     summary="Get a specific comment by product and comment ID",
+ *     tags={"ProductComment"},
+ *     @OA\Parameter(
+ *         name="productId",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *         name="commentId",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Comment found",
+ *         @OA\JsonContent(ref="#/components/schemas/ProductComment")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Comment not found"
+ *     )
+ * )
+ *
+ * @OA\Post(
+ *     path="/api/comments",
+ *     summary="Create a new comment for a product",
+ *     tags={"ProductComment"},
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"product_id","user_id","comment","rating"},
+ *             @OA\Property(property="product_id", type="integer", example=1),
+ *             @OA\Property(property="user_id", type="integer", example=1),
+ *             @OA\Property(property="comment", type="string", example="Great product!"),
+ *             @OA\Property(property="rating", type="integer", example=5),
+ *             @OA\Property(property="comment_id", type="integer", nullable=true, example=null)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Comment created"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error"
+ *     )
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/comments/{id}",
+ *     summary="Update a comment",
+ *     tags={"ProductComment"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="product_id", type="integer"),
+ *             @OA\Property(property="user_id", type="integer"),
+ *             @OA\Property(property="comment", type="string"),
+ *             @OA\Property(property="rating", type="integer"),
+ *             @OA\Property(property="comment_id", type="integer", nullable=true)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Comment updated"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Comment not found"
+ *     )
+ * )
+ *
+ * @OA\Delete(
+ *     path="/api/comments/{id}",
+ *     summary="Delete a comment",
+ *     tags={"ProductComment"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Comment deleted"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Comment not found"
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/reviewsCount",
+ *     summary="Get total number of reviews",
+ *     tags={"ProductComment"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Total reviews count"
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/aveRate",
+ *     summary="Get average rating for all products",
+ *     tags={"ProductComment"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Average rating"
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/rateCount",
+ *     summary="Get count of each rating value for a product",
+ *     tags={"ProductComment"},
+ *     @OA\Parameter(
+ *         name="product_id",
+ *         in="query",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Rating counts"
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="ProductComment",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="product_id", type="integer"),
+ *     @OA\Property(property="user_id", type="integer"),
+ *     @OA\Property(property="comment", type="string"),
+ *     @OA\Property(property="rating", type="integer"),
+ *     @OA\Property(property="comment_id", type="integer", nullable=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
 class ProductCommentController extends Controller
 {
     public function index() {

@@ -10,6 +10,39 @@ use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+
+    /**
+ * @OA\Post(
+ *     path="/api/login",
+ *     summary="User login",
+ *     tags={"Auth"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"username","password"},
+ *             @OA\Property(property="username", type="string", example="johndoe"),
+ *             @OA\Property(property="password", type="string", example="yourpassword")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Login successful",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="id", type="integer"),
+ *             @OA\Property(property="username", type="string"),
+ *             @OA\Property(property="email", type="string"),
+ *             @OA\Property(property="token", type="string"),
+ *             @OA\Property(property="profile", type="object"),
+ *             @OA\Property(property="roles", type="array", @OA\Items(type="string")),
+ *             @OA\Property(property="permissions", type="array", @OA\Items(type="string"))
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Invalid credentials"
+ *     )
+ * )
+ */
     public function login(Request $request)
     {
         Log::info('Login attempt received', $request->only('username'));
@@ -62,12 +95,46 @@ class AuthController extends Controller
         return $this->Ok($userData, "Login successfully");
     }
 
+
+    /**
+ * @OA\Post(
+ *     path="/api/logout",
+ *     summary="User logout",
+ *     tags={"Auth"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Logout successful"
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthenticated"
+ *     )
+ * )
+ */
     public function logout(Request $request)
     {
         $user = $request->user();
         $request->user()->currentAccessToken()->delete();
         return $this->Ok($user, "Logout successful");
     }
+     
+    /**
+ * @OA\Get(
+ *     path="/api/user",
+ *     summary="Get current authenticated user",
+ *     tags={"Auth"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="User has been retrieved"
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthenticated"
+ *     )
+ * )
+ */
 
     public function checkToken(Request $request)
     {

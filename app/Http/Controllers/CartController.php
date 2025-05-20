@@ -6,6 +6,145 @@ use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
+
+/**
+ * @OA\Get(
+ *     path="/api/carts",
+ *     summary="Get all cart items for the authenticated user",
+ *     tags={"Cart"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of cart items",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(ref="#/components/schemas/Cart")
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="No items in the cart"
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/carts/{id}",
+ *     summary="Get a specific cart item by ID for the authenticated user",
+ *     tags={"Cart"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Cart item found",
+ *         @OA\JsonContent(ref="#/components/schemas/Cart")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Cart item not found"
+ *     )
+ * )
+ *
+ * @OA\Post(
+ *     path="/api/carts",
+ *     summary="Add a product to the cart",
+ *     tags={"Cart"},
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"user_id","product_id","quantity"},
+ *             @OA\Property(property="user_id", type="integer", example=1),
+ *             @OA\Property(property="product_id", type="integer", example=1),
+ *             @OA\Property(property="quantity", type="integer", example=2)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Product added to cart"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Product not found"
+ *     )
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/carts/{id}",
+ *     summary="Update the quantity of a cart item",
+ *     tags={"Cart"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"quantity"},
+ *             @OA\Property(property="quantity", type="integer", example=3)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Cart item has been updated"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Cart item not found"
+ *     )
+ * )
+ *
+ * @OA\Delete(
+ *     path="/api/carts/{id}",
+ *     summary="Delete a cart item",
+ *     tags={"Cart"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Cart item has been deleted"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Cart item not found or does not belong to the user"
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Cart",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="user_id", type="integer"),
+ *     @OA\Property(property="product_id", type="integer"),
+ *     @OA\Property(property="quantity", type="integer"),
+ *     @OA\Property(property="total_price", type="number", format="float"),
+ *     @OA\Property(property="product", ref="#/components/schemas/Product")
+ * )
+ */
 class CartController extends Controller
 {
         public function index(Request $request)

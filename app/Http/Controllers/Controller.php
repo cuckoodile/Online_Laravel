@@ -3,11 +3,22 @@
 
 namespace App\Http\Controllers;
 
+/**
+ * @OA\Info(
+ *     version="1.0.0",
+ *     title="Online Laravel API",
+ *     description="API documentation for your Laravel project",
+ *     @OA\Contact(
+ *         email="your@email.com"
+ *     )
+ * )
+ */
+
 abstract class Controller
 {
     // This is a base controller that will be extended by other controllers
     // This part is for the response methods for errors and success
-    protected function BadRequest($validator, string $message = "Bad Request!") 
+    protected function BadRequest($validator, string $message = "Bad Request!")
     {
         return response()->json([
             "ok" => false,
@@ -16,7 +27,7 @@ abstract class Controller
         ], 400);
     }
 
-    protected function NotFound(string $message = "Not Found!") 
+    protected function NotFound(string $message = "Not Found!")
     {
         return response()->json([
             "ok" => false,
@@ -24,7 +35,7 @@ abstract class Controller
         ], 404);
     }
 
-    protected function Forbidden(string $message = "Forbidden!") 
+    protected function Forbidden(string $message = "Forbidden!")
     {
         return response()->json([
             "ok" => false,
@@ -32,15 +43,15 @@ abstract class Controller
         ], 403);
     }
 
-    protected function Unauthorized(string $message = "Unauthorized!") 
+    protected function Unauthorized(string $message = "Unauthorized!")
     {
         return response()->json([
             "ok" => false,
             "message" => $message,
         ], 401);
     }
-    
-    protected function Ok($data, string $message = "Ok!", $others = []) 
+
+    protected function Ok($data, string $message = "Ok!", $others = [])
     {
         return response()->json([
             "ok" => true,
@@ -50,7 +61,7 @@ abstract class Controller
         ]);
     }
 
-    protected function Created($data, string $message = "Created!", $others = []) 
+    protected function Created($data, string $message = "Created!", $others = [])
     {
         return response()->json([
             "ok" => true,
@@ -60,18 +71,19 @@ abstract class Controller
         ], 201);
     }
 
-    protected function SanitizedName($name) {
-       $name = trim($name);
+    protected function SanitizedName($name)
+    {
+        $name = trim($name);
 
-       $name = ucwords($name);
+        $name = ucwords($name);
 
         do {
-       $name = str_replace(" ", " ",$name);
-        }while (str_contains($name, "  "));
+            $name = str_replace(" ", " ", $name);
+        } while (str_contains($name, "  "));
 
         return $name;
     }
-    
-// alex .
+
+    // alex .
 
 }

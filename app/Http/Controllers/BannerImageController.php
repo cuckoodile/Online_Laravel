@@ -5,6 +5,134 @@ namespace App\Http\Controllers;
 use App\Models\BannerImage;
 use Illuminate\Http\Request;
 
+
+/**
+ * @OA\Get(
+ *     path="/api/banner",
+ *     summary="Get all banner images",
+ *     tags={"Banner"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of images was retrieved successfully.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(ref="#/components/schemas/BannerImage")
+ *             )
+ *         )
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/banner/{id}",
+ *     summary="Get a specific banner image by ID",
+ *     tags={"Banner"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Image was retrieved successfully.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(property="data", ref="#/components/schemas/BannerImage")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="No image found!"
+ *     )
+ * )
+ *
+ * @OA\Post(
+ *     path="/api/banner",
+ *     summary="Upload a new banner image",
+ *     tags={"Banner"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 required={"image"},
+ *                 @OA\Property(
+ *                     property="image",
+ *                     type="file",
+ *                     description="Banner image file"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Banner image uploaded successfully."
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="No image was uploaded."
+ *     )
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/banner/{id}",
+ *     summary="Update a banner image",
+ *     tags={"Banner"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 required={"image"},
+ *                 @OA\Property(
+ *                     property="image",
+ *                     type="file",
+ *                     description="Banner image file"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Banner image updated successfully."
+ *     )
+ * )
+ *
+ * @OA\Delete(
+ *     path="/api/banner/{id}",
+ *     summary="Delete a banner image",
+ *     tags={"Banner"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Banner image deleted successfully."
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="BannerImage",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="image", type="string"),
+ *     @OA\Property(property="timestamp", type="string", format="date-time")
+ * )
+ */
+
 class BannerImageController extends Controller
 {
     public function index()

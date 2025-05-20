@@ -11,6 +11,155 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 
+/**
+ * @OA\Get(
+ *     path="/api/products",
+ *     summary="Get all products",
+ *     tags={"Product"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of products",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(ref="#/components/schemas/Product")
+ *             )
+ *         )
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/products/{id}",
+ *     summary="Get a specific product by ID",
+ *     tags={"Product"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Product found",
+ *         @OA\JsonContent(ref="#/components/schemas/Product")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Product not found"
+ *     )
+ * )
+ *
+ * @OA\Post(
+ *     path="/api/products",
+ *     summary="Create a new product",
+ *     tags={"Product"},
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"name","product_image","price","description","category_id","product_specifications","stock"},
+ *             @OA\Property(property="name", type="string", example="Sample Product"),
+ *             @OA\Property(property="product_image", type="array", @OA\Items(type="string", format="binary")),
+ *             @OA\Property(property="price", type="number", format="float", example=99.99),
+ *             @OA\Property(property="description", type="string", example="Product description"),
+ *             @OA\Property(property="category_id", type="integer", example=1),
+ *             @OA\Property(
+ *                 property="product_specifications",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="details", type="array", @OA\Items(type="string"))
+ *                 )
+ *             ),
+ *             @OA\Property(property="stock", type="integer", example=10)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Product created"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error"
+ *     )
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/products/{id}",
+ *     summary="Update a product",
+ *     tags={"Product"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="name", type="string"),
+ *             @OA\Property(property="product_image", type="array", @OA\Items(type="string", format="binary")),
+ *             @OA\Property(property="price", type="number", format="float"),
+ *             @OA\Property(property="description", type="string"),
+ *             @OA\Property(property="category_id", type="integer"),
+ *             @OA\Property(
+ *                 property="product_specifications",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="details", type="array", @OA\Items(type="string"))
+ *                 )
+ *             ),
+ *             @OA\Property(property="stock", type="integer")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Product updated"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Product not found"
+ *     )
+ * )
+ *
+ * @OA\Delete(
+ *     path="/api/products/{id}",
+ *     summary="Delete a product",
+ *     tags={"Product"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Product deleted"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Product not found"
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Product",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="product_image", type="array", @OA\Items(type="string")),
+ *     @OA\Property(property="price", type="number", format="float"),
+ *     @OA\Property(property="description", type="string"),
+ *     @OA\Property(property="category_id", type="integer"),
+ *     @OA\Property(property="product_specifications", type="array", @OA\Items(type="object")),
+ *     @OA\Property(property="stock", type="integer"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
 class ProductController extends Controller
 {
     public function index()

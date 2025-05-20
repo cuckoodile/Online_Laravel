@@ -6,6 +6,128 @@ use App\Models\TransactionStatus;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
+
+/**
+ * @OA\Get(
+ *     path="/api/transactions/status",
+ *     summary="Get all transaction statuses",
+ *     tags={"TransactionStatus"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of transaction statuses",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="ok", type="boolean"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(ref="#/components/schemas/TransactionStatus")
+ *             )
+ *         )
+ *     )
+ * )
+ *
+ * @OA\Get(
+ *     path="/api/transactions/status/{id}",
+ *     summary="Get a specific transaction status by ID",
+ *     tags={"TransactionStatus"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction status found",
+ *         @OA\JsonContent(ref="#/components/schemas/TransactionStatus")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction Status not found"
+ *     )
+ * )
+ *
+ * @OA\Post(
+ *     path="/api/transactions/status",
+ *     summary="Reference an existing transaction status by name",
+ *     tags={"TransactionStatus"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"name"},
+ *             @OA\Property(property="name", type="string", example="pending")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Transaction Status has been referenced successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error"
+ *     )
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/transactions/status/{id}",
+ *     summary="Update a transaction status",
+ *     tags={"TransactionStatus"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"name"},
+ *             @OA\Property(property="name", type="string", example="delivered")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction Status has been updated successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction Status not found"
+ *     )
+ * )
+ *
+ * @OA\Delete(
+ *     path="/api/transactions/status/{id}",
+ *     summary="Delete a transaction status",
+ *     tags={"TransactionStatus"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Transaction Status has been deleted"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Transaction Status not found"
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="TransactionStatus",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
 class TransactionStatusController extends Controller
 {
     /**
