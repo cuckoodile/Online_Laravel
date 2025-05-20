@@ -133,7 +133,7 @@ class AuthController extends Controller
     public function checkToken(Request $request)
     {
         $user = $request->user();
-        $user->profile;
+        $user->profile; 
         $user->address;
         $user->transactions;
         $userData = [

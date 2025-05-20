@@ -177,6 +177,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // Seed New Products with Category
+        
         $products = [
             [
                 "name" => 'Beanie',
@@ -203,12 +204,10 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with 100% wool"
-                    ],
-                    [
-                        "details" => "Available in multiple colors"
-                    ],
+                    "product_id" => 1,
+                    ["colors" => "black"],
+                    ["style" => "bucket"],
+                    ["material" => "wool"],
                 ],
             ],
             [
@@ -237,15 +236,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with 100% premium wool for superior warmth."
-                    ],
-                    [
-                        "details" => "Available in a variety of colors to match any style."
-                    ],
-                    [
-                        "details" => "Lightweight yet warm, ideal for chilly days."
-                    ],
+                    ["color" => "black"],
+                    ["style" => "bucket"],
+                    ["material" => "wool"],
                 ],
             ],
             [
@@ -274,15 +267,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with high-quality cotton and wool blend for durability and comfort."
-                    ],
-                    [
-                        "details" => "Available in multiple colors to suit different styles."
-                    ],
-                    [
-                        "details" => "Lightweight and breathable, great for all seasons."
-                    ],
+                    ["color" => "gray"],
+                    ["style" => "cabbie"],
+                    ["material" => "cotton-wool blend"],
                 ],
             ],
             [
@@ -310,15 +297,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with durable cotton for a soft yet sturdy feel."
-                    ],
-                    [
-                        "details" => "Adjustable strap for a customized fit."
-                    ],
-                    [
-                        "details" => "Available in various colors to suit any look."
-                    ],
+                    ["color" => "blue"],
+                    ["style" => "classic cap"],
+                    ["material" => "cotton"],
                 ],
             ],
             [
@@ -347,15 +328,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with high-quality felt for a premium look."
-                    ],
-                    [
-                        "details" => "Classic structured design with a soft inner lining."
-                    ],
-                    [
-                        "details" => "Available in neutral tones for versatile styling."
-                    ],
+                    ["color" => "brown"],
+                    ["style" => "fedora"],
+                    ["material" => "felt"],
                 ],
             ],
             [
@@ -596,15 +571,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with high-quality cotton blend for durability."
-                    ],
-                    [
-                        "details" => "Multiple pockets for practical storage."
-                    ],
-                    [
-                        "details" => "Available in classic neutral tones."
-                    ],
+                    ["color" => "navy"],
+                    ["type" => "track"],
+                    ["feature" => "breathable"],
                 ],
             ],
             [
@@ -632,15 +601,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made from premium denim for durability."
-                    ],
-                    [
-                        "details" => "Available in slim, straight, and relaxed fits."
-                    ],
-                    [
-                        "details" => "Classic washes ranging from light to dark denim."
-                    ],
+                    ["color" => "blue"],
+                    ["type" => "denim"],
+                    ["feature" => "distressed"],
                 ],
             ],
             [
@@ -669,15 +632,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with soft and breathable fabric."
-                    ],
-                    [
-                        "details" => "Elastic waistband with drawstring for a secure fit."
-                    ],
-                    [
-                        "details" => "Available in various sporty colors."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "cycling"],
+                    ["feature" => "moisture-wicking"],
                 ],
             ],
             [
@@ -703,15 +660,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with stretchy fabric for comfort."
-                    ],
-                    [
-                        "details" => "High-waisted and mid-rise options available."
-                    ],
-                    [
-                        "details" => "Available in classic neutral colors."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "athletic fit"],
+                    ["feature" => "stretchy"],
                 ],
             ],
             [
@@ -739,15 +690,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Moisture-wicking fabric for maximum comfort."
-                    ],
-                    [
-                        "details" => "Elastic cuffs for a secure fit."
-                    ],
-                    [
-                        "details" => "Available in sporty designs and colors."
-                    ],
+                    ["color" => "gray"],
+                    ["type" => "advanced sports"],
+                    ["feature" => "compression lining"],
                 ],
             ],
             [
@@ -776,15 +721,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with breathable cotton blend."
-                    ],
-                    [
-                        "details" => "Available in solid and patterned designs."
-                    ],
-                    [
-                        "details" => "Classic button-down collar for a polished look."
-                    ],
+                    ["color" => "white"],
+                    ["style" => "button-up"],
+                    ["material" => "cotton"],
                 ],
             ],
             [
@@ -812,15 +751,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with lightweight and breathable fabric."
-                    ],
-                    [
-                        "details" => "Available in bold and subtle floral prints."
-                    ],
-                    [
-                        "details" => "Designed for casual and vacation wear."
-                    ],
+                    ["color" => "floral"],
+                    ["pattern" => "floral print"],
+                    ["material" => "lightweight cotton"],
                 ],
             ],
             [
@@ -848,15 +781,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with soft and breathable cotton."
-                    ],
-                    [
-                        "details" => "Available in solid colors and striped designs."
-                    ],
-                    [
-                        "details" => "Features a ribbed collar for a refined look."
-                    ],
+                    ["color" => "blue"],
+                    ["type" => "polo"],
+                    ["material" => "pique cotton"],
                 ],
             ],
             [
@@ -884,15 +811,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with high-quality fabric for warmth and comfort."
-                    ],
-                    [
-                        "details" => "Available in solid and textured patterns."
-                    ],
-                    [
-                        "details" => "Designed for a sleek and modern style."
-                    ],
+                    ["color" => "black"],
+                    ["sleeve" => "long"],
+                    ["material" => "cotton blend"],
                 ],
             ],
             [
@@ -919,15 +840,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with breathable fabric for all-day comfort."
-                    ],
-                    [
-                        "details" => "Available in neutral and bold colors."
-                    ],
-                    [
-                        "details" => "Lightweight sole for easy movement."
-                    ],
+                    ["color" => "gray"],
+                    ["type" => "casual"],
+                    ["material" => "canvas"],
                 ],
             ],
             [
@@ -953,15 +868,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with reinforced rubber soles for better traction."
-                    ],
-                    [
-                        "details" => "Water-resistant design for all-weather hiking."
-                    ],
-                    [
-                        "details" => "Padded interior for maximum comfort."
-                    ],
+                    ["color" => "brown"],
+                    ["type" => "hiking"],
+                    ["feature" => "water-resistant"],
                 ],
             ],
             [
@@ -987,15 +896,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Genuine leather for long-lasting durability."
-                    ],
-                    [
-                        "details" => "Available in polished black and brown shades."
-                    ],
-                    [
-                        "details" => "Slip-resistant sole for added stability."
-                    ],
+                    ["color" => "black"],
+                    ["material" => "leather"],
+                    ["feature" => "slip-resistant"],
                 ],
             ],
             [
@@ -1022,15 +925,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with high-quality rubber for flexibility."
-                    ],
-                    [
-                        "details" => "Available in various sporty designs."
-                    ],
-                    [
-                        "details" => "Shock-absorbing soles for extra comfort."
-                    ],
+                    ["color" => "blue"],
+                    ["type" => "rubber"],
+                    ["feature" => "shock-absorbing"],
                 ],
             ],
             [
@@ -1058,15 +955,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with soft mesh material for breathability."
-                    ],
-                    [
-                        "details" => "Available in various trendy color combinations."
-                    ],
-                    [
-                        "details" => "Cushioned soles for all-day comfort."
-                    ],
+                    ["color" => "white"],
+                    ["type" => "sneakers"],
+                    ["feature" => "cushioned"],
                 ],
             ],
             [
@@ -1093,15 +984,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Textured sole for enhanced ball control."
-                    ],
-                    [
-                        "details" => "Available in vibrant team colors."
-                    ],
-                    [
-                        "details" => "Lightweight and durable synthetic material."
-                    ],
+                    ["color" => "red"],
+                    ["type" => "soccer"],
+                    ["feature" => "textured sole"],
                 ],
             ],
             [
@@ -1129,15 +1014,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with breathable and water-resistant fabric."
-                    ],
-                    [
-                        "details" => "Elastic waistband with adjustable drawstring."
-                    ],
-                    [
-                        "details" => "Available in vibrant summer patterns."
-                    ],
+                    ["color" => "blue"],
+                    ["type" => "beach"],
+                    ["feature" => "quick-dry"],
                 ],
             ],
             [
@@ -1163,15 +1042,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with high-quality cotton blend."
-                    ],
-                    [
-                        "details" => "Available in neutral and vibrant colors."
-                    ],
-                    [
-                        "details" => "Designed for casual and semi-formal wear."
-                    ],
+                    ["color" => "khaki"],
+                    ["type" => "bermuda"],
+                    ["feature" => "tailored"],
                 ],
             ],
             [
@@ -1199,15 +1072,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with sturdy cotton twill fabric."
-                    ],
-                    [
-                        "details" => "Multiple pockets for practical storage."
-                    ],
-                    [
-                        "details" => "Available in earthy and military tones."
-                    ],
+                    ["color" => "green"],
+                    ["type" => "cargo"],
+                    ["feature" => "multi-pocket"],
                 ],
             ],
             [
@@ -1235,15 +1102,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with lightweight cotton blend."
-                    ],
-                    [
-                        "details" => "Designed for maximum comfort."
-                    ],
-                    [
-                        "details" => "Available in solid colors and striped designs."
-                    ],
+                    ["color" => "gray"],
+                    ["type" => "casual"],
+                    ["feature" => "breathable"],
                 ],
             ],
             [
@@ -1271,15 +1132,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with moisture-wicking fabric."
-                    ],
-                    [
-                        "details" => "Designed for aerodynamics and comfort."
-                    ],
-                    [
-                        "details" => "Available in professional-grade materials."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "cycling"],
+                    ["feature" => "moisture-wicking"],
                 ],
             ],
             [
@@ -1305,15 +1160,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with premium denim fabric."
-                    ],
-                    [
-                        "details" => "Available in faded, ripped, and classic designs."
-                    ],
-                    [
-                        "details" => "Structured stitching for durability."
-                    ],
+                    ["color" => "blue"],
+                    ["type" => "denim"],
+                    ["feature" => "distressed"],
                 ],
             ],
             [
@@ -1341,15 +1190,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with moisture-wicking fabric for sweat control."
-                    ],
-                    [
-                        "details" => "Elastic waistband with adjustable drawstring."
-                    ],
-                    [
-                        "details" => "Available in various sporty designs and colors."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "sports"],
+                    ["feature" => "sweat control"],
                 ],
             ],
             [
@@ -1377,15 +1220,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with ultra-breathable mesh fabric."
-                    ],
-                    [
-                        "details" => "Compression lining for enhanced support."
-                    ],
-                    [
-                        "details" => "Available in premium athletic colors and styles."
-                    ],
+                    ["color" => "gray"],
+                    ["type" => "advanced sports"],
+                    ["feature" => "compression lining"],
                 ],
             ],
             [
@@ -1412,15 +1249,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made from premium cotton-blend fabric."
-                    ],
-                    [
-                        "details" => "Available in neutral and formal colors."
-                    ],
-                    [
-                        "details" => "Designed for a sleek and structured look."
-                    ],
+                    ["color" => "navy"],
+                    ["type" => "classic"],
+                    ["feature" => "cotton-blend"],
                 ],
             ],
             [
@@ -1448,15 +1279,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with soft and breathable fabric."
-                    ],
-                    [
-                        "details" => "Flexible elastic waistband for added comfort."
-                    ],
-                    [
-                        "details" => "Available in various professional colors."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "elastic-waist"],
+                    ["feature" => "stretch"],
                 ],
             ],
             [
@@ -1484,15 +1309,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made from high-quality wrinkle-resistant fabric."
-                    ],
-                    [
-                        "details" => "Designed for a slim and structured appearance."
-                    ],
-                    [
-                        "details" => "Available in standard formal colors."
-                    ],
+                    ["color" => "gray"],
+                    ["type" => "flat-front"],
+                    ["feature" => "wrinkle-resistant"],
                 ],
             ],
             [
@@ -1520,15 +1339,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with structured fabric for a sharp look."
-                    ],
-                    [
-                        "details" => "Designed with classic front pleats."
-                    ],
-                    [
-                        "details" => "Available in business and formal shades."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "pleated"],
+                    ["feature" => "classic"],
                 ],
             ],
             [
@@ -1556,15 +1369,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with soft and breathable fabric."
-                    ],
-                    [
-                        "details" => "Wide-leg cut for relaxed movement."
-                    ],
-                    [
-                        "details" => "Available in chic and contemporary colors."
-                    ],
+                    ["color" => "beige"],
+                    ["type" => "wide-leg"],
+                    ["feature" => "relaxed"],
                 ],
             ],
             [
@@ -1590,15 +1397,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with breathable cotton blend."
-                    ],
-                    [
-                        "details" => "Available in solid colors and patterns."
-                    ],
-                    [
-                        "details" => "Reinforced toe and heel for durability."
-                    ],
+                    ["color" => "black"],
+                    ["length" => "long"],
+                    ["feature" => "reinforced toe"],
                 ],
             ],
             [
@@ -1624,15 +1425,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Soft and stretchable fabric for snug comfort."
-                    ],
-                    [
-                        "details" => "Designed for casual and athletic use."
-                    ],
-                    [
-                        "details" => "Available in multiple color options."
-                    ],
+                    ["color" => "white"],
+                    ["length" => "medium"],
+                    ["feature" => "stretchable"],
                 ],
             ],
             [
@@ -1658,15 +1453,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with lightweight and breathable material."
-                    ],
-                    [
-                        "details" => "No-show design for a sleek look."
-                    ],
-                    [
-                        "details" => "Available in basic and colorful styles."
-                    ],
+                    ["color" => "gray"],
+                    ["length" => "short"],
+                    ["feature" => "no-show"],
                 ],
             ],
             [
@@ -1694,15 +1483,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with high-quality metal frame for durability."
-                    ],
-                    [
-                        "details" => "UV protection lenses for maximum eye safety."
-                    ],
-                    [
-                        "details" => "Available in gold, silver, and black frames."
-                    ],
+                    ["color" => "gold"],
+                    ["frame" => "metal"],
+                    ["feature" => "uv protection"],
                 ],
             ],
             [
@@ -1730,15 +1513,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with lightweight, impact-resistant lenses."
-                    ],
-                    [
-                        "details" => "Anti-fog and UV protection features."
-                    ],
-                    [
-                        "details" => "Adjustable nose pads for comfortable wear."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "cyclist"],
+                    ["feature" => "anti-fog"],
                 ],
             ],
             [
@@ -1766,15 +1543,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with premium polarized lenses."
-                    ],
-                    [
-                        "details" => "Designed for maximum UV protection."
-                    ],
-                    [
-                        "details" => "Available in various stylish frame designs."
-                    ],
+                    ["color" => "gray"],
+                    ["type" => "polarized"],
+                    ["feature" => "uv protection"],
                 ],
             ],
             [
@@ -1802,15 +1573,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with scratch-resistant protective lenses."
-                    ],
-                    [
-                        "details" => "Wraparound design for complete eye coverage."
-                    ],
-                    [
-                        "details" => "Available in rugged, sports-friendly styles."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "protective"],
+                    ["feature" => "scratch-resistant"],
                 ],
             ],
             [
@@ -1838,15 +1603,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with scratch-resistant lenses."
-                    ],
-                    [
-                        "details" => "Available in various magnification levels."
-                    ],
-                    [
-                        "details" => "Comfortable fit for prolonged reading sessions."
-                    ],
+                    ["color" => "brown"],
+                    ["type" => "reading"],
+                    ["feature" => "magnified"],
                 ],
             ],
             [
@@ -1874,15 +1633,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with UV protection lenses."
-                    ],
-                    [
-                        "details" => "Available in vintage gold and black frames."
-                    ],
-                    [
-                        "details" => "Designed for a fashionable and bold look."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "round"],
+                    ["feature" => "uv protection"],
                 ],
             ],
             [
@@ -1910,15 +1663,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with intelligent transition lenses."
-                    ],
-                    [
-                        "details" => "UV protection and anti-glare coating."
-                    ],
-                    [
-                        "details" => "Available in modern stylish frames."
-                    ],
+                    ["color" => "gray"],
+                    ["type" => "transition"],
+                    ["feature" => "adaptive tint"],
                 ],
             ],
             [
@@ -1946,15 +1693,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with breathable cotton fabric."
-                    ],
-                    [
-                        "details" => "Available in solid and printed designs."
-                    ],
-                    [
-                        "details" => "Designed for a relaxed and comfortable fit."
-                    ],
+                    ["color" => "white"],
+                    ["type" => "crew neck"],
+                    ["feature" => "cotton"],
                 ],
             ],
             [
@@ -1982,15 +1723,9 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with lightweight and moisture-wicking fabric."
-                    ],
-                    [
-                        "details" => "Designed for sports and active wear."
-                    ],
-                    [
-                        "details" => "Available in sleek athletic colors."
-                    ],
+                    ["color" => "gray"],
+                    ["type" => "dry-fit"],
+                    ["feature" => "moisture-wicking"],
                 ],
             ],
             [
@@ -2018,20 +1753,14 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 "product_specifications" => [
-                    [
-                        "details" => "Made with soft and stretchy performance fabric."
-                    ],
-                    [
-                        "details" => "Designed for a slim and athletic silhouette."
-                    ],
-                    [
-                        "details" => "Available in multiple versatile colors."
-                    ],
+                    ["color" => "black"],
+                    ["type" => "athletic fit"],
+                    ["feature" => "stretchy"],
                 ],
             ]
         ];
 
-        foreach ($products as $productData) {
+        foreach ($products as $index => $productData) {
             $comments = $productData['product_comments'] ?? [];
             $specs = $productData['product_specifications'] ?? [];
             unset($productData['product_comments'], $productData['product_specifications']);
@@ -2044,10 +1773,12 @@ class DatabaseSeeder extends Seeder
                 ProductComment::create($comment);
             }
 
-            // Create specifications
-            foreach ($specs as $spec) {
-                $spec['product_id'] = $product->id;
-                ProductSpecification::create($spec);
+            // Create specifications (add wrapper as requested)
+            if (!empty($specs)) {
+                ProductSpecification::create([
+                    'product_id' => $product->id,
+                    'details' => $specs,
+                ]);
             }
         }
 

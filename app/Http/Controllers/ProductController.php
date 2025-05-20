@@ -237,7 +237,6 @@ class ProductController extends Controller
             "description" => "required|string",
             "category_id" => "required|exists:categories,id",
             "product_specifications" => "required|array|min:2|max:4",
-            // "product_specifications.*.details" => "required|array",
             "stock" => "required|numeric|min:1"
         ]);
 
