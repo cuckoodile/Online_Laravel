@@ -115,14 +115,6 @@ class DatabaseSeeder extends Seeder
         $rolePermissionUser = Permission::firstOrCreate(["name" => "Manage Own Post", "guard_name" => "api"]);
         $roleUser->givePermissionTo($rolePermissionUser);
 
-        // if ($roleName === 'admin') {
-        //     $permission = Permission::create(['name' => 'Manage All Works', 'guard_name' => 'api']);
-        //     $role->givePermissionTo($permission);
-        // } else {
-        //     $permission = Permission::create(['name' => 'Manage Own Post', 'guard_name' => 'api']);
-        //     $role->givePermissionTo($permission);
-        // }
-
         foreach ($users as $userData) {
             // Extract profile data separately
             $profileData = $userData['profile'];
@@ -148,32 +140,6 @@ class DatabaseSeeder extends Seeder
 
             $addressData['user_id'] = $user->id;
             Address::create($addressData);
-
-            // // Create transactions for this user
-            // foreach ($transactions as $transactionData) {
-            //     $products = $transactionData['products'] ?? [];
-            //     unset($transactionData['products']);
-
-            //     // Set user_id and address_id for the transaction
-            //     $transactionData['user_id'] = $user->id;
-            //     $transactionData['address_id'] = $address->id;
-
-            //     $transaction = Transaction::create($transactionData);
-
-            //     // Attach products to the transaction
-            //     $items = [];
-            //     foreach ($products as $product) {
-            //         $productModel = Product::find($product['product_id']);
-            //         if ($productModel) {
-            //             $items[$product['product_id']] = [
-            //                 'quantity' => $product['quantity'],
-            //                 'price' => $productModel->price,
-            //                 'sub_total' => $productModel->price * $product['quantity'],
-            //             ];
-            //         }
-            //     }
-            //     $transaction->products()->sync($items);
-            // }
         }
 
         // Seed categories
@@ -2111,10 +2077,10 @@ class DatabaseSeeder extends Seeder
         // Seed default payment methods
         $payment_methods = [
             ['name' => 'Cash On Delivery'],
-            ['name' => 'E-Wallet'],
-            ['name' => 'Debit Card'],
-            ['name' => 'Credit Card'],
             ['name' => 'Gcash'],
+            ['name' => 'PayMaya'],
+            ['name' => 'BDO'],
+            ['name' => 'Cebuana'],
         ];
         foreach ($payment_methods as $method) {
             TransactionPaymentMethod::create($method);
