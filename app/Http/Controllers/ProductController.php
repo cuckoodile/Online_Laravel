@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductSpecification;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -87,7 +88,7 @@ class ProductController extends Controller
             "description" => "required|string",
             "category_id" => "required|exists:categories,id",
             "product_specifications" => "required|array|min:2|max:4",
-            "product_specifications.*.details" => "required|array",
+            // "product_specifications.*.details" => "required|array",
             "stock" => "required|numeric|min:1"
         ]);
 
@@ -95,32 +96,22 @@ class ProductController extends Controller
         // Sanitize product name
         $name = $this->SanitizedName($request->name);
 
-        // Upload images and collect paths
-        $imagePaths = [];
         $category = Category::find($request->category_id);
         if (!$category) {
             return $this->NotFound("Category not found");
         }
 
+        // Upload images and collect paths
+        $imagePaths = [];
+
         $categoryName = $category ? $category->name : 'Uncategorized';
         $categoryFolder = Str::slug($categoryName);
-
-        // Create product record
-        $product = Product::create([
-            'name' => $name,
-            'price' => $request->price,
-            'admin_id' => $request->user()->id,
-            'product_image' => $imagePaths,
-            'description' => $request->description,
-            'product_specifications' => $request->product_specifications,
-            'category_id' => $request->category_id,
-        ]);
 
         // Iterated storing of images
         foreach ($request->file('product_image') as $file) {
             $extension = $file->getClientOriginalExtension();
             $fileName = time() . '_' . uniqid() . '.' . $extension;
-            $destinationPath = public_path("assets/media/{$categoryFolder}");
+            $destinationPath = public_path("assets/media/$categoryFolder");
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0755, true);
             }
@@ -128,17 +119,27 @@ class ProductController extends Controller
             $imagePaths[] = "assets/media/{$categoryFolder}/{$fileName}";
         }
 
-        $product->product_image = $imagePaths;
-        $product->save();
+        $request->product_image = $imagePaths;
 
-        // Save specifications
-        foreach ($request->product_specifications as $spec) {
-            $product->product_specifications()->create([
-                'details' => json_encode($spec['details']),
-            ]);
+        $product = Product::create([
+            'name' => $name,
+            'price' => $request->price,
+            'admin_id' => $request->user()->id,
+            'product_image' => json_encode($imagePaths),
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+        ]);
+
+        // Save specifications (accept key-value pairs)
+        if (is_array($request->product_specifications)) {
+            foreach ($request->product_specifications as $key => $value) {
+                ProductSpecification::create([
+                    'product_id' => $product->id,
+                    'details' => json_encode([$key => $value]),
+                ]);
+            }
         }
 
-        // If stock is provided, create an inbound transaction
         $transaction = Transaction::create([
             'user_id' => $request->user()->id,
             'type_id' => 1, // Inbound transaction type
@@ -147,10 +148,10 @@ class ProductController extends Controller
             'address_id' => 1, // Default address (can be adjusted as needed)
         ]);
 
-        $transaction->products()->attach($product->id, [
+        $transaction->products()->attach($request->id, [
             'quantity' => $request->stock,
-            'price' => $product->price,
-            'sub_total' => $request->stock * $product->price,
+            'price' => $request->price,
+            'sub_total' => $request->stock * $request->price,
         ]);
 
         return $this->Created($product, "Product has been created with specifications and stock!");

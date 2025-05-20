@@ -10,8 +10,7 @@ class ProductSpecification extends Model
         'product_id',
         'details',
     ];
-    // Use casts helper that converts a data type to another
-    // In this case, we are converting the details column to an array 
+    
     protected $casts = [
         'details' => 'array',
     ];
