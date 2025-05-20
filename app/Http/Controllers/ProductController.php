@@ -18,10 +18,16 @@ class ProductController extends Controller
 
         foreach ($products as $product) {
             $product->product_specifications;
-            $product->product_image;
+            // Interpolate full URLs for each product image
+            $images = $product->product_image;
+            if (is_string($images)) {
+                $images = json_decode($images, true);
+            }
+            $product->product_image = array_map(function($img) {
+                return "http://127.0.0.1:8000/{$img}";
+            }, $images ?? []);
             $product->category;
             $product->product_comments;
-            $product->stock = $product->stock;
         }
 
         return $this->Ok($products);
@@ -36,10 +42,16 @@ class ProductController extends Controller
         }
 
         $Product->product_specifications;
-        $Product->product_image;
+        // Interpolate full URLs for each product image
+        $images = $Product->product_image;
+        if (is_string($images)) {
+            $images = json_decode($images, true);
+        }
+        $Product->product_image = array_map(function($img) {
+            return "http://127.0.0.1:8000/{$img}";
+        }, $images ?? []);
         $Product->category;
         $Product->product_comments;
-        $Product->stock = $Product->stock;
 
         return $this->Ok($Product);
     }
@@ -52,8 +64,12 @@ class ProductController extends Controller
             return $this->NotFound("Product Image not found"); // so this may not need to be used
         }
 
-        $imageUrls = collect(json_decode($Product->product_image))->map(function ($image) {
-            return asset("images/{$image}");
+        $images = $Product->product_image;
+        if (is_string($images)) {
+            $images = json_decode($images, true);
+        }
+        $imageUrls = collect($images)->map(function ($image) {
+            return asset($image);
         });
 
         return $this->Ok($imageUrls);
@@ -121,7 +137,6 @@ class ProductController extends Controller
                 'details' => json_encode($spec['details']),
             ]);
         }
-        $product->product_specifications = $product->product_specifications;
 
         // If stock is provided, create an inbound transaction
         $transaction = Transaction::create([
@@ -137,8 +152,6 @@ class ProductController extends Controller
             'price' => $product->price,
             'sub_total' => $request->stock * $product->price,
         ]);
-
-        $product->stock = $product->stock; // Include dynamically calculated stock in the response
 
         return $this->Created($product, "Product has been created with specifications and stock!");
     }
