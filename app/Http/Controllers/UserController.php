@@ -168,7 +168,7 @@ class UserController extends Controller
                 $image = $user->profile->profile_image;
                 if (!str_starts_with($image, 'http')) {
                     // $user->profile->profile_image = "http://127.0.0.1:8000/{$image}";
-                    $user->profile->profile_image = "https://devsixtech.styxhydra.com/{$img}";
+                    $user->profile->profile_image = "https://apidevsixtech.styxhydra.com/{$img}";
                 }
             }
         }
@@ -274,7 +274,7 @@ class UserController extends Controller
             $image = $user->profile->profile_image;
             if (!str_starts_with($image, 'http')) {
                 // $user->profile->profile_image = "http://127.0.0.1:8000/{$image}";
-                $user->profile->profile_image = "https://devsixtech.styxhydra.com/{$img}";
+                $user->profile->profile_image = "https://apidevsixtech.styxhydra.com/{$img}";
             }
         }
 

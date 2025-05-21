@@ -175,7 +175,7 @@ class ProductController extends Controller
             }
             $product->product_image = array_map(function ($img) {
                 // return "http://127.0.0.1:8000/{$img}";
-                return "https://devsixtech.styxhydra.com/{$img}";
+                return "https://apidevsixtech.styxhydra.com/{$img}";
             }, $images ?? []);
 
             $product->category;
@@ -205,7 +205,7 @@ class ProductController extends Controller
         }
         $Product->product_image = array_map(function ($img) {
             // return "http://127.0.0.1:8000/{$img}";
-            return "https://devsixtech.styxhydra.com/{$img}";
+            return "https://apidevsixtech.styxhydra.com/{$img}";
         }, $images ?? []);
         $Product->category;
         $Product->product_comments;
