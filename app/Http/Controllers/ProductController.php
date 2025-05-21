@@ -174,13 +174,9 @@ class ProductController extends Controller
                 $images = json_decode($images, true);
             }
             $product->product_image = array_map(function ($img) {
-                return "http://127.0.0.1:8000/{$img}";
+                // return "http://127.0.0.1:8000/{$img}";
+                return "https://devsixtech.styxhydra.com/{$img}";
             }, $images ?? []);
-
-            // On deployment
-            // $product->product_image = array_map(function ($img) {
-            //     return "https://apidevsixtech.styxhydra.com/{$img}";
-            // }, $images ?? []);
 
             $product->category;
             $product->product_comments;
@@ -208,7 +204,8 @@ class ProductController extends Controller
             $images = json_decode($images, true);
         }
         $Product->product_image = array_map(function ($img) {
-            return "http://127.0.0.1:8000/{$img}";
+            // return "http://127.0.0.1:8000/{$img}";
+            return "https://devsixtech.styxhydra.com/{$img}";
         }, $images ?? []);
         $Product->category;
         $Product->product_comments;
