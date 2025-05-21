@@ -212,6 +212,10 @@ class ProductController extends Controller
         }, $images ?? []);
         $Product->category;
         $Product->product_comments;
+        // Calculate and include stock
+        $inboundStock = $Product->transactions()->where('type_id', 1)->sum('product_transaction.quantity');
+        $outboundStock = $Product->transactions()->where('type_id', 2)->sum('product_transaction.quantity');
+        $Product->stock = $inboundStock - $outboundStock;
 
         return $this->Ok($Product);
     }
