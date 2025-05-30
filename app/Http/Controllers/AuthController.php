@@ -74,6 +74,10 @@ class AuthController extends Controller
         } // this is for debug only, you can modify it or remove it and change syntax for cleanliness
 
         // Load related data in array
+        $profile = $user->profile;
+        if ($profile && $profile->profile_image) {
+            $profile->profile_image = 'http://127.0.0.1:8000/' . ltrim($profile->profile_image, '/');
+        }
         $userData = [
             'id' => $user->id,
             'username' => $user->username,
@@ -81,7 +85,7 @@ class AuthController extends Controller
             'token' => $user->createToken("api")->plainTextToken,
             'roles' => $user->getRoleNames(),
             'permissions' => $user->getAllPermissions()->pluck('name'),
-            'profile' => $user->profile,
+            'profile' => $profile,
             'address' => $user->address,
             // 'transactions' => $user->transactions,
         ];
@@ -133,9 +137,11 @@ class AuthController extends Controller
     public function checkToken(Request $request)
     {
         $user = $request->user();
-        $user->profile; 
-        $user->address;
-        $user->transactions;
+        $profile = $user->profile;
+        if ($profile && $profile->profile_image) {
+            $profile->profile_image = 'http://127.0.0.1:8000/' . ltrim($profile->profile_image, '/');
+        }
+        $user->profile = $profile;
         $userData = [
             'id' => $user->id,
             'username' => $user->username,
@@ -143,7 +149,7 @@ class AuthController extends Controller
             'token' => $request->bearerToken(),
             'roles' => $user->getRoleNames(),
             'permissions' => $user->getAllPermissions()->pluck('name'),
-            'profile' => $user->profile,
+            'profile' => $profile,
             'address' => $user->address,
             // 'transactions' => $user->transactions,
         ];

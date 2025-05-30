@@ -283,20 +283,24 @@ class CartController extends Controller
     }
     
 
-    public function destroy(Request $request, string $id)
+    public function destroy(Request $request)
     {
-        
-        $userId = $request->user()->id;
-        $cart = Cart::where('id', $id)
-                    ->where('user_id', $userId)
-                    ->first();
-
-        if (empty($cart)) {
-            return $this->NotFound("Cart item not found or does not belong to the user");
+        $validator = validator()->make($request->all(), [
+            'ids' => 'required|array',
+            'ids.*' => 'required|integer|exists:carts,id',
+        ]);
+        if ($validator->fails()) {
+            return $this->BadRequest($validator->errors());
         }
-
-        $cart->delete();
-
-        return $this->Ok(null, "Cart item has been deleted");
+        $cartIds = $validator->validated()['ids'];
+        $userId = $request->user()->id;
+        $deleted = Cart::whereIn('id', $cartIds)
+            ->where('user_id', $userId)
+            ->pluck('id');
+        if ($deleted->isEmpty()) {
+            return $this->NotFound("No cart items found or do not belong to the user");
+        }
+        Cart::whereIn('id', $deleted)->delete();
+        return $this->Ok(['deleted_cart_ids' => $deleted], "Selected cart items have been deleted");
     }
 }

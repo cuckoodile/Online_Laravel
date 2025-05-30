@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "admin@gmail.com",
                 "password" => bcrypt("admin"),
                 "profile" => [
-                    "profile_image" => "assets/media/users/TeamLogo.webp",
+                    "profile_image" => "assets/media/users/7db746917849ae61438eaeddfd8c52c7.jpg",
                     "first_name" => "Developer",
                     "last_name" => "Six",
                     "contact_number" => "09090909090",

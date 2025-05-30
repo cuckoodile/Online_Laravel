@@ -184,6 +184,15 @@ class TransactionController extends Controller
 
         $transactions->each(function ($transaction) {
             $transaction->total = $transaction->products->sum('pivot.sub_total');
+            foreach ($transaction->products as $product) {
+                $images = $product->product_image;
+                if (is_string($images)) {
+                    $images = json_decode($images, true);
+                }
+                $product->product_image = array_map(function ($img) {
+                    return "http://127.0.0.1:8000/{$img}";
+                }, $images ?? []);
+            }
         });
 
         return $this->Ok($transactions);
@@ -291,6 +300,15 @@ class TransactionController extends Controller
         }
 
         $transactions->products;
+        foreach ($transactions->products as $product) {
+            $images = $product->product_image;
+            if (is_string($images)) {
+                $images = json_decode($images, true);
+            }
+            $product->product_image = array_map(function ($img) {
+                return "http://127.0.0.1:8000/{$img}";
+            }, $images ?? []);
+        }
         $transactions->address;
         $transactions->transaction_payment_methods;
         $transactions->transaction_types;

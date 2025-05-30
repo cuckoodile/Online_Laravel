@@ -168,19 +168,26 @@ class ProductController extends Controller
 
         foreach ($products as $product) {
             $product->product_specifications;
-            // Interpolate full URLs for each product image
             $images = $product->product_image;
             if (is_string($images)) {
                 $images = json_decode($images, true);
             }
             $product->product_image = array_map(function ($img) {
-                // return "http://127.0.0.1:8000/{$img}";
-                return "https://apidevsixtech.styxhydra.com/{$img}";
+                return "http://127.0.0.1:8000/{$img}";
             }, $images ?? []);
-
             $product->category;
-            $product->product_comments;
-            // Calculate and include stock
+            $product->category_name = $product->category ? $product->category->name : null;
+            // Enhance product_comments with user name and profile_image
+            $product->product_comments = $product->product_comments->map(function ($comment) {
+                $user = $comment->user;
+                $profileImage = $user && $user->profile && $user->profile->profile_image
+                    ? "http://127.0.0.1:8000/" . ltrim($user->profile->profile_image, '/')
+                    : null;
+                return array_merge($comment->toArray(), [
+                    'user_name' => $user ? $user->username : null,
+                    'user_profile_image' => $profileImage,
+                ]);
+            });
             $inboundStock = $product->transactions()->where('type_id', 1)->sum('product_transaction.quantity');
             $outboundStock = $product->transactions()->where('type_id', 2)->sum('product_transaction.quantity');
             $product->stock = $inboundStock - $outboundStock;
@@ -198,18 +205,26 @@ class ProductController extends Controller
         }
 
         $Product->product_specifications;
-        // Interpolate full URLs for each product image
         $images = $Product->product_image;
         if (is_string($images)) {
             $images = json_decode($images, true);
         }
         $Product->product_image = array_map(function ($img) {
-            // return "http://127.0.0.1:8000/{$img}";
-            return "https://apidevsixtech.styxhydra.com/{$img}";
+            return "http://127.0.0.1:8000/{$img}";
         }, $images ?? []);
         $Product->category;
-        $Product->product_comments;
-        // Calculate and include stock
+        $Product->category_name = $Product->category ? $Product->category->name : null;
+        // Enhance product_comments with user name and profile_image
+        $Product->product_comments = $Product->product_comments->map(function ($comment) {
+            $user = $comment->user;
+            $profileImage = $user && $user->profile && $user->profile->profile_image
+                ? "http://127.0.0.1:8000/" . ltrim($user->profile->profile_image, '/')
+                : null;
+            return array_merge($comment->toArray(), [
+                'user_name' => $user ? $user->username : null,
+                'user_profile_image' => $profileImage,
+            ]);
+        });
         $inboundStock = $Product->transactions()->where('type_id', 1)->sum('product_transaction.quantity');
         $outboundStock = $Product->transactions()->where('type_id', 2)->sum('product_transaction.quantity');
         $Product->stock = $inboundStock - $outboundStock;

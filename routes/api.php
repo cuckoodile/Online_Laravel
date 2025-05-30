@@ -117,5 +117,5 @@ Route::group(["prefix" => "carts", "middleware" => "auth:sanctum"], function () 
     Route::get("/{id}", [CartController::class, "show"]);    
     Route::post("/", [CartController::class, "store"]);      
     Route::patch("/{id}", [CartController::class, "update"]); 
-    Route::delete("/{id}", [CartController::class, "destroy"]); 
+    Route::delete("/", [CartController::class, "destroy"]); 
 });
