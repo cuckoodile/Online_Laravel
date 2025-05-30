@@ -83,7 +83,7 @@ class AuthController extends Controller
             'permissions' => $user->getAllPermissions()->pluck('name'),
             'profile' => $user->profile,
             'address' => $user->address,
-            'transactions' => $user->transactions,
+            // 'transactions' => $user->transactions,
         ];
 
         return $this->Ok($userData, "Login successfully");
@@ -145,7 +145,7 @@ class AuthController extends Controller
             'permissions' => $user->getAllPermissions()->pluck('name'),
             'profile' => $user->profile,
             'address' => $user->address,
-            'transactions' => $user->transactions,
+            // 'transactions' => $user->transactions,
         ];
         return $this->Ok($userData, "User has been retrieved");
     }

@@ -152,11 +152,21 @@ use Illuminate\Http\UploadedFile;
  *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
  */
+
+
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    protected $currentUrl;
+
+    public function __construct()
+    {
+        $this->currentUrl = config('app.url');
+    }
+
     public function index()
     {
         // Retrieve all users and load their profiles
@@ -167,8 +177,7 @@ class UserController extends Controller
             if ($user->profile && $user->profile->profile_image) {
                 $image = $user->profile->profile_image;
                 if (!str_starts_with($image, 'http')) {
-                    // $user->profile->profile_image = "http://127.0.0.1:8000/{$image}";
-                    $user->profile->profile_image = "https://apidevsixtech.styxhydra.com/{$img}";
+                    $user->profile->profile_image = "{$this->currentUrl}/$image";
                 }
             }
         }
@@ -273,8 +282,7 @@ class UserController extends Controller
         if ($user->profile && $user->profile->profile_image) {
             $image = $user->profile->profile_image;
             if (!str_starts_with($image, 'http')) {
-                // $user->profile->profile_image = "http://127.0.0.1:8000/{$image}";
-                $user->profile->profile_image = "https://apidevsixtech.styxhydra.com/{$img}";
+                    $user->profile->profile_image = "{$this->currentUrl}/$image";
             }
         }
 
@@ -340,6 +348,7 @@ class UserController extends Controller
         }
 
         // Update user and profile separately
+
     // Separate user and profile fields
     $userFields = array_intersect_key($validated, array_flip([
         'username', 'email', 'password', 'is_admin'

@@ -151,7 +151,7 @@ class CartController extends Controller
     {
         $userId = $request->user()->id; 
 
-        $carts = Cart::with('product')
+        $carts = Cart::with(['product.category'])
                     ->where('user_id', $userId)
                     ->get();
 
@@ -163,9 +163,11 @@ class CartController extends Controller
                     $images = json_decode($images, true);
                 }
                 $product->product_image = array_map(function ($img) {
-                    // return "http://127.0.0.1:8000/{$img}";
-                    return "https://apidevsixtech.styxhydra.com/{$img}";
+                    // Always return with the correct /assets/ path
+                    return 'http://127.0.0.1:8000/' . ltrim(str_replace(['http://apidevsixtech.styxhydra.com/assets/', 'http://127.0.0.1:8000/assets/'], '', $img), '/');
                 }, $images ?? []);
+                // Add category_name
+                $product->category_name = $product->category ? $product->category->name : null;
             }
         }
 
@@ -180,7 +182,7 @@ class CartController extends Controller
     {
         
         $userId = $request->user()->id; 
-        $cart = Cart::with('product')
+        $cart = Cart::with(['product.category'])
                     ->where('user_id', $userId)
                     ->where('id', $id)
                     ->first();
@@ -196,9 +198,11 @@ class CartController extends Controller
                 $images = json_decode($images, true);
             }
             $product->product_image = array_map(function ($img) {
-                // return "http://127.0.0.1:8000/{$img}";
-                return "https://apidevsixtech.styxhydra.com/{$img}";
+                // Always return with the correct /assets/ path
+                return 'http://127.0.0.1:8000/assets/' . ltrim(str_replace(['http://apidevsixtech.styxhydra.com/assets/', 'http://127.0.0.1:8000/assets/'], '', $img), '/');
             }, $images ?? []);
+            // Add category_name
+            $product->category_name = $product->category ? $product->category->name : null;
         }
 
         return $this->Ok($cart);
