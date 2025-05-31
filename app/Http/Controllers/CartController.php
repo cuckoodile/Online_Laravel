@@ -171,9 +171,9 @@ class CartController extends Controller
             }
         }
 
-        if ($carts->isEmpty()) {
-            return $this->NotFound("No items in the cart");
-        }
+        // if ($carts->isEmpty()) {
+        //     return $this->NotFound("No items in the cart");
+        // }
 
         return $this->Ok($carts);
     }

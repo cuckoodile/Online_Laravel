@@ -232,7 +232,11 @@ class UserController extends Controller
             $file = $request->file('profile_image');
             $extension = $file->getClientOriginalExtension();
             $fileName = time() . '_' . uniqid() . '.' . $extension;
-            $file->move(public_path('images'), $fileName);
+            $destinationPath = public_path('assets/media/users');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            $file->move($destinationPath, $fileName);
             $profileImage = $fileName;
         }
 
@@ -259,6 +263,14 @@ class UserController extends Controller
         $user->assignRole($role);
         $user->givePermissionTo($permission);
 
+        // Format profile_image to include correct assets/media/users/ URL for the response
+        $user->profile;
+        if ($user->profile && $user->profile->profile_image) {
+            $image = $user->profile->profile_image;
+            $filename = basename($image);
+            $user->profile->profile_image = "http://127.0.0.1:8000/assets/media/users/{$filename}";
+        }
+
         return $this->Created($user, "User created successfully!");
     }
 
@@ -268,25 +280,24 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::find($id);
+        $user = User::with(['profile', 'address', 'transactions'])->find($id);
 
-        if(empty($user)){
+        if (empty($user)) {
             return $this->NotFound("User Not Found!");
         }
 
-        $user->profile;
-        $user->address;
-        $user->transactions;
-
-        // Format profile_image to include localhost URL
+        // Format profile_image to include correct assets/media/users/ URL for the response
         if ($user->profile && $user->profile->profile_image) {
             $image = $user->profile->profile_image;
-            if (!str_starts_with($image, 'http')) {
-                    $user->profile->profile_image = "{$this->currentUrl}/$image";
-            }
+            $filename = basename($image);
+            $user->profile->profile_image = "http://127.0.0.1:8000/assets/media/users/{$filename}";
         }
 
-        return $this->Ok($user);
+        return response()->json([
+            'ok' => true,
+            'data' => $user,
+            'message' => 'Ok!'
+        ]);
     }
 
     /**
@@ -318,6 +329,15 @@ class UserController extends Controller
             "contact_number" => "sometimes|min:10|regex:/^[0-9]+$/|max:15|unique:profiles,contact_number," . $user->profile->id,
             "is_admin" => "sometimes|boolean",
             "password" => "nullable|min:8|max:255",
+            // Address validation (updated to match required structure)
+            "address" => "sometimes|array",
+            "address.name" => "sometimes|required_with:address|string|max:255",
+            "address.house_address" => "sometimes|required_with:address|string|max:255",
+            "address.region" => "sometimes|required_with:address|string|max:100",
+            "address.province" => "sometimes|required_with:address|string|nullable|max:100",
+            "address.city" => "sometimes|required_with:address|string|max:100",
+            "address.baranggay" => "sometimes|required_with:address|string|max:100",
+            "address.zip_code" => "sometimes|required_with:address|string|max:20",
         ]);
 
         if ($validator->fails()) {
@@ -334,7 +354,11 @@ class UserController extends Controller
             $file = $request->file('profile_image');
             $extension = $file->getClientOriginalExtension();
             $fileName = time() . '_' . uniqid() . '.' . $extension;
-            $file->move(public_path('images'), $fileName);
+            $destinationPath = public_path('assets/media/users');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            $file->move($destinationPath, $fileName);
             $profileImage = $fileName;
         }
 
@@ -361,6 +385,16 @@ class UserController extends Controller
     // Perform updates
     $user->update($userFields);
     $user->profile()->update($profileFields);
+
+    // Address update logic
+    if (isset($inputs['address'])) {
+        $addressData = $inputs['address'];
+        if ($user->address) {
+            $user->address->update($addressData);
+        } else {
+            $user->address()->create($addressData);
+        }
+    }
 
         // Role and permission handling
         $roleName = isset($validated['is_admin']) && $validated['is_admin'] ? 'admin' : 'user';

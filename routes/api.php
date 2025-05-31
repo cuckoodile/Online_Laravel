@@ -24,7 +24,7 @@ Route::group(["prefix" => "users", "middleware" => "auth:sanctum"], function () 
     Route::get("/", [UserController::class, "index"]);
     Route::get("/{id}", [UserController::class, "show"]);
     Route::delete("/{id}", [UserController::class, "destroy"]);
-    Route::patch("/{id}", [UserController::class, "update"]);
+    Route::put("/{id}", [UserController::class, "update"]);
 });
 
 Route::group(["prefix" => "banner"], function () {
